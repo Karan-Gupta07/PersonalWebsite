@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Karan Gupta — Software Engineer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <aside class="sidebar">
+    <a href="index.html" class="sidebar-logo">kg</a>
+    <nav class="sidebar-nav" aria-label="Main">
+      <a href="#experience">experience</a>
+      <a href="#projects">projects</a>
+      <a href="#skills">skills</a>
+      <a href="#personal">recently</a>
+      <a href="#connect">connect</a>
+      <a href="#contact">contact</a>
+    </nav>
+    <div class="sidebar-terminal" aria-hidden="true">
+      <span class="term-line"><span class="term-prompt">$</span> whoami</span>
+      <span class="term-line term-output">karan — swe / cv / automation</span>
+      <span class="term-line"><span class="term-prompt">$</span> <span class="term-cursor"></span></span>
+    </div>
+    <a href="KaranGuptaResume.pdf" class="sidebar-resume" download target="_blank" rel="noopener">→ resume.pdf</a>
+  </aside>
+
+  <div class="main-wrap">
+    <header class="header">
+      <a href="index.html" class="header-name">Karan Gupta</a>
+      <a href="KaranGuptaResume.pdf" class="header-resume" download target="_blank" rel="noopener">Resume</a>
+      <button class="menu-btn" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </header>
+
+    <main class="main">
+      <section class="hero">
+        <p class="hero-label"><span class="mono">// Computer Engineering + Econ minor @ Waterloo</span></p>
+        <h1 class="hero-headline">
+          Building automation,<br>CV systems & side projects.
+        </h1>
+        <p class="hero-meta mono">
+          <a href="tel:+15195899063">519-589-9063</a>
+          <span class="sep">/</span>
+          <a href="mailto:k79gupta@uwaterloo.ca">k79gupta@uwaterloo.ca</a>
+          <span class="sep">/</span>
+          <a href="https://linkedin.com/in/Karan" target="_blank" rel="noopener">linkedin</a>
+          <span class="sep">/</span>
+          <a href="https://github.com/Karan-Gupta07" target="_blank" rel="noopener">github</a>
+        </p>
+      </section>
+
+      <section id="experience" class="section">
+        <h2 class="sec-title"><span class="sec-num">01</span> experience</h2>
+        <div class="card-grid">
+          <article class="card">
+            <div class="card-head">
+              <span class="card-role">Software Engineering Intern</span>
+              <span class="card-company mono">Manulife Financial</span>
+              <span class="card-date mono">Jan – Apr 2026</span>
+            </div>
+            <ul class="card-bullets">
+              <li>Automated test suites in Copado → 87% Salesforce test coverage target</li>
+              <li>Legacy Salesforce workflows → Flow; GenAI for internal automation</li>
+              <li>New features from business requirements into backend/platform</li>
+            </ul>
+          </article>
+          <article class="card">
+            <div class="card-head">
+              <span class="card-role">Autonomy Software Developer</span>
+              <span class="card-company mono">Waterloo Aerial Robotics Group</span>
+              <span class="card-date mono">Sep 2025 – Present</span>
+            </div>
+            <ul class="card-bullets">
+              <li>CV (OpenCV2) for real-time signal detection; PyMAVLink telemetry & command systems</li>
+            </ul>
+          </article>
+          <article class="card">
+            <div class="card-head">
+              <span class="card-role">Computer Support Specialist</span>
+              <span class="card-company mono">C2C Development Holdings</span>
+              <span class="card-date mono">May 2022 – Sep 2025</span>
+            </div>
+            <ul class="card-bullets">
+              <li>Python bot for FB Marketplace → 70%+ faster response, 700+ automated interactions</li>
+            </ul>
+          </article>
+          <article class="card">
+            <div class="card-head">
+              <span class="card-role">Founder & Operator</span>
+              <span class="card-company mono">Custom Gaming Keyboards</span>
+              <span class="card-date mono">Sep 2022 – Present</span>
+            </div>
+            <ul class="card-bullets">
+              <li>35+ custom keyboards ($5.5k+ revenue); e‑commerce platform</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section id="projects" class="section">
+        <h2 class="sec-title"><span class="sec-num">02</span> projects</h2>
+        <div class="card-grid card-grid--projects">
+          <a href="project-deliriumwatch.html" class="card card--project">
+            <span class="card-stack mono">Raspberry Pi, Arduino, Python, OpenCV, Flask, C/C++</span>
+            <span class="card-role">DeliriumWatch</span>
+            <span class="card-date mono">Sep – Nov 2025</span>
+            <p class="card-desc">Real-time monitoring pipeline for Grand River Hospital — 90%+ reduction in manual env monitoring. OpenCV eye detection, Flask viz, auto alerts.</p>
+            <span class="card-arrow">→</span>
+          </a>
+          <a href="project-ai-admissions.html" class="card card--project">
+            <span class="card-stack mono">Python, PRAW</span>
+            <span class="card-role">AI Admissions Similarity Tool</span>
+            <span class="card-date mono">Jun 2025 – Present</span>
+            <p class="card-desc">Scrape admissions data, similarity scores, reach/target/safety classification.</p>
+            <span class="card-arrow">→</span>
+          </a>
+          <a href="project-silhouette.html" class="card card--project">
+            <span class="card-stack mono">Startup · In development</span>
+            <span class="card-role">Silhouette</span>
+            <span class="card-date mono">Current</span>
+            <p class="card-desc">AI-powered tailoring platform. Building with a small team — more to share soon.</p>
+            <span class="card-arrow">→</span>
+          </a>
+        </div>
+      </section>
+
+      <section id="personal" class="section section--personal">
+        <h2 class="sec-title"><span class="sec-num">03</span> beyond code</h2>
+        <div class="personal-card">
+          <ul class="personal-list">
+            <li><strong>film</strong> — I log everything on <a href="https://letterboxd.com/" target="_blank" rel="noopener">Letterboxd</a>.</li>
+            <li><strong>keyboards & PC building</strong> — 35+ custom boards built/sold, love the craft. Gaming rigs and tinkering with hardware on the side.</li>
+            <li>otherwise: manga, martial arts, fashion (making/tailoring my own stuff), music (mostly rage, honestly all of it), and too much anime.</li>
+            <li class="personal-cta">wanna know more? <a href="KaranGuptaResume.pdf" download target="_blank" rel="noopener">check out my resume ↗</a></li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="skills" class="section">
+        <h2 class="sec-title"><span class="sec-num">04</span> stack</h2>
+        <div class="skills-row">
+          <div class="skill-block">
+            <span class="skill-label mono">languages</span>
+            <div class="skill-tags skill-tags--lang">
+              <span>Python</span><span>C</span><span>C++</span><span>Java</span><span>SQL</span><span>Apex</span><span>HTML</span><span>CSS</span>
+            </div>
+          </div>
+          <div class="skill-block">
+            <span class="skill-label mono">frameworks</span>
+            <div class="skill-tags skill-tags--lib">
+              <span>Flask</span><span>FastAPI</span><span>OpenCV2</span><span>PyMAVLink</span><span>NumPy</span><span>PRAW</span><span>Arduino</span>
+            </div>
+          </div>
+          <div class="skill-block">
+            <span class="skill-label mono">tools</span>
+            <div class="skill-tags skill-tags--tool">
+              <span>VS Code</span><span>Git</span><span>GitHub</span><span>Salesforce</span>
+            </div>
+          </div>
+        </div>
+        <div class="awards">
+          <h3 class="awards-title mono">awards</h3>
+          <ul class="awards-list">
+            <li><span class="award-name">1st</span> Amazon Robotics Hackathon</li>
+            <li><span class="award-name">Bronze</span> Chess AI Bot — Waterloo Tech Week</li>
+            <li><span class="award-name">Gov. General's</span> Academic Award</li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="connect" class="section section--connect">
+        <h2 class="sec-title"><span class="sec-num">05</span> see me in action</h2>
+        <p class="connect-desc mono">Find me on these platforms — code, music, film, and everything in between.</p>
+        <div class="connect-icons">
+          <a href="https://letterboxd.com/" target="_blank" rel="noopener" class="connect-icon" aria-label="Letterboxd" title="Replace with your Letterboxd profile URL">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18 4l2 4h-3l-2-4h-2l2 4h-3l-2-4H8l2 4H7L5 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4h-4z"/></svg>
+            <span>Letterboxd</span>
+          </a>
+          <a href="https://github.com/Karan-Gupta07" target="_blank" rel="noopener" class="connect-icon" aria-label="GitHub">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+            <span>GitHub</span>
+          </a>
+          <a href="https://linkedin.com/in/Karan" target="_blank" rel="noopener" class="connect-icon" aria-label="LinkedIn">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+            <span>LinkedIn</span>
+          </a>
+          <a href="#" class="connect-icon" aria-label="Instagram" title="Add your Instagram URL">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+            <span>Instagram</span>
+          </a>
+          <a href="#" class="connect-icon" aria-label="Spotify" title="Add your Spotify URL">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+            <span>Spotify</span>
+          </a>
+          <a href="#" class="connect-icon" aria-label="Discord" title="Add your Discord URL">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028 14.09 14.09 0 001.226-1.994.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+            <span>Discord</span>
+          </a>
+        </div>
+      </section>
+
+      <section id="contact" class="section section--contact">
+        <h2 class="sec-title"><span class="sec-num">06</span> contact</h2>
+        <p class="contact-text">Open to internships & collaboration.</p>
+        <p class="contact-links mono">
+          <a href="mailto:k79gupta@uwaterloo.ca">$ mail k79gupta@uwaterloo.ca</a>
+          <a href="tel:+15195899063">$ call 519-589-9063</a>
+          <a href="https://linkedin.com/in/Karan" target="_blank" rel="noopener">$ open linkedin</a>
+          <a href="https://github.com/Karan-Gupta07" target="_blank" rel="noopener">$ open github</a>
+        </p>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p class="mono">© <span id="year"></span> Karan Gupta</p>
+    </footer>
+  </div>
+
+  <nav class="sidebar-nav sidebar-nav--mobile" aria-label="Mobile">
+    <a href="#experience">experience</a>
+    <a href="#projects">projects</a>
+    <a href="#skills">skills</a>
+    <a href="#personal">recently</a>
+    <a href="#connect">connect</a>
+    <a href="#contact">contact</a>
+  </nav>
+
+  <script src="script.js"></script>
+</body>
+</html>

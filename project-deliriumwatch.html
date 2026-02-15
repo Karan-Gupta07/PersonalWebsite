@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DeliriumWatch — Karan Gupta</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="project-page">
+  <div class="main-wrap">
+    <header class="header">
+      <a href="index.html" class="header-name">Karan Gupta</a>
+      <a href="index.html" class="header-resume">← back</a>
+    </header>
+
+    <main class="main project-main">
+      <article class="project-article">
+        <p class="project-meta mono">Sep – Nov 2025</p>
+        <h1 class="project-title">DeliriumWatch</h1>
+        <p class="project-stack mono">Raspberry Pi, Arduino, Python, OpenCV, Flask, C/C++</p>
+        <div class="project-body">
+          <p>Real-time monitoring pipeline built for Grand River Hospital staff, with secure login and role-based access control. The system was designed to reduce manual environmental monitoring during simulated testing — we saw a <strong>90%+ reduction</strong> in that workload.</p>
+          <p>I implemented OpenCV-based eye detection and a live Flask-powered web visualization with automatic alert flagging, enabling automated sleep and blink classification and faster response to abnormal conditions during validation. On the hardware side, I engineered serial data ingestion and threshold validation for stable multi-sensor tracking with zero dropped readings.</p>
+        </div>
+        <p class="project-back"><a href="index.html#projects">← Back to projects</a></p>
+      </article>
+    </main>
+
+    <footer class="footer">
+      <p class="mono">© <span id="year"></span> Karan Gupta</p>
+    </footer>
+  </div>
+  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+</body>
+</html>
