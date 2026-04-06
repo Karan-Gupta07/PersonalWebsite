@@ -121,7 +121,7 @@
             var delay = (idx === lines.length - 2) ? 800 : 200 + Math.random() * 300;
             setTimeout(function() { runHack(idx + 1); }, delay);
           })(0);
-        } else if (cmd === 'help') {
+        } else if (cmd === 'help' || cmd === '!help') {
           out = 'whoami, ls, cd [dir], clear, resume, contact, !game, !movie, !artist, !pc, !keyboard, !anime, !manga, !song, !socials, !github';
         } else {
           out = 'command not found: ' + escapeHtml(val) + '. Type help.';

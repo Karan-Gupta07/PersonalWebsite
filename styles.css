@@ -116,14 +116,31 @@ ul { list-style: none; margin: 0; padding: 0; }
 
 .term-input-line { display: flex; align-items: center; }
 .term-input {
+  background: transparent !important;
+  border: none !important;
+  color: inherit !important;
+  font-family: inherit !important;
+  font-size: inherit !important;
+  outline: none !important;
+  width: 100% !important;
+  caret-color: var(--accent) !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  box-shadow: none !important;
+}
+
+#terminal::-webkit-scrollbar {
+  width: 4px;
+}
+#terminal::-webkit-scrollbar-track {
   background: transparent;
-  border: none;
-  color: inherit;
-  font-family: inherit;
-  font-size: inherit;
-  outline: none;
-  width: 100%;
-  caret-color: var(--accent);
+}
+#terminal::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+#terminal::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
 }
 
 .sidebar-resume {
