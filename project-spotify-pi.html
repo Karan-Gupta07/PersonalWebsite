@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spotify Pi Thing — Karan Gupta</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="project-page">
+  <div class="main-wrap">
+    <header class="header">
+      <a href="index.html" class="header-name">Karan Gupta</a>
+      <a href="index.html" class="header-resume">← back</a>
+    </header>
+
+    <main class="main project-main">
+      <article class="project-article">
+        <p class="project-meta mono">For Fun / Side Project</p>
+        <h1 class="project-title">Spotify Pi Thing</h1>
+        <p class="project-stack mono">Raspberry Pi, Python 3, FastAPI, Spotipy, HTML/CSS/JS</p>
+        <div class="project-body">
+          <p>A standalone Raspberry Pi Spotify controller that acts like a small in-car console. Everything runs locally on the device, providing a touch-optimized UI in a fullscreen browser.</p>
+          <p><strong>Architecture & Backend</strong><br>
+          The Raspberry Pi runs a Python backend using <strong>FastAPI</strong> and <strong>Spotipy</strong> to serve a REST API and handle Spotify OAuth endpoints. It saves token caches persistently to allow the device to reconnect autonomously after a reboot.</p>
+          <p><strong>Frontend</strong><br>
+          The UI is a vanilla HTML/CSS/JS single-page application tailored for 3.5"-5" touchscreen displays. It polls the backend API for "now-playing" states every 3 seconds to update the UI on the fly without a build step.</p>
+          <p><strong>Deployment</strong><br>
+          The project is set up with fully automated deployment scripts (<code>systemd</code> via shell script) that launch the backend immediately at system boot, and autostarts Chromium into a fullscreen kiosk mode as soon as the desktop environment is loaded.</p>
+        </div>
+        <p class="project-back"><a href="index.html#projects">← Back to projects</a></p>
+      </article>
+    </main>
+
+    <footer class="footer">
+      <p class="mono">© <span id="year"></span> Karan Gupta</p>
+    </footer>
+  </div>
+  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+</body>
+</html>

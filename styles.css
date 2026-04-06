@@ -114,6 +114,18 @@ ul { list-style: none; margin: 0; padding: 0; }
 }
 @keyframes blink { 50% { opacity: 0; } }
 
+.term-input-line { display: flex; align-items: center; }
+.term-input {
+  background: transparent;
+  border: none;
+  color: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  outline: none;
+  width: 100%;
+  caret-color: var(--accent);
+}
+
 .sidebar-resume {
   font-family: var(--mono);
   font-size: 0.8rem;
