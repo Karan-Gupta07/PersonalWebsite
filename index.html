@@ -20,10 +20,16 @@
       <a href="#connect">connect</a>
       <a href="#contact">contact</a>
     </nav>
-    <div class="sidebar-terminal" aria-hidden="true">
-      <span class="term-line"><span class="term-prompt">$</span> whoami</span>
-      <span class="term-line term-output">karan — swe / cv / automation</span>
-      <span class="term-line"><span class="term-prompt">$</span> <span class="term-cursor"></span></span>
+    <div class="sidebar-terminal" id="terminal" style="overflow-y:auto;max-height:200px;">
+      <div id="term-history">
+        <div class="term-line"><span class="term-prompt">$</span> whoami</div>
+        <div class="term-line term-output">karan — swe / cv / automation</div>
+        <div class="term-line term-output" style="opacity:0.7">type 'help' for commands</div>
+      </div>
+      <div class="term-line term-input-line">
+        <span class="term-prompt">$</span>
+        <input type="text" id="term-input" class="term-input" spellcheck="false" autocomplete="off">
+      </div>
     </div>
     <a href="KaranGuptaResume.pdf" class="sidebar-resume" download target="_blank" rel="noopener">→ resume.pdf</a>
   </aside>
@@ -41,13 +47,11 @@
 
     <main class="main">
       <section class="hero">
-        <p class="hero-label"><span class="mono">// Computer Engineering + Econ minor @ Waterloo · GPA 90</span></p>
+        <p class="hero-label"><span class="mono">// Computer Engineering + Econ minor @ Waterloo · GPA 3.93</span></p>
         <h1 class="hero-headline">
           Building automation,<br>CV systems & side projects.
         </h1>
         <p class="hero-meta mono">
-          <a href="tel:+15195899063">519-589-9063</a>
-          <span class="sep">/</span>
           <a href="mailto:k79gupta@uwaterloo.ca">k79gupta@uwaterloo.ca</a>
           <span class="sep">/</span>
           <a href="https://www.linkedin.com/in/karan-gupta-2b72a735a/" target="_blank" rel="noopener">linkedin</a>
@@ -61,14 +65,24 @@
         <div class="card-grid">
           <article class="card">
             <div class="card-head">
+              <span class="card-role">Software Development Engineer Intern</span>
+              <span class="card-company mono">Amazon Robotics</span>
+              <span class="card-date mono">May 2026 – Aug 2026</span>
+            </div>
+            <ul class="card-bullets">
+              <li>Incoming Software Development Engineer Intern for Summer 2026.</li>
+            </ul>
+          </article>
+          <article class="card">
+            <div class="card-head">
               <span class="card-role">Software Engineering Intern</span>
               <span class="card-company mono">Manulife Financial</span>
               <span class="card-date mono">Jan 2026 – Present</span>
             </div>
             <ul class="card-bullets">
-              <li>Developing automated test suites in Copado → 87% Salesforce test coverage target</li>
-              <li>Migrating legacy Salesforce workflows to Flow; supporting GenAI initiatives for internal automation</li>
-              <li>Implementing new Salesforce features from business needs into backend logic and platform capabilities</li>
+              <li>Developing automated test suites in Copado to improve Salesforce reliability by increasing organizational test coverage toward an 87% target</li>
+              <li>Developed data processing and visualization tools to analyze large-scale Salesforce operational data, implementing validation logic and anomaly detection algorithms to prevent critical system failures</li>
+              <li>Supporting GenAI driven initiatives to improve internal automation and decision making across sales team</li>
             </ul>
           </article>
           <article class="card">
@@ -78,8 +92,8 @@
               <span class="card-date mono">Sep 2025 – Present</span>
             </div>
             <ul class="card-bullets">
-              <li>Implemented CV (OpenCV2) for real-time signal detection with iterative tuning and validation</li>
-              <li>Built multi-process telemetry and command systems in Python (PyMAVLink) for UAV communication simulation</li>
+              <li>Implemented computer vision algorithms using OpenCV2 for real-time signal detection, improving recognition accuracy through iterative parameter tuning and validation.</li>
+              <li>Built multi-process telemetry and command systems in Python (PyMAVLink) to simulate UAV communication, enhancing reliability and throughput across distributed processes.</li>
             </ul>
           </article>
           <article class="card">
@@ -89,7 +103,8 @@
               <span class="card-date mono">May 2022 – Sep 2025</span>
             </div>
             <ul class="card-bullets">
-              <li>Python bot for FB Marketplace → 70%+ faster response, 700+ automated interactions</li>
+              <li>Engineered a Python-based automation bot that auto-responded to Facebook Marketplace messages, improving response time by over 70% and automating 700+ customer interactions.</li>
+              <li>Provided technical support in database management, hardware setup, and network troubleshooting.</li>
             </ul>
           </article>
           <article class="card">
@@ -99,7 +114,18 @@
               <span class="card-date mono">Sep 2022 – Present</span>
             </div>
             <ul class="card-bullets">
-              <li>35+ custom keyboards ($5.5k+ revenue); e‑commerce platform</li>
+              <li>Designed and sold 35+ custom keyboards, generating $5,500+ in revenue, while building and maintaining an e-commerce platform for orders, client communication, and margin optimization</li>
+            </ul>
+          </article>
+          <article class="card">
+            <div class="card-head">
+              <span class="card-role">Build & Design Team Planner</span>
+              <span class="card-company mono">FRC Team 8089</span>
+              <span class="card-date mono">High School</span>
+            </div>
+            <ul class="card-bullets">
+              <li>Planned and designed electrical engineering (EE) components and constrained the robot's physical build process.</li>
+              <li>Collaborated with design and build sub-teams to define functional boundaries and integrate electronics efficiently.</li>
             </ul>
           </article>
         </div>
@@ -108,11 +134,18 @@
       <section id="projects" class="section">
         <h2 class="sec-title"><span class="sec-num">02</span> projects</h2>
         <div class="card-grid card-grid--projects">
+          <a href="project-reparo.html" class="card card--project">
+            <span class="card-stack mono">Python, Gemini API, React, Node.js, Swift</span>
+            <span class="card-role">Reparo (Hack Canada 2026 Winner)</span>
+            <span class="card-date mono">Mar 2026 – Present</span>
+            <p class="card-desc">Built agentic AI repair platform using Gemini vision models to analyze product images and generate step-by-step repair plans. Integrated Shopify API/SerpAPI. Won 1st place in Reactiv Track ($5,000).</p>
+            <span class="card-arrow">→</span>
+          </a>
           <a href="project-deliriumwatch.html" class="card card--project">
             <span class="card-stack mono">Raspberry Pi, Arduino, Python, OpenCV, HTML, CSS, Flask, C/C++</span>
             <span class="card-role">DeliriumWatch</span>
             <span class="card-date mono">Sep – Nov 2025</span>
-            <p class="card-desc">Real-time monitoring pipeline for Grand River Hospital — 90%+ reduction in manual env monitoring. OpenCV eye detection, Flask viz, auto alerts.</p>
+            <p class="card-desc">Real-time Python monitoring pipeline with secure login for hospital staff (90% reduction in manual monitoring). OpenCV eye detection, live Flask alerts, and stable serial ingestion with 0 dropped readings.</p>
             <span class="card-arrow">→</span>
           </a>
           <a href="project-ai-admissions.html" class="card card--project">
@@ -123,10 +156,17 @@
             <span class="card-arrow">→</span>
           </a>
           <a href="project-silhouette.html" class="card card--project">
-            <span class="card-stack mono">Startup · In development</span>
-            <span class="card-role">Silhouette</span>
-            <span class="card-date mono">Current</span>
-            <p class="card-desc">AI-powered tailoring platform. Building with a small team — more to share soon.</p>
+            <span class="card-stack mono">Python, OpenCV, Node.js, React, MongoDB</span>
+            <span class="card-role">TailorAI (Sillouette)</span>
+            <span class="card-date mono">Jun 2025 – Present</span>
+            <p class="card-desc">Full-stack AI platform processing 200+ images for automatic body measurements (10+ per user) mapping via OpenCV. Scalable APIs and responsive React frontend with sub-200ms latency.</p>
+            <span class="card-arrow">→</span>
+          </a>
+          <a href="project-spotify-pi.html" class="card card--project">
+            <span class="card-stack mono">Raspberry Pi, Python 3, FastAPI, Spotipy, JS</span>
+            <span class="card-role">Spotify Pi Thing</span>
+            <span class="card-date mono">Side Project</span>
+            <p class="card-desc">A standalone Raspberry Pi Spotify controller with a touchscreen UI acting like an in-car console. Uses FastAPI matching OAuth caching for independent boot-time kiosk playback.</p>
             <span class="card-arrow">→</span>
           </a>
         </div>
@@ -137,7 +177,7 @@
         <div class="personal-card">
           <ul class="personal-list">
             <li><strong>film</strong> — I log everything on <a href="https://letterboxd.com/Exoxeon/" target="_blank" rel="noopener">Letterboxd</a>.</li>
-            <li><strong>keyboards & PC building</strong> — 35+ custom boards built/sold, love the craft. Gaming rigs and tinkering with hardware on the side.</li>
+            <li><strong>keyboards & PC building</strong> — 35+ custom boards built/sold, love the craft. Current rig: NZXT H6 Flow, 13600KF, 9070XT, Vengeance 7000MHz CL34.</li>
             <li>otherwise: manga, martial arts, fashion (making/tailoring my own stuff), music (mostly rage, honestly all of it), and too much anime.</li>
             <li class="personal-cta">wanna know more? <a href="KaranGuptaResume.pdf" download target="_blank" rel="noopener">check out my resume ↗</a></li>
           </ul>
@@ -214,7 +254,6 @@
         <p class="contact-text">Open to internships & collaboration.</p>
         <p class="contact-links mono">
           <a href="mailto:k79gupta@uwaterloo.ca">$ mail k79gupta@uwaterloo.ca</a>
-          <a href="tel:+15195899063">$ call 519-589-9063</a>
           <a href="https://www.linkedin.com/in/karan-gupta-2b72a735a/" target="_blank" rel="noopener">$ open linkedin</a>
           <a href="https://github.com/Karan-Gupta07" target="_blank" rel="noopener">$ open github</a>
         </p>

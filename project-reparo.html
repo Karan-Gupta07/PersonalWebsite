@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reparo — Karan Gupta</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="project-page">
+  <div class="main-wrap">
+    <header class="header">
+      <a href="index.html" class="header-name">Karan Gupta</a>
+      <a href="index.html" class="header-resume">← back</a>
+    </header>
+
+    <main class="main project-main">
+      <article class="project-article">
+        <p class="project-meta mono">Mar 2026 – Present</p>
+        <h1 class="project-title">Reparo</h1>
+        <p class="project-stack mono">Python, Gemini API, React, Node.js, Swift</p>
+        <div class="project-body">
+          <p>Built an agentic AI repair platform using Gemini vision models and iterative reasoning to analyze product images and automatically generate step-by-step repair plans, specify required tools, and produce cost estimates.</p>
+          <p>Integrated the Shopify Storefront API and SerpAPI to dynamically source replacement parts and create a seamless, unified checkout flow for users to quickly get the materials they need.</p>
+          <p>The project won <strong>1st place in the Reactiv Track ($5,000)</strong> at Hack Canada 2026, and was shortlisted for the Most Complex AI Hack award.</p>
+        </div>
+        <p class="project-back"><a href="index.html#projects">← Back to projects</a></p>
+      </article>
+    </main>
+
+    <footer class="footer">
+      <p class="mono">© <span id="year"></span> Karan Gupta</p>
+    </footer>
+  </div>
+  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+</body>
+</html>
