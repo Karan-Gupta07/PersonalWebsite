@@ -6,11 +6,19 @@
     "node": ">=18"
   },
   "scripts": {
-    "dev": "vercel dev",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
     "deploy": "vercel --prod"
   },
   "devDependencies": {
     "gh-pages": "^6.3.0",
     "vercel": "^52.0.0"
+  },
+  "dependencies": {
+    "@vercel/analytics": "^2.0.1",
+    "next": "^14.2.3",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   }
 }
