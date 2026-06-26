@@ -80,14 +80,26 @@ export default function Home() {
                 <ul className="card-bullets">
                   <li>Reduced legacy service migration time by 98% (2 weeks → 1 hour per stage) by building multi-step AI agents using prompt chaining and CoT reasoning to automate Java architecture transformation across thousands of lines.</li>
                   <li>Architected an agentic RAG pipeline with few-shot prompting to achieve 92% translation accuracy across legacy API calls, algorithm structures, and AWS cloud deployment patterns into modernized service frameworks.</li>
-                  <li>Developed a pluggable natural language interface enabling on-the-fly algorithm adjustments during automated migration, allowing seamless integration with modern service handlers without manual intervention.</li>
+                  <li>Developed a pluggable natural language interface enabling on-demand algorithm adjustments during automated migration, allowing seamless integration with modern service handlers without manual intervention.</li>
+                </ul>
+              </article>
+              <article className="card">
+                <div className="card-head">
+                  <span className="card-role">AI Software Engineer, Evaluation Lead</span>
+                  <span className="card-company mono">Wat.ai (TRACE Subteam)</span>
+                  <span className="card-date mono">May 2026 – Present</span>
+                </div>
+                <ul className="card-bullets">
+                  <li>Engineered TRACE, an AI agent reliability engine that automates multi-step execution tracing and failure isolation, reducing root-cause diagnostic latency by 70% for complex RAG and tool-use workflows.</li>
+                  <li>Eliminated 95% of runtime non-determinism across 4 downstream production applications by architecting a canonical verifier interface and Pydantic schemas to enforce strict data contracts over subjective LLM logic.</li>
+                  <li>Enforced 100% compliance for financial-action workflows by deploying a high-throughput, 7-check deterministic execution engine that intercepts policy violations and eliminates manual operational triage.</li>
                 </ul>
               </article>
               <article className="card">
                 <div className="card-head">
                   <span className="card-role">Software Engineering Intern</span>
                   <span className="card-company mono">Manulife Financial Corporation</span>
-                  <span className="card-date mono">Jan 2026 – Apr 2026</span>
+                  <span className="card-date mono">January 2026 – April 2026</span>
                 </div>
                 <ul className="card-bullets">
                   <li>Reduced system downtime risk by scripting a New Relic data exporter and architecting NRQL queries, enabling early detection of 3+ resource bottlenecks before system failure.</li>
@@ -214,13 +226,13 @@ export default function Home() {
               <div className="skill-block">
                 <span className="skill-label mono">languages</span>
                 <div className="skill-tags skill-tags--lang">
-                  <span>Python</span><span>Java</span><span>C</span><span>C++</span><span>Swift</span><span>TypeScript</span><span>JavaScript</span><span>SQL</span><span>Apex</span><span>HTML/CSS</span><span>VBA</span>
+                  <span>Python</span><span>Java</span><span>C</span><span>C++</span><span>Swift</span><span>TypeScript</span><span>JavaScript</span><span>SQL</span><span>Apex</span><span>HTML</span><span>CSS</span><span>VBA</span>
                 </div>
               </div>
               <div className="skill-block">
                 <span className="skill-label mono">frameworks</span>
                 <div className="skill-tags skill-tags--lib">
-                  <span>PyTorch</span><span>TensorFlow</span><span>scikit-learn</span><span>RAG</span><span>React</span><span>Node.js</span><span>Flask</span><span>FastAPI</span><span>OpenCV2</span><span>REST API</span><span>PyMavLink</span><span>NumPy</span><span>JUnit</span><span>Dagger</span>
+                  <span>PyTorch</span><span>TensorFlow</span><span>scikit-learn</span><span>RAG</span><span>React</span><span>Node.js</span><span>Flask</span><span>FastAPI</span><span>OpenCV2</span><span>REST API</span><span>PyMAVLink</span><span>NumPy</span><span>JUnit</span><span>Dagger</span>
                 </div>
               </div>
               <div className="skill-block">
@@ -234,10 +246,12 @@ export default function Home() {
               <h3 className="awards-title mono">awards</h3>
               <ul className="awards-list">
                 <li><span className="award-name">Valedictorian</span></li>
-                <li><span class="award-name">1st</span> Euclid Math Contest — School Medal</li>
-                <li><span class="award-name">1st</span> Amazon Robotics Hackathon</li>
-                <li><span class="award-name">Bronze</span> Chess AI Bot — Waterloo Tech Week</li>
-                <li><span class="award-name">Gov. General's</span> Academic Award</li>
+                <li><span className="award-name">1st</span> Euclid Math Contest — School Medal</li>
+                <li><span className="award-name">1st</span> Amazon Robotics Hackathon</li>
+                <li><span className="award-name">Bronze</span> Chess AI Bot — Waterloo Tech Week</li>
+                <li><span className="award-name">Gov. General's</span> Academic Award</li>
+                <li><span className="award-name">1st</span> Hack Canada 2026 — Reactiv Track ($5,000)</li>
+                <li><span className="award-name">Shortlisted</span> Most Complex AI Hack — Hack Canada 2026</li>
               </ul>
             </div>
           </section>
