@@ -12,6 +12,8 @@ export default function Sidebar({ menuOpen, setMenuOpen }) {
     { type: 'output', text: 'Type "help" for a list of available commands.' }
   ]);
   const [isDisabled, setIsDisabled] = useState(false);
+  const [commandHistory, setCommandHistory] = useState([]);
+  const historyIndex = useRef(-1);
 
   const inputRef = useRef(null);
   const terminalRef = useRef(null);
@@ -36,11 +38,40 @@ export default function Sidebar({ menuOpen, setMenuOpen }) {
   };
 
   const handleCommand = (e) => {
+    // Arrow Up: cycle backwards through command history
+    if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (commandHistory.length === 0) return;
+      const newIndex = historyIndex.current < commandHistory.length - 1
+        ? historyIndex.current + 1
+        : historyIndex.current;
+      historyIndex.current = newIndex;
+      setInputValue(commandHistory[commandHistory.length - 1 - newIndex]);
+      return;
+    }
+
+    // Arrow Down: cycle forwards through command history
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (historyIndex.current <= 0) {
+        historyIndex.current = -1;
+        setInputValue('');
+        return;
+      }
+      historyIndex.current -= 1;
+      setInputValue(commandHistory[commandHistory.length - 1 - historyIndex.current]);
+      return;
+    }
+
     if (e.key === 'Enter') {
       const val = inputValue.trim();
       const cmd = val.toLowerCase();
 
       if (!val) return;
+
+      // Track command for arrow-key history
+      setCommandHistory((prev) => [...prev, val]);
+      historyIndex.current = -1;
 
       // Add typed command to history
       const newHistory = [...history];
@@ -222,7 +253,6 @@ export default function Sidebar({ menuOpen, setMenuOpen }) {
               autoCapitalize="off"
               spellCheck="false"
             />
-            {!isDisabled && <span className="term-cursor"></span>}
           </div>
         </div>
       </aside>
