@@ -1,0 +1,7 @@
+# macOS
+.DS_Store
+
+# scratch/preview artifacts
+_pv_*.html
+_preview_*.html
+build.log

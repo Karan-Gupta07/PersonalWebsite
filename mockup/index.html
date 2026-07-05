@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KARAN GUPTA // PILOT-EXO</title>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@700;900&family=Shippori+Mincho+B1:wght@700;800&family=JetBrains+Mono:wght@400;700&family=Saira+Semi+Condensed:wght@600;700&family=Saira+Extra+Condensed:wght@700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/nerv.css">
+  <script src="js/nerv.js" defer></script>
+  <noscript>
+    <!-- If JS is disabled, the boot overlay never resolves. Hide it and
+         restore scrolling so all content stays reachable (DESIGN §7). -->
+    <style>
+      #boot { display: none !important; }
+      body:not(.booted) { overflow: visible !important; }
+      [data-reveal] { opacity: 1 !important; transform: none !important; }
+      /* MAGI skills are gated behind JS-added .resolved; without JS force the
+         resolved reveal so the Skills section content stays reachable (§7). */
+      .magi-unit .magi-tags { opacity: 1 !important; max-height: none !important; overflow: visible !important; }
+    </style>
+  </noscript>
+</head>
+<body>
+  <!-- CRT / atmosphere overlays (§4) — always-present decorative layers -->
+  <div class="crt-scanlines" aria-hidden="true"></div>
+  <div class="crt-vignette" aria-hidden="true"></div>
+  <div class="crt-flicker" aria-hidden="true"></div>
+  <div class="scan-sweep" aria-hidden="true"></div>
+
+  <!-- CONDITION ONE banner — visible ONLY in emergency mode (Battle Stations).
+       Modeled on the show's red-alert screen: hazard stripes + 第一種戦闘配置. -->
+  <div class="condition-one" aria-hidden="true">
+    <div class="c1-stripe" aria-hidden="true"></div>
+    <div class="c1-body">
+      <span class="c1-warn">WARNING</span>
+      <span class="c1-mid">
+        <span class="c1-jp eva-title">第一種戦闘配置</span>
+        <span class="c1-en">BATTLE STATIONS &mdash; CONDITION ONE</span>
+      </span>
+      <span class="c1-warn">WARNING</span>
+    </div>
+    <div class="c1-stripe" aria-hidden="true"></div>
+  </div>
+
+  <!-- 1. BOOT OVERLAY -->
+  <div id="boot">
+    <div class="boot-inner">
+      <pre class="boot-logo" aria-hidden="true">
+   _  __    _    ____      _    _   _
+  | |/ /   / \  |  _ \    / \  | \ | |
+  | ' /   / _ \ | |_) |  / _ \ |  \| |
+  | . \  / ___ \|  _ <  / ___ \| |\  |
+  |_|\_\/_/   \_\_| \_\/_/   \_\_| \_|
+      </pre>
+      <pre id="boot-log" aria-live="polite"></pre>
+      <div class="boot-bar-track" role="progressbar" aria-label="Synchronization progress">
+        <div id="boot-bar"></div>
+      </div>
+      <button id="boot-skip" type="button">SKIP &#9656;</button>
+    </div>
+  </div>
+
+  <!-- 2. FIXED TOP NAV -->
+  <nav id="nerv-nav">
+    <a class="nav-brand" href="#nav-hub" aria-label="KARAN — home">
+      <img src="assets/nerv-logo.svg" alt="KARAN" width="28" height="28">
+      <span class="brand-name">KARAN</span>
+    </a>
+    <ul class="nav-links">
+      <li><a class="link-cyan" href="#dossier">DOSSIER</a></li>
+      <li><a class="link-cyan" href="#synclog">SYNC LOG</a></li>
+      <li><a class="link-cyan" href="#eva-units">EVA UNITS</a></li>
+      <li><a class="link-cyan" href="#magi">MAGI</a></li>
+      <li><a class="link-cyan" href="#commendations">COMMENDATIONS</a></li>
+      <li><a class="link-cyan" href="#offline">OFFLINE</a></li>
+      <li><a class="link-cyan" href="#transmission">TRANSMISSION</a></li>
+    </ul>
+    <div class="nav-utils">
+      <time id="sys-clock" aria-label="System clock">--:--:--</time>
+      <button id="crt-toggle" class="stamp" type="button" aria-label="CRT effects: minimal">CRT: MIN</button>
+      <button id="emergency-toggle" class="stamp" type="button" aria-pressed="false">EMERGENCY</button>
+    </div>
+  </nav>
+
+  <main>
+    <!-- 3. MAGI NAVIGATION HUB — the landing screen (replaces the hero) -->
+    <section id="nav-hub" class="section" data-reveal aria-label="Karan Gupta — MAGI navigation">
+      <div class="magi-console">
+        <!-- ambient HUD texture: chevron data ladders + axis rulers (decorative) -->
+        <div class="chevron-ladder" style="top:120px;bottom:120px;left:24px;" aria-hidden="true"></div>
+        <div class="chevron-ladder" style="top:120px;bottom:120px;right:24px;" aria-hidden="true"></div>
+        <div class="axis-ruler" style="top:130px;bottom:130px;left:96px;" aria-hidden="true"></div>
+        <div class="axis-ruler" style="top:130px;bottom:130px;right:96px;" aria-hidden="true"></div>
+
+        <!-- top-left readout stack — real identity in NERV readout format -->
+        <div class="mc-readout">
+          <h1 class="mc-ident eva-title">KARAN GUPTA</h1>
+          <span class="mc-role">SOFTWARE ENGINEER</span>
+          <span class="mc-rl">CURRENT:<span>SDE INTERN @ AMAZON</span></span>
+          <span class="mc-rl">PREV:<span>SWE INTERN @ MANULIFE</span></span>
+          <span class="mc-rl">PROGRAM:<span>COMPUTER ENG</span></span>
+          <span class="mc-rl">MINOR:<span>ECONOMICS</span></span>
+          <span class="mc-rl">SCHOOL:<span>UWATERLOO</span></span>
+          <span class="mc-rl">GPA:<span>3.95 / 4.00</span></span>
+          <span class="mc-rl">STATUS:<span class="dim">NOMINAL</span></span>
+        </div>
+
+        <!-- corner kanji under green double-rule (right only; left corner now
+             holds the identity readout) -->
+        <div class="mc-kanji mc-kanji-right" aria-hidden="true">
+          <div class="mc-rule"></div>
+          <div class="mc-k jp">決議</div>
+          <span class="mc-romaji">KETSUGI</span>
+        </div>
+
+        <!-- right-side status box (state-tracking) -->
+        <div class="mc-status" id="nav-status" data-state="idle" aria-hidden="true">
+          <span class="mc-sb-k jp">情報</span>
+          <span class="mc-sb-l">Information</span>
+          <span class="mc-sb-code">STATUS // IDLE</span>
+        </div>
+
+        <!-- center title -->
+        <div class="mc-title">
+          <span class="mc-t jp">MAGI</span>
+          <span class="mc-sub">Navigation Array</span>
+        </div>
+
+        <!-- triangle nav stage -->
+        <nav class="mc-stage" aria-label="Primary section navigation">
+          <div class="mc-diagram">
+            <!-- connector wires (behind nodes) -->
+            <svg class="mc-wires" viewBox="0 0 640 470" preserveAspectRatio="none" aria-hidden="true">
+              <line id="mc-wire-top"   class="mc-wire" x1="320" y1="120" x2="320" y2="196" stroke="#FF9830" stroke-width="7"/>
+              <line id="mc-wire-left"  class="mc-wire" x1="150" y1="398" x2="292" y2="270" stroke="#FF9830" stroke-width="7"/>
+              <line id="mc-wire-right" class="mc-wire" x1="490" y1="398" x2="348" y2="270" stroke="#FF9830" stroke-width="7"/>
+            </svg>
+
+            <!-- faint index numerals -->
+            <span class="mc-idx" style="top:-16px;left:50%;transform:translateX(-50%)">01</span>
+            <span class="mc-idx" style="bottom:64px;left:2px">02</span>
+            <span class="mc-idx" style="bottom:64px;right:2px">03</span>
+
+            <!-- central KARAN leaf node -->
+            <div class="mc-karan" aria-hidden="true">
+              <svg class="mc-shape" viewBox="0 0 100 100" preserveAspectRatio="none">
+                <polygon points="50,2 98,50 50,98 2,50"/>
+              </svg>
+              <span class="mc-knm">KARAN</span>
+            </div>
+
+            <!-- TOP node: PROJECTS -->
+            <a class="mc-node mc-top" href="#eva-units" data-wire="mc-wire-top" data-dest="PROJECTS" aria-label="Projects — 5 units">
+              <svg class="mc-shape" viewBox="0 0 100 100" preserveAspectRatio="none">
+                <polygon points="6,2 94,2 98,62 50,98 2,62"/>
+              </svg>
+              <span class="mc-inner mc-inner-top">
+                <span class="mc-n-code">EVA-UNITS</span>
+                <span class="mc-n-name">Projects</span>
+                <span class="mc-n-count">05 Units</span>
+              </span>
+            </a>
+
+            <!-- LEFT node: EXPERIENCE -->
+            <a class="mc-node mc-left" href="#synclog" data-wire="mc-wire-left" data-dest="EXPERIENCE" aria-label="Experience — 7 records">
+              <svg class="mc-shape" viewBox="0 0 100 100" preserveAspectRatio="none">
+                <polygon points="2,2 98,2 84,98 2,98"/>
+              </svg>
+              <span class="mc-inner">
+                <span class="mc-n-code">SYNC-LOG</span>
+                <span class="mc-n-name">Experience</span>
+                <span class="mc-n-count">07 Records</span>
+              </span>
+            </a>
+
+            <!-- RIGHT node: SKILLS -->
+            <a class="mc-node mc-right" href="#magi" data-wire="mc-wire-right" data-dest="SKILLS" aria-label="Skills — 38 modules">
+              <svg class="mc-shape" viewBox="0 0 100 100" preserveAspectRatio="none">
+                <polygon points="2,2 98,2 98,98 16,98"/>
+              </svg>
+              <span class="mc-inner">
+                <span class="mc-n-code">MAGI-CORE</span>
+                <span class="mc-n-name">Skills</span>
+                <span class="mc-n-count">38 Modules</span>
+              </span>
+            </a>
+          </div>
+        </nav>
+
+        <!-- bottom terminal strip -->
+        <div class="mc-terminal">
+          <span><span class="mc-ts-lbl">access code:</span> <span class="mc-dots">••••••••••</span></span>
+          <span><span class="mc-ts-lbl">question:</span> <span class="mc-q" id="nav-q">select destination node</span><span class="mc-cursor blink" aria-hidden="true"></span></span>
+        </div>
+
+        <!-- optional scroll cue to the rest of the site -->
+        <a class="mc-scroll link-cyan" href="#dossier" aria-label="Scroll to full dossier">SCROLL FOR FULL RECORD &#9662;</a>
+      </div>
+    </section>
+
+    <!-- 4. PILOT DOSSIER (About) -->
+    <section id="dossier" class="section" data-reveal>
+      <span class="section-index" aria-hidden="true">01</span>
+      <div class="nerv-panel">
+        <div class="panel-header">
+          <span class="panel-label">PILOT DOSSIER</span>
+          <span class="panel-code">SEC-01</span>
+        </div>
+        <h2><span class="eva-title">PILOT DOSSIER</span></h2>
+        <div class="dossier-body">
+          <div class="portrait-frame" aria-hidden="true">
+            <span class="portrait-label">NO SIGNAL</span>
+          </div>
+          <div class="dossier-data">
+            <p>Computer Engineering + Economics minor @ University of Waterloo &middot; GPA 3.95</p>
+            <div class="data-row">
+              <span class="data-key">INSTITUTION</span>
+              <span class="data-value">University of Waterloo</span>
+            </div>
+            <div class="data-row">
+              <span class="data-key">PROGRAM</span>
+              <span class="data-value">Computer Engineering</span>
+            </div>
+            <div class="data-row">
+              <span class="data-key">MINOR</span>
+              <span class="data-value">Economics</span>
+            </div>
+            <div class="data-row">
+              <span class="data-key">GPA</span>
+              <span class="data-value">3.95</span>
+            </div>
+            <div class="data-row">
+              <span class="data-key">DESIGNATION</span>
+              <span class="data-value">Software Engineer</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. SYNC LOG (Experience) -->
+    <section id="synclog" class="section" data-reveal>
+      <span class="section-index" aria-hidden="true">02</span>
+      <h2><span class="eva-title">SYNC LOG</span></h2>
+      <ol class="synclog-timeline">
+        <li class="nerv-panel" data-reveal>
+          <div class="panel-header">
+            <span class="panel-label">Software Development Engineer Intern</span>
+            <span class="panel-code">SYNC 01</span>
+          </div>
+          <p class="synclog-company">Amazon</p>
+          <p class="synclog-dates">May 2026 &ndash; Present</p>
+          <p class="synclog-blurb">Deployment active.</p>
+        </li>
+        <li class="nerv-panel" data-reveal>
+          <div class="panel-header">
+            <span class="panel-label">AI Software Engineer, Evaluation Lead</span>
+            <span class="panel-code">SYNC 02</span>
+          </div>
+          <p class="synclog-company">Wat.ai (TRACE Subteam)</p>
+          <p class="synclog-dates">May 2026 &ndash; Present</p>
+          <p class="synclog-blurb">Deployment active.</p>
+        </li>
+        <li class="nerv-panel" data-reveal>
+          <div class="panel-header">
+            <span class="panel-label">Software Engineering Intern</span>
+            <span class="panel-code">SYNC 03</span>
+          </div>
+          <p class="synclog-company">Manulife Financial Corporation</p>
+          <p class="synclog-dates">Jan 2026 &ndash; Apr 2026</p>
+          <p class="synclog-blurb">Deployment complete.</p>
+        </li>
+        <li class="nerv-panel" data-reveal>
+          <div class="panel-header">
+            <span class="panel-label">Autonomy Software Developer</span>
+            <span class="panel-code">SYNC 04</span>
+          </div>
+          <p class="synclog-company">Waterloo Aerial Robotics Group</p>
+          <p class="synclog-dates">Sep 2025 &ndash; Present</p>
+          <p class="synclog-blurb">Deployment active.</p>
+        </li>
+        <li class="nerv-panel" data-reveal>
+          <div class="panel-header">
+            <span class="panel-label">Computer Support Specialist</span>
+            <span class="panel-code">SYNC 05</span>
+          </div>
+          <p class="synclog-company">C2C Development Holdings</p>
+          <p class="synclog-dates">May 2022 &ndash; Sep 2025</p>
+          <p class="synclog-blurb">Deployment complete.</p>
+        </li>
+        <li class="nerv-panel" data-reveal>
+          <div class="panel-header">
+            <span class="panel-label">Founder &amp; Operator</span>
+            <span class="panel-code">SYNC 06</span>
+          </div>
+          <p class="synclog-company">Custom Gaming Keyboards</p>
+          <p class="synclog-dates">Sep 2022 &ndash; Present</p>
+          <p class="synclog-blurb">Deployment active.</p>
+        </li>
+        <li class="nerv-panel" data-reveal>
+          <div class="panel-header">
+            <span class="panel-label">Build &amp; Design Team Planner</span>
+            <span class="panel-code">SYNC 07</span>
+          </div>
+          <p class="synclog-company">FRC Team 8089</p>
+          <p class="synclog-dates">High School</p>
+          <p class="synclog-blurb">Deployment complete.</p>
+        </li>
+      </ol>
+    </section>
+
+    <!-- 6. EVA UNITS (Projects) -->
+    <section id="eva-units" class="section" data-reveal>
+      <span class="section-index" aria-hidden="true">03</span>
+      <h2><span class="eva-title">EVA UNITS</span></h2>
+      <div class="eva-grid">
+        <article class="eva-card nerv-panel" data-reveal>
+          <div class="panel-header">
+            <span class="panel-label">EVA-01</span>
+            <span class="panel-code"><span class="status-nominal">NOMINAL</span></span>
+          </div>
+          <h3 class="eva-card-name">Reparo</h3>
+          <p class="eva-card-desc">Hack Canada 2026 Winner. Agentic AI with Gemini vision for product classification.</p>
+          <ul class="tags">
+            <li class="tag">Python</li>
+            <li class="tag">Gemini API</li>
+            <li class="tag">React</li>
+            <li class="tag">Node.js</li>
+            <li class="tag">Swift</li>
+            <li class="tag">PyTorch</li>
+          </ul>
+          <a class="link-cyan" href="https://karangupta.dev/project/reparo">DEPLOY &#9656;</a>
+        </article>
+
+        <article class="eva-card nerv-panel" data-reveal>
+          <div class="panel-header">
+            <span class="panel-label">EVA-02</span>
+            <span class="panel-code"><span class="status-nominal">NOMINAL</span></span>
+          </div>
+          <h3 class="eva-card-name">DeliriumWatch</h3>
+          <p class="eva-card-desc">Real-time hospital monitoring pipeline with OpenCV eye detection.</p>
+          <ul class="tags">
+            <li class="tag">Raspberry Pi</li>
+            <li class="tag">Arduino</li>
+            <li class="tag">Python</li>
+            <li class="tag">OpenCV</li>
+            <li class="tag">HTML</li>
+            <li class="tag">CSS</li>
+            <li class="tag">Flask</li>
+            <li class="tag">C/C++</li>
+          </ul>
+          <a class="link-cyan" href="https://karangupta.dev/project/deliriumwatch">DEPLOY &#9656;</a>
+        </article>
+
+        <article class="eva-card nerv-panel" data-reveal>
+          <div class="panel-header">
+            <span class="panel-label">EVA-03</span>
+            <span class="panel-code"><span class="status-nominal">NOMINAL</span></span>
+          </div>
+          <h3 class="eva-card-name">AI Admissions Similarity Tool</h3>
+          <p class="eva-card-desc">Scrapes admissions data, computes similarity scores.</p>
+          <ul class="tags">
+            <li class="tag">Python</li>
+            <li class="tag">PRAW</li>
+            <li class="tag">MongoDB</li>
+          </ul>
+          <a class="link-cyan" href="https://karangupta.dev/project/ai-admissions">DEPLOY &#9656;</a>
+        </article>
+
+        <article class="eva-card nerv-panel" data-reveal>
+          <div class="panel-header">
+            <span class="panel-label">EVA-04</span>
+            <span class="panel-code"><span class="status-nominal">NOMINAL</span></span>
+          </div>
+          <h3 class="eva-card-name">TailorAI (Silhouette)</h3>
+          <p class="eva-card-desc">Full-stack AI body-measurement platform.</p>
+          <ul class="tags">
+            <li class="tag">Python</li>
+            <li class="tag">TensorFlow</li>
+            <li class="tag">scikit-learn</li>
+            <li class="tag">OpenCV</li>
+            <li class="tag">Node.js</li>
+            <li class="tag">React</li>
+            <li class="tag">MongoDB</li>
+          </ul>
+          <a class="link-cyan" href="https://karangupta.dev/project/silhouette">DEPLOY &#9656;</a>
+        </article>
+
+        <article class="eva-card nerv-panel" data-reveal>
+          <div class="panel-header">
+            <span class="panel-label">EVA-05</span>
+            <span class="panel-code"><span class="status-nominal">NOMINAL</span></span>
+          </div>
+          <h3 class="eva-card-name">Spotify Pi Thing</h3>
+          <p class="eva-card-desc">Standalone Raspberry Pi Spotify controller with touchscreen.</p>
+          <ul class="tags">
+            <li class="tag">Raspberry Pi</li>
+            <li class="tag">Python 3</li>
+            <li class="tag">FastAPI</li>
+            <li class="tag">Spotipy</li>
+            <li class="tag">JS</li>
+          </ul>
+          <a class="link-cyan" href="https://karangupta.dev/project/spotify-pi">DEPLOY &#9656;</a>
+        </article>
+      </div>
+    </section>
+
+    <!-- 7. MAGI SYSTEM (Skills) -->
+    <section id="magi" class="section" data-reveal>
+      <span class="section-index" aria-hidden="true">04</span>
+      <h2><span class="eva-title">MAGI SYSTEM</span></h2>
+      <p class="stamp magi-caution">CAUTION — MAGI DELIBERATION IN PROGRESS</p>
+      <div class="hazard-stripe magi-hazard" aria-hidden="true"></div>
+      <p class="magi-central" aria-hidden="true">CENTRAL DOGMA</p>
+      <div class="magi-grid">
+        <article class="magi-unit" id="magi-melchior" data-reveal>
+          <div class="magi-header">
+            <span class="magi-name">MELCHIOR&middot;1</span>
+            <span class="jp magi-gloss">科学者</span>
+            <span class="magi-role">Scientist</span>
+          </div>
+          <div class="magi-status" aria-live="polite"><span class="status-nominal">NOMINAL</span></div>
+          <div class="magi-body">
+            <h3 class="magi-category">LANGUAGES</h3>
+            <ul class="tags magi-tags">
+              <li class="tag">Python</li>
+              <li class="tag">Java</li>
+              <li class="tag">C</li>
+              <li class="tag">C++</li>
+              <li class="tag">Swift</li>
+              <li class="tag">TypeScript</li>
+              <li class="tag">JavaScript</li>
+              <li class="tag">SQL</li>
+              <li class="tag">Apex</li>
+              <li class="tag">HTML</li>
+              <li class="tag">CSS</li>
+              <li class="tag">VBA</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="magi-unit" id="magi-balthasar" data-reveal>
+          <div class="magi-header">
+            <span class="magi-name">BALTHASAR&middot;2</span>
+            <span class="jp magi-gloss">母</span>
+            <span class="magi-role">Mother</span>
+          </div>
+          <div class="magi-status" aria-live="polite"><span class="status-nominal">NOMINAL</span></div>
+          <div class="magi-body">
+            <h3 class="magi-category">FRAMEWORKS</h3>
+            <ul class="tags magi-tags">
+              <li class="tag">PyTorch</li>
+              <li class="tag">TensorFlow</li>
+              <li class="tag">scikit-learn</li>
+              <li class="tag">RAG</li>
+              <li class="tag">React</li>
+              <li class="tag">Node.js</li>
+              <li class="tag">Flask</li>
+              <li class="tag">FastAPI</li>
+              <li class="tag">OpenCV2</li>
+              <li class="tag">REST API</li>
+              <li class="tag">PyMAVLink</li>
+              <li class="tag">NumPy</li>
+              <li class="tag">JUnit</li>
+              <li class="tag">Dagger</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="magi-unit" id="magi-casper" data-reveal>
+          <div class="magi-header">
+            <span class="magi-name">CASPER&middot;3</span>
+            <span class="jp magi-gloss">女</span>
+            <span class="magi-role">Woman</span>
+          </div>
+          <div class="magi-status" aria-live="polite"><span class="status-nominal">NOMINAL</span></div>
+          <div class="magi-body">
+            <h3 class="magi-category">TOOLS &amp; CLOUD</h3>
+            <ul class="tags magi-tags">
+              <li class="tag">Git</li>
+              <li class="tag">GitHub</li>
+              <li class="tag">Docker</li>
+              <li class="tag">VS Code</li>
+              <li class="tag">AWS (S3, SQS, SNS)</li>
+              <li class="tag">Salesforce</li>
+              <li class="tag">Postman</li>
+              <li class="tag">Kubernetes</li>
+              <li class="tag">Xcode</li>
+              <li class="tag">MongoDB</li>
+              <li class="tag">SQL</li>
+            </ul>
+          </div>
+        </article>
+      </div>
+      <button id="magi-run" type="button">DELIBERATE</button>
+    </section>
+
+    <!-- 8. COMMENDATIONS (Awards) -->
+    <section id="commendations" class="section" data-reveal>
+      <span class="section-index" aria-hidden="true">05</span>
+      <h2><span class="eva-title">COMMENDATIONS</span></h2>
+      <ul class="commendations-grid">
+        <li class="nerv-panel commendation" data-reveal>Valedictorian</li>
+        <li class="nerv-panel commendation" data-reveal>1st &mdash; Euclid Math Contest (School Medal)</li>
+        <li class="nerv-panel commendation" data-reveal>1st &mdash; Amazon Robotics Hackathon</li>
+        <li class="nerv-panel commendation" data-reveal>Bronze &mdash; Chess AI Bot, Waterloo Tech Week</li>
+        <li class="nerv-panel commendation" data-reveal>Governor General's Academic Award</li>
+        <li class="nerv-panel commendation" data-reveal>1st &mdash; Hack Canada 2026, Reactiv Track ($5,000)</li>
+        <li class="nerv-panel commendation" data-reveal>Shortlisted &mdash; Most Complex AI Hack, Hack Canada 2026</li>
+      </ul>
+    </section>
+
+    <!-- 9. OFFLINE RECORDS (Personal) -->
+    <section id="offline" class="section" data-reveal>
+      <span class="section-index" aria-hidden="true">06</span>
+      <h2><span class="eva-title">OFFLINE RECORDS</span></h2>
+      <div class="offline-grid">
+        <article class="nerv-panel" data-reveal>
+          <div class="panel-header">
+            <span class="panel-label">FILM</span>
+            <span class="panel-code">REC-01</span>
+          </div>
+          <p>Film enthusiast. Logs on <a class="link-cyan" href="https://letterboxd.com/Exoxeon/">Letterboxd</a>.</p>
+        </article>
+        <article class="nerv-panel" data-reveal>
+          <div class="panel-header">
+            <span class="panel-label">MUSIC</span>
+            <span class="panel-code">REC-02</span>
+          </div>
+          <p>Into rage, EDM, Hyperpop. Charts on <a class="link-cyan" href="https://albumoftheyear.org/user/exoxoen/">AOTY</a>.</p>
+        </article>
+        <article class="nerv-panel" data-reveal>
+          <div class="panel-header">
+            <span class="panel-label">KEYBOARDS &amp; PC BUILDING</span>
+            <span class="panel-code">REC-03</span>
+          </div>
+          <p>35+ custom boards.</p>
+          <div class="data-row">
+            <span class="data-key">CASE</span>
+            <span class="data-value">NZXT H6 Flow</span>
+          </div>
+          <div class="data-row">
+            <span class="data-key">CPU</span>
+            <span class="data-value">13600KF</span>
+          </div>
+          <div class="data-row">
+            <span class="data-key">GPU</span>
+            <span class="data-value">9070XT</span>
+          </div>
+          <div class="data-row">
+            <span class="data-key">MEMORY</span>
+            <span class="data-value">Vengeance 7000MHz CL34</span>
+          </div>
+        </article>
+        <article class="nerv-panel" data-reveal>
+          <div class="panel-header">
+            <span class="panel-label">MISC</span>
+            <span class="panel-code">REC-04</span>
+          </div>
+          <p>Also into manga, martial arts, motorsports.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- 10. TRANSMISSION (Contact) -->
+    <section id="transmission" class="section" data-reveal>
+      <span class="section-index" aria-hidden="true">07</span>
+      <h2><span class="eva-title">TRANSMISSION</span></h2>
+      <div class="nerv-panel terminal" data-reveal>
+        <div class="panel-header">
+          <span class="panel-label">TERMINAL</span>
+          <span class="panel-code">CONTACT</span>
+        </div>
+        <pre id="terminal-output" aria-live="polite">PILOT-EXO CONTACT TERMINAL // awaiting command...</pre>
+        <div class="terminal-prompt">
+          <span class="terminal-cursor">$ </span><span class="blink" aria-hidden="true">&#9608;</span>
+        </div>
+        <div class="terminal-commands">
+          <button type="button" data-cmd="mail">mail</button>
+          <button type="button" data-cmd="linkedin">open linkedin</button>
+          <button type="button" data-cmd="github">open github</button>
+          <button type="button" data-cmd="resume">open resume</button>
+        </div>
+      </div>
+      <ul class="raw-links">
+        <li><a class="link-cyan" href="mailto:k79gupta@uwaterloo.ca">k79gupta@uwaterloo.ca</a></li>
+        <li><a class="link-cyan" href="https://linkedin.com/in/karan-gupta-2b72a735a/">LinkedIn</a></li>
+        <li><a class="link-cyan" href="https://github.com/Karan-Gupta07">GitHub</a></li>
+        <li><a class="link-cyan" href="KaranGuptaResume.pdf">Resume</a></li>
+        <li>Discord: <span class="data-value">exo1k</span></li>
+      </ul>
+    </section>
+  </main>
+
+  <!-- 11. FOOTER -->
+  <footer>
+    <p>&copy; 2026 Karan Gupta &middot; <span class="footer-brand">KARAN</span></p>
+    <p class="footer-tagline">ADVANCING BEYOND</p>
+  </footer>
+</body>
+</html>
