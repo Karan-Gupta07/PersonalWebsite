@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MAGI NAV // VARIANT C — MAXIMAL</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@900&family=JetBrains+Mono:wght@400;700&family=Saira+Semi+Condensed:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --void:#000000;
+  --panel:#060807;
+  --nerv-orange:#FF9830;
+  --data-green:#50FF50;
+  --wire-cyan:#20F0FF;
+  --alert-red:#FF3030;
+  --warn-amber:#FFB800;
+  --steel:#D8D8D0;
+  --steel-dim:#6b6f68;
+  --idle-cyan:#5BB6C4;   /* muted steel-cyan node fill (REFERENCE §states) */
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+html,body{background:var(--void);color:var(--steel);font-family:'JetBrains Mono',monospace;}
+
+body{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  /* faint green grid — "black void is default" */
+  background-color:var(--void);
+  background-image:
+    linear-gradient(rgba(80,255,80,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(80,255,80,0.05) 1px, transparent 1px);
+  background-size:48px 48px;
+}
+
+/* ============ CONSOLE FRAME ============ */
+.console{
+  position:relative;
+  width:1200px;
+  height:800px;
+  background:var(--void);
+  border:1px solid rgba(255,152,48,0.35);
+  overflow:hidden;
+  /* boot flicker on load */
+  animation:boot-in 1.1s ease-out both;
+}
+@keyframes boot-in{
+  0%{opacity:0;filter:brightness(0.2)}
+  8%{opacity:1;filter:brightness(2.4)}
+  12%{opacity:.35}
+  18%{opacity:1;filter:brightness(1)}
+  22%{opacity:.6}
+  30%{opacity:1}
+  100%{opacity:1;filter:none}
+}
+
+/* corner brackets on the console */
+.console::before,.console::after{
+  content:"";position:absolute;width:26px;height:26px;pointer-events:none;
+  border-color:var(--nerv-orange);
+}
+.console::before{top:8px;left:8px;border-top:2px solid var(--nerv-orange);border-left:2px solid var(--nerv-orange)}
+.console::after{bottom:8px;right:8px;border-bottom:2px solid var(--nerv-orange);border-right:2px solid var(--nerv-orange)}
+
+/* ============ TYPOGRAPHY HELPERS ============ */
+.eva-title{font-family:'Noto Serif JP',serif;font-weight:900;display:inline-block;transform:scaleX(0.8)}
+.jp{font-family:'Noto Serif JP',serif;font-weight:900}
+.label{font-family:'Saira Semi Condensed',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.18em}
+
+/* ============ TOP-LEFT READOUT STACK ============ */
+.readout{
+  position:absolute;top:22px;left:26px;z-index:6;
+  color:var(--nerv-orange);
+  font-weight:700;line-height:1.5;
+  text-shadow:0 0 6px rgba(255,152,48,0.35);
+}
+.readout .code{font-size:30px;letter-spacing:.05em;display:block;margin-bottom:2px}
+.readout .rl{font-size:12px;letter-spacing:.14em;display:block;opacity:.92}
+.readout .rl .dim{color:var(--steel-dim)}
+
+/* ============ CORNER KANJI + GREEN DOUBLE-RULE ============ */
+.corner-kanji{position:absolute;top:20px;z-index:6;text-align:center}
+.corner-kanji .rule{
+  width:74px;height:0;border-top:1px solid var(--data-green);
+  box-shadow:0 3px 0 -0.5px var(--data-green); /* second rule below */
+  margin:0 auto 8px;
+}
+.corner-kanji .k{
+  font-family:'Noto Serif JP',serif;font-weight:900;font-size:34px;
+  color:var(--nerv-orange);line-height:1;
+  text-shadow:0 0 8px rgba(255,152,48,0.4);
+}
+.corner-kanji .romaji{
+  display:block;margin-top:5px;font-size:9px;letter-spacing:.24em;
+  color:var(--steel-dim);text-transform:uppercase;
+}
+.ck-left{left:210px}
+.ck-right{right:190px}
+
+/* ============ RIGHT-SIDE STATUS BOX ============ */
+.status-box{
+  position:absolute;top:96px;right:26px;z-index:6;
+  width:118px;text-align:center;padding:12px 8px;
+  border:2px solid var(--wire-cyan);
+  color:var(--wire-cyan);
+  box-shadow:0 0 12px rgba(32,240,255,0.18), inset 0 0 12px rgba(32,240,255,0.08);
+}
+.status-box .sb-k{font-family:'Noto Serif JP',serif;font-weight:900;font-size:26px;line-height:1;display:block}
+.status-box .sb-l{display:block;margin-top:8px;font-size:9px;letter-spacing:.2em;text-transform:uppercase}
+.status-box .sb-code{display:block;margin-top:6px;font-size:9px;color:var(--steel-dim);letter-spacing:.14em}
+
+/* ============ CENTER TITLE ============ */
+.hub-title{
+  position:absolute;top:64px;left:50%;transform:translateX(-50%);z-index:5;
+  text-align:center;
+}
+.hub-title .t{
+  font-family:'Noto Serif JP',serif;font-weight:900;font-size:26px;
+  color:var(--nerv-orange);letter-spacing:.02em;
+  text-shadow:0 0 10px rgba(255,152,48,0.4);
+}
+.hub-title .sub{
+  display:block;margin-top:4px;
+  font-family:'Saira Semi Condensed',sans-serif;font-weight:700;
+  text-transform:uppercase;letter-spacing:.42em;font-size:10px;color:var(--steel-dim);
+}
+
+/* ============ TRIANGLE NAV STAGE ============ */
+.stage{
+  position:absolute;inset:0;z-index:4;
+  display:flex;align-items:center;justify-content:center;
+}
+.magi-diagram{
+  position:relative;
+  width:640px;height:470px;
+  margin-top:30px;
+}
+
+/* SVG connector layer sits behind the nodes */
+.wires{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none;z-index:1}
+.wire{
+  stroke-linecap:butt;
+  transition:stroke .25s, filter .25s, stroke-width .25s;
+}
+
+/* central KARAN leaf node */
+.karan{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  z-index:3;
+  width:118px;height:118px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:var(--void);
+  border:2px solid var(--nerv-orange);
+  clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%); /* diamond leaf */
+  color:var(--nerv-orange);
+  box-shadow:0 0 18px rgba(255,152,48,0.25);
+}
+.karan .kj{font-family:'Noto Serif JP',serif;font-weight:900;font-size:22px;line-height:1}
+.karan .knm{font-size:8px;letter-spacing:.2em;margin-top:3px;color:var(--steel)}
+
+/* the three navigation nodes (trapezoids) */
+.node{
+  position:absolute;z-index:2;
+  width:220px;height:118px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-decoration:none;
+  background:rgba(91,182,196,0.14);   /* muted steel-cyan idle fill */
+  border:2px solid var(--idle-cyan);
+  color:var(--steel);
+  outline-offset:4px;
+  transition:background .22s, border-color .22s, box-shadow .22s, transform .22s;
+}
+.node .n-code{
+  font-family:'JetBrains Mono',monospace;font-weight:700;font-size:10px;
+  letter-spacing:.16em;color:var(--idle-cyan);margin-bottom:6px;
+}
+.node .n-name{
+  font-family:'Saira Semi Condensed',sans-serif;font-weight:700;
+  font-size:26px;letter-spacing:.06em;text-transform:uppercase;color:var(--steel);
+  line-height:1;
+}
+.node .n-count{
+  margin-top:8px;font-size:10px;letter-spacing:.16em;color:var(--steel-dim);
+  text-transform:uppercase;
+}
+.node .n-jp{
+  font-family:'Noto Serif JP',serif;font-weight:900;font-size:12px;
+  color:var(--idle-cyan);margin-top:4px;
+}
+
+/* BALTHASAR-top arrangement: PROJECTS top-center (home-plate down pentagon feel),
+   EXPERIENCE bottom-left trapezoid, SKILLS bottom-right trapezoid */
+.node.top{
+  top:-8px;left:50%;transform:translateX(-50%);
+  clip-path:polygon(6% 0,94% 0,100% 62%,50% 100%,0 62%); /* downward pentagon */
+}
+.node.left{
+  bottom:0;left:0;
+  clip-path:polygon(0 0,100% 0,86% 100%,0 100%); /* right edge angles up toward center */
+}
+.node.right{
+  bottom:0;right:0;
+  clip-path:polygon(0 0,100% 0,100% 100%,14% 100%); /* left edge angles up toward center */
+}
+
+/* hover / focus: light cyan + pulse */
+.node:hover,.node:focus-visible{
+  background:rgba(32,240,255,0.20);
+  border-color:var(--wire-cyan);
+  color:#fff;
+  box-shadow:0 0 22px rgba(32,240,255,0.5), inset 0 0 18px rgba(32,240,255,0.12);
+}
+.node:hover .n-name,.node:focus-visible .n-name{color:#fff}
+.node:hover .n-code,.node:focus-visible .n-code,
+.node:hover .n-jp,.node:focus-visible .n-jp{color:var(--wire-cyan)}
+.node:focus-visible{
+  outline:2px solid var(--wire-cyan);
+}
+
+/* connector pulse when a node is active */
+.wire.active{
+  stroke:var(--wire-cyan) !important;
+  stroke-width:9 !important;
+  filter:drop-shadow(0 0 6px var(--wire-cyan));
+  animation:wire-pulse .9s ease-in-out infinite;
+}
+@keyframes wire-pulse{
+  0%,100%{opacity:.55}
+  50%{opacity:1}
+}
+
+/* small node index label bleeding under each node */
+.node-idx{
+  position:absolute;font-family:'Noto Serif JP',serif;font-weight:900;
+  font-size:52px;color:rgba(255,152,48,0.10);z-index:1;pointer-events:none;
+}
+
+/* ============ BOTTOM TERMINAL STRIP ============ */
+.terminal-strip{
+  position:absolute;bottom:34px;left:26px;right:26px;z-index:6;
+  border-top:1px solid rgba(255,152,48,0.4);
+  padding-top:10px;
+  display:flex;gap:36px;align-items:baseline;
+  font-size:12px;letter-spacing:.08em;
+}
+.terminal-strip .ts-lbl{color:var(--nerv-orange);font-weight:700;text-transform:lowercase}
+.terminal-strip .dots{color:var(--steel-dim);letter-spacing:.28em}
+.terminal-strip .q{color:var(--data-green)}
+.terminal-strip .cursor{
+  display:inline-block;width:8px;height:14px;background:var(--data-green);
+  vertical-align:-2px;margin-left:2px;animation:blink 1.05s step-end infinite;
+}
+@keyframes blink{50%{opacity:0}}
+
+/* ============ SCANLINES + FLICKER ============ */
+.scanlines{
+  position:absolute;inset:0;z-index:20;pointer-events:none;
+  background:repeating-linear-gradient(
+    to bottom,
+    rgba(0,0,0,0) 0px,
+    rgba(0,0,0,0) 2px,
+    rgba(0,0,0,0.10) 3px,
+    rgba(0,0,0,0.10) 4px
+  );
+}
+.vignette{
+  position:absolute;inset:0;z-index:19;pointer-events:none;
+  background:radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.75) 100%);
+}
+.flicker{
+  position:absolute;inset:0;z-index:21;pointer-events:none;background:#000;opacity:0;
+  animation:flick 5s steps(1) infinite;
+}
+@keyframes flick{
+  0%,100%{opacity:0}
+  49.5%{opacity:0}
+  49.7%{opacity:0.05}
+  50%{opacity:0}
+  93%{opacity:0}
+  93.4%{opacity:0.04}
+  93.7%{opacity:0}
+}
+
+/* ============ VARIANT CAPTION ============ */
+.variant-caption{
+  position:absolute;bottom:10px;left:50%;transform:translateX(-50%);z-index:22;
+  font-family:'Saira Semi Condensed',sans-serif;font-weight:700;
+  text-transform:uppercase;letter-spacing:.32em;font-size:10px;
+  color:var(--steel-dim);
+}
+.variant-caption b{color:var(--nerv-orange)}
+
+/* ============ REDUCED MOTION ============ */
+@media (prefers-reduced-motion: reduce){
+  .console{animation:none}
+  .flicker{animation:none;opacity:0}
+  .wire.active{animation:none}
+  .terminal-strip .cursor{animation:none}
+}
+</style>
+</head>
+<body>
+<main class="console" role="application" aria-label="MAGI navigation console">
+
+  <!-- scanline + flicker + vignette overlays -->
+  <div class="vignette" aria-hidden="true"></div>
+  <div class="scanlines" aria-hidden="true"></div>
+  <div class="flicker" aria-hidden="true"></div>
+
+  <!-- TOP-LEFT READOUT STACK -->
+  <div class="readout" aria-hidden="true">
+    <span class="code">CODE:473</span>
+    <span class="rl">FILE:<span>MAGI_SYS</span></span>
+    <span class="rl">EXT:<span>9138</span></span>
+    <span class="rl">EX_MODE:<span class="dim">OFF</span></span>
+    <span class="rl">PRIORITY:<span>AAA</span></span>
+  </div>
+
+  <!-- CORNER KANJI PAIRS UNDER GREEN DOUBLE-RULES -->
+  <div class="corner-kanji ck-left" aria-hidden="true">
+    <div class="rule"></div>
+    <div class="k jp">提訴</div>
+    <span class="romaji">TEISO</span>
+  </div>
+  <div class="corner-kanji ck-right" aria-hidden="true">
+    <div class="rule"></div>
+    <div class="k jp">決議</div>
+    <span class="romaji">KETSUGI</span>
+  </div>
+
+  <!-- RIGHT-SIDE STATUS BOX (情報 / idle / cyan) -->
+  <div class="status-box" aria-hidden="true">
+    <span class="sb-k jp">情報</span>
+    <span class="sb-l">Information</span>
+    <span class="sb-code">STATUS // IDLE</span>
+  </div>
+
+  <!-- CENTER TITLE -->
+  <div class="hub-title">
+    <span class="t jp">MAGI</span>
+    <span class="sub">Navigation Array</span>
+  </div>
+
+  <!-- TRIANGLE NAV STAGE -->
+  <nav class="stage" aria-label="Primary navigation">
+    <div class="magi-diagram">
+
+      <!-- connector wires (behind nodes) -->
+      <svg class="wires" viewBox="0 0 640 470" preserveAspectRatio="none" aria-hidden="true">
+        <!-- orange connector bars: node center -> KARAN center (320,235) -->
+        <line id="wire-top"   class="wire" x1="320" y1="118" x2="320" y2="196" stroke="#FF9830" stroke-width="7"/>
+        <line id="wire-left"  class="wire" x1="150" y1="400" x2="290" y2="270" stroke="#FF9830" stroke-width="7"/>
+        <line id="wire-right" class="wire" x1="490" y1="400" x2="350" y2="270" stroke="#FF9830" stroke-width="7"/>
+      </svg>
+
+      <!-- faint index numerals -->
+      <span class="node-idx" style="top:-14px;left:50%;transform:translateX(-50%)">01</span>
+      <span class="node-idx" style="bottom:70px;left:6px">02</span>
+      <span class="node-idx" style="bottom:70px;right:6px">03</span>
+
+      <!-- central KARAN leaf node -->
+      <div class="karan" aria-hidden="true">
+        <span class="kj">絢</span>
+        <span class="knm">KARAN</span>
+      </div>
+
+      <!-- TOP node: PROJECTS -->
+      <a class="node top" href="#eva-units" data-wire="wire-top" aria-label="Projects — 5 units">
+        <span class="n-code">EVA-UNITS</span>
+        <span class="n-name">Projects</span>
+        <span class="n-count">05 Units</span>
+        <span class="n-jp" aria-hidden="true">計画</span>
+      </a>
+
+      <!-- LEFT node: EXPERIENCE -->
+      <a class="node left" href="#synclog" data-wire="wire-left" aria-label="Experience — 7 records">
+        <span class="n-code">SYNC-LOG</span>
+        <span class="n-name">Experience</span>
+        <span class="n-count">07 Records</span>
+        <span class="n-jp" aria-hidden="true">記録</span>
+      </a>
+
+      <!-- RIGHT node: SKILLS -->
+      <a class="node right" href="#magi" data-wire="wire-right" aria-label="Skills — 38 modules">
+        <span class="n-code">MAGI-CORE</span>
+        <span class="n-name">Skills</span>
+        <span class="n-count">38 Modules</span>
+        <span class="n-jp" aria-hidden="true">技能</span>
+      </a>
+
+    </div>
+  </nav>
+
+  <!-- BOTTOM TERMINAL STRIP -->
+  <div class="terminal-strip">
+    <span><span class="ts-lbl">access code:</span> <span class="dots">••••••••••</span></span>
+    <span><span class="ts-lbl">question:</span> <span class="q">select destination node</span><span class="cursor" aria-hidden="true"></span></span>
+  </div>
+
+  <!-- VARIANT CAPTION -->
+  <div class="variant-caption">Nav Variant <b>C</b> · Maximal — Full MAGI Console</div>
+
+</main>
+
+<script>
+(function(){
+  var nodes = document.querySelectorAll('.node');
+  function setWire(node, on){
+    var id = node.getAttribute('data-wire');
+    var w = document.getElementById(id);
+    if(w){ w.classList.toggle('active', on); }
+  }
+  nodes.forEach(function(n){
+    n.addEventListener('mouseenter', function(){ setWire(n, true); });
+    n.addEventListener('mouseleave', function(){ setWire(n, false); });
+    n.addEventListener('focus',      function(){ setWire(n, true); });
+    n.addEventListener('blur',       function(){ setWire(n, false); });
+  });
+})();
+</script>
+</body>
+</html>

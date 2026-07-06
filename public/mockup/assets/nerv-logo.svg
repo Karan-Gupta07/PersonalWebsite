@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 120" width="300" height="120" role="img" aria-label="KARAN">
+  <title>KARAN</title>
+  <g fill="#FF9830">
+    <!-- Seven-veined half-leaf emblem (the iconic NERV silhouette) behind the wordmark -->
+    <g transform="translate(150 44)">
+      <path d="M0 -34
+               C 34 -30 58 -8 60 26
+               C 42 22 20 24 4 30
+               C 1 31 0 32 0 34
+               Z"/>
+      <path d="M0 -34
+               C -34 -30 -58 -8 -60 26
+               C -42 22 -20 24 -4 30
+               C -1 31 0 32 0 34
+               Z"/>
+      <!-- Veins carved as negative space over the leaf halves -->
+      <g fill="#000000">
+        <path d="M2 -8 L40 4 L40 8 L2 -4 Z"/>
+        <path d="M2 4 L36 16 L36 20 L2 8 Z"/>
+        <path d="M2 16 L30 26 L30 30 L2 20 Z"/>
+        <path d="M-2 -8 L-40 4 L-40 8 L-2 -4 Z"/>
+        <path d="M-2 4 L-36 16 L-36 20 L-2 8 Z"/>
+        <path d="M-2 16 L-30 26 L-30 30 L-2 20 Z"/>
+        <rect x="-1.5" y="-30" width="3" height="60"/>
+      </g>
+    </g>
+    <!-- Bold KARAN wordmark -->
+    <g transform="translate(0 106)">
+      <!-- K -->
+      <path d="M20 0 V-46 H31 V-28 L48 -46 H62 L42 -25 L63 0 H49 L34 -18 L31 -15 V0 Z"/>
+      <!-- A -->
+      <path d="M70 0 L88 -46 H100 L118 0 H106 L102 -11 H86 L82 0 Z
+               M89 -21 H99 L94 -35 Z"/>
+      <!-- R -->
+      <path d="M126 0 V-46 H152 C163 -46 169 -40 169 -31 C169 -24 165 -19 158 -17 L171 0 H158 L147 -15 H137 V0 Z
+               M137 -24 H150 C154 -24 157 -27 157 -31 C157 -35 154 -37 150 -37 H137 Z"/>
+      <!-- A -->
+      <path d="M176 0 L194 -46 H206 L224 0 H212 L208 -11 H192 L188 0 Z
+               M195 -21 H205 L200 -35 Z"/>
+      <!-- N -->
+      <path d="M232 0 V-46 H243 L262 -19 V-46 H273 V0 H262 L243 -27 V0 Z"/>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="KARAN">
+  <title>KARAN</title>
+  <g fill="#FF9830">
+    <!-- Simplified single-glyph half-leaf mark -->
+    <g transform="translate(32 30)">
+      <path d="M0 -26
+               C 26 -22 44 -4 46 22
+               C 32 18 14 20 3 24
+               C 1 25 0 26 0 27
+               Z"/>
+      <path d="M0 -26
+               C -26 -22 -44 -4 -46 22
+               C -32 18 -14 20 -3 24
+               C -1 25 0 26 0 27
+               Z"/>
+      <g fill="#000000">
+        <rect x="-1.5" y="-24" width="3" height="51"/>
+        <path d="M2 -4 L30 6 L30 9 L2 -1 Z"/>
+        <path d="M2 9 L24 18 L24 21 L2 12 Z"/>
+        <path d="M-2 -4 L-30 6 L-30 9 L-2 -1 Z"/>
+        <path d="M-2 9 L-24 18 L-24 21 L-2 12 Z"/>
+      </g>
+    </g>
+  </g>
+</svg>
