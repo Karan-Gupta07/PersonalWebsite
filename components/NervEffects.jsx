@@ -580,8 +580,12 @@ export default function NervEffects() {
           const res = await fetch('/api/spotify');
           if (!res.ok) { el.textContent = 'STATUS // OFFLINE'; return; }
           const data = await res.json();
-          if (data.isPlaying && data.title) {
-            el.textContent = 'NOW LISTENING TO ' + data.title + (data.artist ? ' - ' + data.artist : '');
+          if (data.title) {
+            if (data.isPlaying) {
+              el.textContent = 'NOW LISTENING TO ' + data.title + (data.artist ? ' - ' + data.artist : '');
+            } else {
+              el.textContent = 'LAST PLAYED ' + data.title + (data.artist ? ' - ' + data.artist : '');
+            }
           } else {
             el.textContent = 'STATUS // OFFLINE';
           }
