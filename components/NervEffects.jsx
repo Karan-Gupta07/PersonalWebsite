@@ -569,7 +569,7 @@ export default function NervEffects() {
     })();
 
     // =====================================================================
-    // 8) SPOTIFY NOW PLAYING (text-only into #spotify-text)
+    // 11) SPOTIFY NOW PLAYING (text-only into #spotify-text)
     // =====================================================================
     (function spotifyStatus() {
       const el = $('#spotify-text');

@@ -117,10 +117,19 @@ export default function Terminal() {
       } else if (cmd === 'mail') {
         window.location.href = 'mailto:k79gupta@uwaterloo.ca';
         out = 'Opening mail client...';
+      } else if (cmd === '!angel' || cmd === 'alert') {
+        const root = document.documentElement;
+        if (root.getAttribute('data-mode') === 'emergency') {
+          root.removeAttribute('data-mode');
+          out = 'CONDITION ONE rescinded. Systems nominal.';
+        } else {
+          root.setAttribute('data-mode', 'emergency');
+          out = 'WARNING: CONDITION ONE ENGAGED. BATTLE STATIONS.';
+        }
       } else if (cmd.startsWith('sudo ')) {
         out = 'pilot is not in the sudoers file. This incident will be reported to MAGI.';
       } else if (cmd === 'help' || cmd === '!help') {
-        out = 'whoami, ls, clear, resume, contact, mail, github, linkedin, !game, !movie, !artist, !pc, !keyboard, !anime, !manga, !song, !socials';
+        out = 'whoami, ls, clear, resume, contact, mail, github, linkedin, !angel, !game, !movie, !artist, !pc, !keyboard, !anime, !manga, !song, !socials';
       } else {
         out = `command not found: ${escapeHtml(val)}. Type help.`;
       }
