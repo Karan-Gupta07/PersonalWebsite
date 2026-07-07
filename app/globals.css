@@ -1566,7 +1566,7 @@ footer .footer-tagline {
 /* ---- right-side status box (tracks selection state) ---- */
 .mc-status {
   position: absolute; top: 92px; right: 24px; z-index: 6;
-  width: 116px; text-align: center; padding: 12px 8px;
+  width: auto; min-width: 116px; max-width: 240px; text-align: center; padding: 12px 8px;
   border: 2px solid var(--wire-cyan); color: var(--wire-cyan);
   box-shadow: 0 0 12px rgba(32,240,255,0.18), inset 0 0 12px rgba(32,240,255,0.08);
   transition: color .3s, border-color .3s, box-shadow .3s;
@@ -1684,9 +1684,23 @@ footer .footer-tagline {
 /* ---- responsive: shrink furniture, stack on small screens ---- */
 @media (max-width: 720px) {
   .magi-console { height: calc(100vh - var(--nav-h)); min-height: 560px; }
-  .mc-kanji, .mc-status, .mc-title { display: none; }   /* de-clutter on mobile */
-  .mc-diagram { transform: scale(.82); margin-top: 0; }
-  .mc-readout { max-width: 60%; }
+  .mc-kanji, .mc-title { display: none; }   /* de-clutter on mobile */
+  .mc-status {
+    top: 60px; right: auto; left: 50%; transform: translateX(-50%);
+    width: auto; min-width: 160px; max-width: 90vw;
+    background: var(--void);
+  }
+  .mc-diagram { transform: scale(0.8); margin-top: 0; }
+  .mc-readout { max-width: 80%; }
+}
+@media (max-width: 600px) {
+  .mc-diagram { transform: scale(0.65); }
+}
+@media (max-width: 500px) {
+  .mc-diagram { transform: scale(0.55); }
+}
+@media (max-width: 400px) {
+  .mc-diagram { transform: scale(0.48); }
 }
 
 @media (prefers-reduced-motion: reduce) {
