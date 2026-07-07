@@ -20,6 +20,7 @@ async function getAccessToken() {
       grant_type: 'refresh_token',
       refresh_token: REFRESH_TOKEN,
     }),
+    cache: 'no-store',
   });
   return res.json();
 }
@@ -27,7 +28,7 @@ async function getAccessToken() {
 export async function GET() {
   const headers = {
     'Access-Control-Allow-Origin': '*',
-    'Cache-Control': 's-maxage=30, stale-while-revalidate=59',
+    'Cache-Control': 'no-store, max-age=0',
   };
 
   // If environment variables are missing (e.g. locally during initial setup),
@@ -45,6 +46,7 @@ export async function GET() {
     // Try currently playing first
     const npRes = await fetch(NOW_PLAYING_ENDPOINT, {
       headers: { Authorization: `Bearer ${access_token}` },
+      cache: 'no-store',
     });
 
     if (npRes.status === 200) {
@@ -68,6 +70,7 @@ export async function GET() {
     try {
       const rpRes = await fetch(RECENTLY_PLAYED_ENDPOINT, {
         headers: { Authorization: `Bearer ${access_token}` },
+        cache: 'no-store',
       });
 
       if (rpRes.status === 200) {

@@ -595,7 +595,7 @@ export default function NervEffects() {
       }
 
       fetchStatus();
-      addInterval(setInterval(fetchStatus, 30000));
+      addInterval(setInterval(fetchStatus, 15000));
     })();
 
     // =====================================================================
