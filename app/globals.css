@@ -1718,7 +1718,7 @@ footer .footer-tagline {
    ========================================================================== */
 .condition-one {
   display: none;
-  position: fixed;
+  position: sticky;
   top: var(--nav-h);
   left: 0;
   right: 0;

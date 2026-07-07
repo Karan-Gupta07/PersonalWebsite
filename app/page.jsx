@@ -16,19 +16,7 @@ export default function Home() {
       <div className="crt-flicker" aria-hidden="true"></div>
       <div className="scan-sweep" aria-hidden="true"></div>
 
-      {/* CONDITION ONE banner */}
-      <div className="condition-one" aria-hidden="true">
-        <div className="c1-stripe" aria-hidden="true"></div>
-        <div className="c1-body">
-          <span className="c1-warn">WARNING</span>
-          <span className="c1-mid">
-            <span className="c1-jp eva-title">第一種戦闘配置</span>
-            <span className="c1-en">BATTLE STATIONS - CONDITION ONE</span>
-          </span>
-          <span className="c1-warn">WARNING</span>
-        </div>
-        <div className="c1-stripe" aria-hidden="true"></div>
-      </div>
+
 
       {/* BOOT OVERLAY */}
       <div id="boot">
@@ -177,6 +165,20 @@ export default function Home() {
             <a className="mc-scroll link-cyan" href="#dossier" aria-label="Scroll to full dossier">SCROLL FOR FULL RECORD ▾</a>
           </div>
         </section>
+
+        {/* CONDITION ONE banner */}
+        <div className="condition-one" aria-hidden="true">
+          <div className="c1-stripe" aria-hidden="true"></div>
+          <div className="c1-body">
+            <span className="c1-warn">WARNING</span>
+            <span className="c1-mid">
+              <span className="c1-jp eva-title">第一種戦闘配置</span>
+              <span className="c1-en">BATTLE STATIONS - CONDITION ONE</span>
+            </span>
+            <span className="c1-warn">WARNING</span>
+          </div>
+          <div className="c1-stripe" aria-hidden="true"></div>
+        </div>
 
         {/* SYNC LOG (Experience) */}
         <section id="synclog" className="section" data-reveal>
