@@ -3,7 +3,7 @@ import { Analytics } from '@vercel/analytics/react';
 
 export const metadata = {
   title: 'KARAN GUPTA // PILOT-EXO',
-  description: 'Personal website of Karan Gupta — Software Engineer, Computer Engineering + Economics @ University of Waterloo.',
+  description: 'Personal website of Karan Gupta - Software Engineer, Computer Engineering + Economics @ University of Waterloo.',
 };
 
 export default function RootLayout({ children }) {

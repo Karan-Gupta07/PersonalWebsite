@@ -79,7 +79,7 @@ export default function Terminal() {
         setHistory([]);
         return;
       } else if (cmd === 'whoami') {
-        out = 'karan — swe @ amazon robotics / manulife';
+        out = 'karan - swe @ amazon robotics / manulife';
       } else if (cmd === 'ls') {
         out = 'experience/  projects/  skills/  contact/';
       } else if (cmd === 'resume') {

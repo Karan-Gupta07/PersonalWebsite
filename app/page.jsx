@@ -23,7 +23,7 @@ export default function Home() {
           <span className="c1-warn">WARNING</span>
           <span className="c1-mid">
             <span className="c1-jp eva-title">第一種戦闘配置</span>
-            <span className="c1-en">BATTLE STATIONS — CONDITION ONE</span>
+            <span className="c1-en">BATTLE STATIONS - CONDITION ONE</span>
           </span>
           <span className="c1-warn">WARNING</span>
         </div>
@@ -48,7 +48,7 @@ export default function Home() {
 
       {/* FIXED TOP NAV */}
       <nav id="nerv-nav">
-        <a className="nav-brand" href="#nav-hub" aria-label="KARAN — home">
+        <a className="nav-brand" href="#nav-hub" aria-label="KARAN - home">
           <img src="/nerv-logo.svg" alt="KARAN" width="28" height="28" />
           <span className="brand-name">KARAN</span>
         </a>
@@ -70,7 +70,7 @@ export default function Home() {
 
       <main>
         {/* NAV HUB */}
-        <section id="nav-hub" className="section" data-reveal aria-label="Karan Gupta — MAGI navigation">
+        <section id="nav-hub" className="section" data-reveal aria-label="Karan Gupta - MAGI navigation">
           <div className="magi-console">
             <div className="chevron-ladder" style={{top:'120px',bottom:'120px',left:'24px'}} aria-hidden="true"></div>
             <div className="chevron-ladder" style={{top:'120px',bottom:'120px',right:'24px'}} aria-hidden="true"></div>
@@ -132,7 +132,7 @@ export default function Home() {
                 </div>
 
                 {/* TOP node: PROJECTS */}
-                <a className="mc-node mc-top" href="#eva-units" data-wire="mc-wire-top" data-dest="PROJECTS" aria-label="Projects — 5 units">
+                <a className="mc-node mc-top" href="#eva-units" data-wire="mc-wire-top" data-dest="PROJECTS" aria-label="Projects - 5 units">
                   <svg className="mc-shape" viewBox="0 0 100 100" preserveAspectRatio="none">
                     <polygon points="6,2 94,2 98,62 50,98 2,62" />
                   </svg>
@@ -144,7 +144,7 @@ export default function Home() {
                 </a>
 
                 {/* LEFT node: EXPERIENCE */}
-                <a className="mc-node mc-left" href="#synclog" data-wire="mc-wire-left" data-dest="EXPERIENCE" aria-label="Experience — 7 records">
+                <a className="mc-node mc-left" href="#synclog" data-wire="mc-wire-left" data-dest="EXPERIENCE" aria-label="Experience - 7 records">
                   <svg className="mc-shape" viewBox="0 0 100 100" preserveAspectRatio="none">
                     <polygon points="2,2 98,2 84,98 2,98" />
                   </svg>
@@ -156,7 +156,7 @@ export default function Home() {
                 </a>
 
                 {/* RIGHT node: SKILLS */}
-                <a className="mc-node mc-right" href="#magi" data-wire="mc-wire-right" data-dest="SKILLS" aria-label="Skills — 38 modules">
+                <a className="mc-node mc-right" href="#magi" data-wire="mc-wire-right" data-dest="SKILLS" aria-label="Skills - 38 modules">
                   <svg className="mc-shape" viewBox="0 0 100 100" preserveAspectRatio="none">
                     <polygon points="2,2 98,2 98,98 16,98" />
                   </svg>
@@ -187,7 +187,7 @@ export default function Home() {
             <li className="nerv-panel" data-reveal>
               <div className="panel-header"><span className="panel-label">Software Development Engineer Intern</span><span className="panel-code">SYNC 01</span></div>
               <p className="synclog-company">Amazon</p>
-              <p className="synclog-dates">May 2026 – Present</p>
+              <p className="synclog-dates">May 2026 - Present</p>
               <ul className="synclog-blurb" style={{paddingLeft:'1.5rem',listStyleType:'square',marginTop:'8px'}}>
                 <li style={{marginBottom:'6px'}}>Reduced legacy service migration time by 98% (2 weeks → 1 hour per stage) by building multi-step AI agents using prompt chaining and CoT reasoning to automate Java architecture transformation across thousands of lines.</li>
                 <li style={{marginBottom:'6px'}}>Architected an agentic RAG pipeline with few-shot prompting to achieve 92% translation accuracy across legacy API calls, algorithm structures, and AWS cloud deployment patterns into modernized service frameworks.</li>
@@ -198,7 +198,7 @@ export default function Home() {
             <li className="nerv-panel" data-reveal>
               <div className="panel-header"><span className="panel-label">AI Software Engineer, Evaluation Lead</span><span className="panel-code">SYNC 02</span></div>
               <p className="synclog-company">Wat.ai (TRACE Subteam)</p>
-              <p className="synclog-dates">May 2026 – Present</p>
+              <p className="synclog-dates">May 2026 - Present</p>
               <ul className="synclog-blurb" style={{paddingLeft:'1.5rem',listStyleType:'square',marginTop:'8px'}}>
                 <li style={{marginBottom:'6px'}}>Engineered TRACE, an AI agent reliability engine that automates multi-step execution tracing and failure isolation, reducing root-cause diagnostic latency by 70% for complex RAG and tool-use workflows.</li>
                 <li style={{marginBottom:'6px'}}>Eliminated 95% of runtime non-determinism across 4 downstream production applications by architecting a canonical verifier interface and Pydantic schemas to enforce strict data contracts over subjective LLM logic.</li>
@@ -209,7 +209,7 @@ export default function Home() {
             <li className="nerv-panel" data-reveal>
               <div className="panel-header"><span className="panel-label">Software Engineering Intern</span><span className="panel-code">SYNC 03</span></div>
               <p className="synclog-company">Manulife Financial Corporation</p>
-              <p className="synclog-dates">Jan 2026 – Apr 2026</p>
+              <p className="synclog-dates">Jan 2026 - Apr 2026</p>
               <ul className="synclog-blurb" style={{paddingLeft:'1.5rem',listStyleType:'square',marginTop:'8px'}}>
                 <li style={{marginBottom:'6px'}}>Reduced system downtime risk by scripting a New Relic data exporter and architecting NRQL queries, enabling early detection of 3+ resource bottlenecks before system failure.</li>
                 <li style={{marginBottom:'6px'}}>Designed a Python analysis script and SQL telemetry pipeline to process clickstream data, identifying 20+ suspicious user anomalies by applying mathematical modeling and cross-referencing behavioral logs.</li>
@@ -220,7 +220,7 @@ export default function Home() {
             <li className="nerv-panel" data-reveal>
               <div className="panel-header"><span className="panel-label">Autonomy Software Developer</span><span className="panel-code">SYNC 04</span></div>
               <p className="synclog-company">Waterloo Aerial Robotics Group</p>
-              <p className="synclog-dates">Sep 2025 – Present</p>
+              <p className="synclog-dates">Sep 2025 - Present</p>
               <ul className="synclog-blurb" style={{paddingLeft:'1.5rem',listStyleType:'square',marginTop:'8px'}}>
                 <li style={{marginBottom:'6px'}}>Improved real-time signal detection accuracy by 13% using OpenCV2 computer vision algorithms through iterative parameter tuning and validation.</li>
                 <li>Built multi-process telemetry and command systems in Python (PyMAVLink) to simulate UAV communication, reducing message latency by 30% across distributed processes.</li>
@@ -230,7 +230,7 @@ export default function Home() {
             <li className="nerv-panel" data-reveal>
               <div className="panel-header"><span className="panel-label">Computer Support Specialist</span><span className="panel-code">SYNC 05</span></div>
               <p className="synclog-company">C2C Development Holdings</p>
-              <p className="synclog-dates">May 2022 – Sep 2025</p>
+              <p className="synclog-dates">May 2022 - Sep 2025</p>
               <ul className="synclog-blurb" style={{paddingLeft:'1.5rem',listStyleType:'square',marginTop:'8px'}}>
                 <li style={{marginBottom:'6px'}}>Engineered a Python-based automation bot that auto-responded to Facebook Marketplace messages, improving response time by over 70% and automating 700+ customer interactions.</li>
                 <li>Provided technical support in database management, hardware setup, and network troubleshooting.</li>
@@ -240,7 +240,7 @@ export default function Home() {
             <li className="nerv-panel" data-reveal>
               <div className="panel-header"><span className="panel-label">Founder &amp; Operator</span><span className="panel-code">SYNC 06</span></div>
               <p className="synclog-company">Custom Gaming Keyboards</p>
-              <p className="synclog-dates">Sep 2022 – Present</p>
+              <p className="synclog-dates">Sep 2022 - Present</p>
               <ul className="synclog-blurb" style={{paddingLeft:'1.5rem',listStyleType:'square',marginTop:'8px'}}>
                 <li>Designed and sold 35+ custom keyboards, generating $5,500+ in revenue, while building and maintaining an e-commerce platform for orders, client communication, and margin optimization.</li>
               </ul>
@@ -305,7 +305,7 @@ export default function Home() {
         <section id="magi" className="section" data-reveal>
           <span className="section-index" aria-hidden="true">03</span>
           <h2><span className="eva-title">SKILLS</span></h2>
-          <p className="stamp magi-caution">CAUTION — MAGI DELIBERATION IN PROGRESS</p>
+          <p className="stamp magi-caution">CAUTION - MAGI DELIBERATION IN PROGRESS</p>
           <div className="hazard-stripe magi-hazard" aria-hidden="true"></div>
           <p className="magi-central" aria-hidden="true">CENTRAL DOGMA</p>
           <div className="magi-grid">
@@ -346,12 +346,12 @@ export default function Home() {
           <h2><span className="eva-title">COMMENDATIONS</span></h2>
           <ul className="commendations-grid">
             <li className="nerv-panel commendation" data-reveal>Valedictorian</li>
-            <li className="nerv-panel commendation" data-reveal>1st — Euclid Math Contest (School Medal)</li>
-            <li className="nerv-panel commendation" data-reveal>1st — Amazon Robotics Hackathon</li>
-            <li className="nerv-panel commendation" data-reveal>Bronze — Chess AI Bot, Waterloo Tech Week</li>
+            <li className="nerv-panel commendation" data-reveal>1st - Euclid Math Contest (School Medal)</li>
+            <li className="nerv-panel commendation" data-reveal>1st - Amazon Robotics Hackathon</li>
+            <li className="nerv-panel commendation" data-reveal>Bronze - Chess AI Bot, Waterloo Tech Week</li>
             <li className="nerv-panel commendation" data-reveal>{"Governor General's Academic Award"}</li>
-            <li className="nerv-panel commendation" data-reveal>1st — Hack Canada 2026, Reactiv Track ($5,000)</li>
-            <li className="nerv-panel commendation" data-reveal>Shortlisted — Most Complex AI Hack, Hack Canada 2026</li>
+            <li className="nerv-panel commendation" data-reveal>1st - Hack Canada 2026, Reactiv Track ($5,000)</li>
+            <li className="nerv-panel commendation" data-reveal>Shortlisted - Most Complex AI Hack, Hack Canada 2026</li>
           </ul>
         </section>
 
