@@ -184,12 +184,14 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
   position: relative;
-  background-image:
-    linear-gradient(var(--grid) 1px, transparent 1px),
-    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
-  background-size: 42px 42px, 42px 42px;
+  background-image: repeating-radial-gradient(
+    circle at center,
+    transparent 0,
+    transparent 38px,
+    var(--grid) 38px,
+    var(--grid) 42px
+  );
   background-position: center top;
-  background-attachment: fixed;
 }
 
 /* Lock scroll while the boot overlay is up (until <body> becomes .booted). */

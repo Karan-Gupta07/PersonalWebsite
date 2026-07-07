@@ -1,6 +1,7 @@
 'use client';
 
 import NervEffects from '@/components/NervEffects';
+import Terminal from '@/components/Terminal';
 import { Analytics } from '@vercel/analytics/react';
 
 export default function Home() {
@@ -177,35 +178,10 @@ export default function Home() {
           </div>
         </section>
 
-        {/* PILOT DOSSIER */}
-        <section id="dossier" className="section" data-reveal>
-          <span className="section-index" aria-hidden="true">01</span>
-          <div className="nerv-panel">
-            <div className="panel-header">
-              <span className="panel-label">PILOT DOSSIER</span>
-              <span className="panel-code">SEC-01</span>
-            </div>
-            <h2><span className="eva-title">PILOT DOSSIER</span></h2>
-            <div className="dossier-body">
-              <div className="portrait-frame" aria-hidden="true">
-                <span className="portrait-label">NO SIGNAL</span>
-              </div>
-              <div className="dossier-data">
-                <p>Computer Engineering + Economics minor @ University of Waterloo · GPA 3.95</p>
-                <div className="data-row"><span className="data-key">INSTITUTION</span><span className="data-value">University of Waterloo</span></div>
-                <div className="data-row"><span className="data-key">PROGRAM</span><span className="data-value">Computer Engineering</span></div>
-                <div className="data-row"><span className="data-key">MINOR</span><span className="data-value">Economics</span></div>
-                <div className="data-row"><span className="data-key">GPA</span><span className="data-value">3.95</span></div>
-                <div className="data-row"><span className="data-key">DESIGNATION</span><span className="data-value">Software Engineer</span></div>
-              </div>
-            </div>
-          </div>
-        </section>
-
         {/* SYNC LOG (Experience) */}
         <section id="synclog" className="section" data-reveal>
-          <span className="section-index" aria-hidden="true">02</span>
-          <h2><span className="eva-title">SYNC LOG</span></h2>
+          <span className="section-index" aria-hidden="true">01</span>
+          <h2><span className="eva-title">EXPERIENCE</span></h2>
           <ol className="synclog-timeline">
             {/* SYNC 01 - Amazon */}
             <li className="nerv-panel" data-reveal>
@@ -284,8 +260,8 @@ export default function Home() {
 
         {/* EVA UNITS (Projects) */}
         <section id="eva-units" className="section" data-reveal>
-          <span className="section-index" aria-hidden="true">03</span>
-          <h2><span className="eva-title">EVA UNITS</span></h2>
+          <span className="section-index" aria-hidden="true">02</span>
+          <h2><span className="eva-title">PROJECTS</span></h2>
           <div className="eva-grid">
             <article className="eva-card nerv-panel" data-reveal>
               <div className="panel-header"><span className="panel-label">EVA-01</span><span className="panel-code"><span className="status-nominal">NOMINAL</span></span></div>
@@ -327,37 +303,34 @@ export default function Home() {
 
         {/* MAGI SYSTEM (Skills) */}
         <section id="magi" className="section" data-reveal>
-          <span className="section-index" aria-hidden="true">04</span>
-          <h2><span className="eva-title">MAGI SYSTEM</span></h2>
+          <span className="section-index" aria-hidden="true">03</span>
+          <h2><span className="eva-title">SKILLS</span></h2>
           <p className="stamp magi-caution">CAUTION — MAGI DELIBERATION IN PROGRESS</p>
           <div className="hazard-stripe magi-hazard" aria-hidden="true"></div>
           <p className="magi-central" aria-hidden="true">CENTRAL DOGMA</p>
           <div className="magi-grid">
             <article className="magi-unit" id="magi-melchior" data-reveal>
-              <div className="magi-header"><span className="magi-name">MELCHIOR·1</span><span className="jp magi-gloss">科学者</span><span className="magi-role">Scientist</span></div>
+              <div className="magi-header"><span className="magi-name">LANGUAGES</span><span className="jp magi-gloss">科学者</span><span className="magi-role">MELCHIOR·1</span></div>
               <div className="magi-status" aria-live="polite"><span className="status-nominal">NOMINAL</span></div>
               <div className="magi-body">
-                <h3 className="magi-category">LANGUAGES</h3>
                 <ul className="tags magi-tags">
                   <li className="tag">Python</li><li className="tag">Java</li><li className="tag">C</li><li className="tag">C++</li><li className="tag">Swift</li><li className="tag">TypeScript</li><li className="tag">JavaScript</li><li className="tag">SQL</li><li className="tag">Apex</li><li className="tag">HTML</li><li className="tag">CSS</li><li className="tag">VBA</li>
                 </ul>
               </div>
             </article>
             <article className="magi-unit" id="magi-balthasar" data-reveal>
-              <div className="magi-header"><span className="magi-name">BALTHASAR·2</span><span className="jp magi-gloss">母</span><span className="magi-role">Mother</span></div>
+              <div className="magi-header"><span className="magi-name">FRAMEWORKS</span><span className="jp magi-gloss">母</span><span className="magi-role">BALTHASAR·2</span></div>
               <div className="magi-status" aria-live="polite"><span className="status-nominal">NOMINAL</span></div>
               <div className="magi-body">
-                <h3 className="magi-category">FRAMEWORKS</h3>
                 <ul className="tags magi-tags">
                   <li className="tag">PyTorch</li><li className="tag">TensorFlow</li><li className="tag">scikit-learn</li><li className="tag">RAG</li><li className="tag">React</li><li className="tag">Node.js</li><li className="tag">Flask</li><li className="tag">FastAPI</li><li className="tag">OpenCV2</li><li className="tag">REST API</li><li className="tag">PyMAVLink</li><li className="tag">NumPy</li><li className="tag">JUnit</li><li className="tag">Dagger</li>
                 </ul>
               </div>
             </article>
             <article className="magi-unit" id="magi-casper" data-reveal>
-              <div className="magi-header"><span className="magi-name">CASPER·3</span><span className="jp magi-gloss">女</span><span className="magi-role">Woman</span></div>
+              <div className="magi-header"><span className="magi-name">TOOLS &amp; CLOUD</span><span className="jp magi-gloss">女</span><span className="magi-role">CASPER·3</span></div>
               <div className="magi-status" aria-live="polite"><span className="status-nominal">NOMINAL</span></div>
               <div className="magi-body">
-                <h3 className="magi-category">TOOLS &amp; CLOUD</h3>
                 <ul className="tags magi-tags">
                   <li className="tag">Git</li><li className="tag">GitHub</li><li className="tag">Docker</li><li className="tag">VS Code</li><li className="tag">AWS (S3, SQS, SNS)</li><li className="tag">Salesforce</li><li className="tag">Postman</li><li className="tag">Kubernetes</li><li className="tag">Xcode</li><li className="tag">MongoDB</li><li className="tag">SQL</li>
                 </ul>
@@ -369,7 +342,7 @@ export default function Home() {
 
         {/* COMMENDATIONS */}
         <section id="commendations" className="section" data-reveal>
-          <span className="section-index" aria-hidden="true">05</span>
+          <span className="section-index" aria-hidden="true">04</span>
           <h2><span className="eva-title">COMMENDATIONS</span></h2>
           <ul className="commendations-grid">
             <li className="nerv-panel commendation" data-reveal>Valedictorian</li>
@@ -384,7 +357,7 @@ export default function Home() {
 
         {/* OFFLINE RECORDS */}
         <section id="offline" className="section" data-reveal>
-          <span className="section-index" aria-hidden="true">06</span>
+          <span className="section-index" aria-hidden="true">05</span>
           <h2><span className="eva-title">OFFLINE RECORDS</span></h2>
           <div className="offline-grid">
             <article className="nerv-panel" data-reveal>
@@ -412,20 +385,11 @@ export default function Home() {
 
         {/* TRANSMISSION (Contact) */}
         <section id="transmission" className="section" data-reveal>
-          <span className="section-index" aria-hidden="true">07</span>
+          <span className="section-index" aria-hidden="true">06</span>
           <h2><span className="eva-title">TRANSMISSION</span></h2>
           <div className="nerv-panel terminal" data-reveal>
             <div className="panel-header"><span className="panel-label">TERMINAL</span><span className="panel-code">CONTACT</span></div>
-            <pre id="terminal-output" aria-live="polite">PILOT-EXO CONTACT TERMINAL // awaiting command...</pre>
-            <div className="terminal-prompt">
-              <span className="terminal-cursor">$ </span><span className="blink" aria-hidden="true">█</span>
-            </div>
-            <div className="terminal-commands">
-              <button type="button" data-cmd="mail">mail</button>
-              <button type="button" data-cmd="linkedin">open linkedin</button>
-              <button type="button" data-cmd="github">open github</button>
-              <button type="button" data-cmd="resume">open resume</button>
-            </div>
+            <Terminal />
           </div>
           <ul className="raw-links">
             <li><a className="link-cyan" href="mailto:k79gupta@uwaterloo.ca">k79gupta@uwaterloo.ca</a></li>
