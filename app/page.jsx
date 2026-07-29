@@ -78,9 +78,10 @@ export default function Home() {
                   <span className="card-date mono">May 2026 – Present</span>
                 </div>
                 <ul className="card-bullets">
-                  <li>Reduced legacy service migration time by 98% (2 weeks → 1 hour per stage) by building multi-step AI agents using prompt chaining and CoT reasoning to automate Java architecture transformation across thousands of lines.</li>
-                  <li>Architected an agentic RAG pipeline with few-shot prompting to achieve 92% translation accuracy across legacy API calls, algorithm structures, and AWS cloud deployment patterns into modernized service frameworks.</li>
-                  <li>Developed a pluggable natural language interface enabling on-demand algorithm adjustments during automated migration, allowing seamless integration with modern service handlers without manual intervention.</li>
+                  <li>Reduced legacy service migration time by 98% (2 weeks to under 2 hours) by designing an adaptive AI discovery agent and deterministic code-generation workflows, authoring 20 agent skills to translate Java monoliths.</li>
+                  <li>Automated the generation of over 13,000 lines of production code to transform a 9,400-line warehouse scheduling monolith into a pluggable microservice architecture deployed across every fulfillment center.</li>
+                  <li>Re-architected the core decision engine into stateless solvers on AWS ECS, using Java CompletableFutures to orchestrate concurrent S3 data extractions, preventing execution bottlenecks during an 8-minute scheduling cron.</li>
+                  <li>Built a semantic-diff validation harness to replay production JSON payloads against generated endpoints, evaluating behavioral parity via a confidence metric that flags inconclusive noise across 42 execution paths.</li>
                 </ul>
               </article>
               <article className="card">
@@ -90,9 +91,9 @@ export default function Home() {
                   <span className="card-date mono">May 2026 – Present</span>
                 </div>
                 <ul className="card-bullets">
-                  <li>Engineered TRACE, an AI agent reliability engine that automates multi-step execution tracing and failure isolation, reducing root-cause diagnostic latency by 70% for complex RAG and tool-use workflows.</li>
-                  <li>Eliminated 95% of runtime non-determinism across 4 downstream production applications by architecting a canonical verifier interface and Pydantic schemas to enforce strict data contracts over subjective LLM logic.</li>
-                  <li>Enforced 100% compliance for financial-action workflows by deploying a high-throughput, 7-check deterministic execution engine that intercepts policy violations and eliminates manual operational triage.</li>
+                  <li>Implemented multi-step execution tracing and failure isolation for TRACE, an AI agent reliability engine, reducing root-cause diagnostic latency by 70% for complex RAG and tool-use workflows.</li>
+                  <li>Eliminated 95% of runtime non-determinism across 4 downstream production applications by implementing a canonical verifier interface and Pydantic schemas to enforce strict data contracts over LLM outputs.</li>
+                  <li>Deployed a high-throughput, 7-check deterministic execution engine that intercepts critical policy violations to enforce 100% compliance for financial-action workflows.</li>
                 </ul>
               </article>
               <article className="card">
@@ -111,11 +112,11 @@ export default function Home() {
                 <div className="card-head">
                   <span className="card-role">Autonomy Software Developer</span>
                   <span className="card-company mono">Waterloo Aerial Robotics Group</span>
-                  <span className="card-date mono">Sep 2025 – Present</span>
+                  <span className="card-date mono">September 2025 – February 2026</span>
                 </div>
                 <ul className="card-bullets">
-                  <li>Improved real-time signal detection accuracy by 13% using OpenCV2 computer vision algorithms through iterative parameter tuning and validation.</li>
-                  <li>Built multi-process telemetry and command systems in Python (PyMAVLink) to simulate UAV communication, reducing message latency by 30% across distributed processes.</li>
+                  <li>Improved real-time autonomous UAV signal detection accuracy by 13% by developing OpenCV computer vision algorithms, optimizing performance through iterative parameter tuning and extensive flight simulation validation.</li>
+                  <li>Built multi-process telemetry and command systems in Python using PyMAVLink to simulate flight communication, reducing message latency by 30% across distributed processes.</li>
                 </ul>
               </article>
               <article className="card">
@@ -162,13 +163,13 @@ export default function Home() {
               <Link href="/project/reparo" className="card card--project">
                 <span className="card-stack mono">Python, Gemini API, React, Node.js, Swift, PyTorch</span>
                 <span className="card-role">Reparo (Hack Canada 2026 Winner)</span>
-                <p className="card-desc">Won 1st place ($5,000) by building an Agentic AI system using Gemini vision models for product classification with 90%+ accuracy. Reduced search time by 70% and enabled access to 1,000+ real-time listings by integrating Shopify Storefront API and SerpAPI.</p>
+                <p className="card-desc">Won 1st place ($5,000) in Reactiv Track (shortlisted for Most Complex AI Hack) by building an Agentic AI system using Gemini vision models for product repairability assessment with 90%+ accuracy. Reduced search time by 70% and enabled access to 1,000+ real-time listings via Shopify Storefront API and SerpAPI.</p>
                 <span className="card-arrow">→</span>
               </Link>
               <Link href="/project/deliriumwatch" className="card card--project">
-                <span className="card-stack mono">Raspberry Pi, Arduino, Python, OpenCV, HTML, CSS, Flask, C/C++</span>
+                <span className="card-stack mono">Raspberry Pi, Arduino, Python, TensorFlow, scikit-learn, OpenCV, HTML, CSS, Flask, C/C++</span>
                 <span className="card-role">DeliriumWatch</span>
-                <p className="card-desc">Built a real-time Python monitoring pipeline with SQL-backed secure login and role-based access control for hospital staff, resulting in over 90% reduction in manual monitoring. Implemented OpenCV-based eye detection and live Flask web visualizations to flag abnormal conditions.</p>
+                <p className="card-desc">Built a real-time Python monitoring pipeline with SQL-backed secure login and role-based access control for hospital staff, resulting in over 90% reduction in manual environmental monitoring. Implemented OpenCV continuous eye detection with a custom ML model (TensorFlow, scikit-learn) and live Flask dashboard to reduce nurse response time by 40%.</p>
                 <span className="card-arrow">→</span>
               </Link>
               <Link href="/project/ai-admissions" className="card card--project">
@@ -232,13 +233,13 @@ export default function Home() {
               <div className="skill-block">
                 <span className="skill-label mono">frameworks</span>
                 <div className="skill-tags skill-tags--lib">
-                  <span>PyTorch</span><span>TensorFlow</span><span>scikit-learn</span><span>RAG</span><span>React</span><span>Node.js</span><span>Flask</span><span>FastAPI</span><span>OpenCV2</span><span>REST API</span><span>PyMAVLink</span><span>NumPy</span><span>JUnit</span><span>Dagger</span>
+                  <span>PyTorch</span><span>TensorFlow</span><span>scikit-learn</span><span>RAG</span><span>Pydantic</span><span>React</span><span>Node.js</span><span>Flask</span><span>FastAPI</span><span>OpenCV</span><span>REST API</span><span>PyMAVLink</span><span>NumPy</span><span>JUnit</span><span>Mockito</span><span>Dagger</span><span>LWC</span>
                 </div>
               </div>
               <div className="skill-block">
                 <span className="skill-label mono">tools & cloud</span>
                 <div className="skill-tags skill-tags--tool">
-                  <span>Git</span><span>GitHub</span><span>Docker</span><span>VS Code</span><span>AWS (S3, SQS, SNS)</span><span>Salesforce</span><span>Postman</span><span>Kubernetes</span><span>Xcode</span><span>MongoDB</span><span>SQL</span>
+                  <span>AWS (CDK, ECS, Lambda, S3, SQS, SNS)</span><span>Git</span><span>GitHub</span><span>Docker</span><span>Kubernetes</span><span>Salesforce</span><span>New Relic</span><span>VS Code</span><span>Postman</span><span>Xcode</span><span>MongoDB</span><span>SQL</span><span>Raspberry Pi</span><span>Arduino</span>
                 </div>
               </div>
             </div>

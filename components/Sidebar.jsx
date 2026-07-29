@@ -88,7 +88,7 @@ export default function Sidebar({ menuOpen, setMenuOpen }) {
         setHistory([]);
         return;
       } else if (cmd === 'whoami') {
-        out = 'karan — swe @ amazon robotics / manulife';
+        out = 'karan — swe @ amazon / wat.ai / manulife';
       } else if (cmd === 'ls') {
         out = 'experience/  projects/  skills/  contact/';
       } else if (cmd.startsWith('cd ')) {
@@ -144,7 +144,7 @@ export default function Sidebar({ menuOpen, setMenuOpen }) {
       } else if (cmd === 'vi' || cmd === 'vim') {
         out = "Bro this is a read-only terminal, I'm not trapped in vim again.";
       } else if (cmd === 'echo $path') {
-        out = 'High School -> Custom Keyboards -> C2C -> Waterloo Aerial -> Manulife -> Amazon Robotics';
+        out = 'High School -> Custom Keyboards -> C2C -> Waterloo Aerial -> Manulife -> Wat.ai -> Amazon';
       } else if (cmd.startsWith('hack ')) {
         const target = val.substring(5).trim();
         setIsDisabled(true);

@@ -13,7 +13,7 @@ const PROJECTS_DATA = {
   },
   deliriumwatch: {
     title: 'DeliriumWatch',
-    stack: 'Raspberry Pi, Arduino, Python, OpenCV, HTML, CSS, Flask, C/C++',
+    stack: 'Raspberry Pi, Arduino, Python, TensorFlow, scikit-learn, OpenCV, HTML, CSS, Flask, C/C++',
     htmlContent: `
       <p>Real-time monitoring pipeline built for Grand River Hospital staff, with secure login and role-based access control. The system was designed to reduce manual environmental monitoring during simulated testing — we saw a <strong>90%+ reduction</strong> in that workload.</p>
       <p>I implemented OpenCV-based eye detection and a live Flask-powered web visualization with automatic alert flagging, enabling automated sleep and blink classification and faster response to abnormal conditions during validation. On the hardware side, I engineered serial data ingestion and threshold validation for stable multi-sensor tracking with zero dropped readings.</p>
