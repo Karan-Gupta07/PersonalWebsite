@@ -1,0 +1,44 @@
+/* Self-hosted, subset to the 121 glyphs these pages use. woff2 only.
+   Newsreader keeps both wght (200-800) and opsz (6-72) axes, so display
+   sizes get properly tightened fitting instead of a scaled-up text cut.
+   Total for all five files: ~190 KB, and only the ones a page uses load. */
+
+@font-face {
+  font-family: 'Newsreader';
+  src: url('../fonts/newsreader-var.woff2') format('woff2-variations');
+  font-weight: 200 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Newsreader';
+  src: url('../fonts/newsreader-italic-var.woff2') format('woff2-variations');
+  font-weight: 200 800;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'IBM Plex Mono';
+  src: url('../fonts/plex-mono-400.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'IBM Plex Mono';
+  src: url('../fonts/plex-mono-500.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'IBM Plex Mono';
+  src: url('../fonts/plex-mono-600.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}

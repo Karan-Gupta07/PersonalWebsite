@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Karan Gupta — Card Catalog</title>
+<meta name="description" content="Karan Gupta. Computer engineering at Waterloo. AI agents, computer vision, automation.">
+<link rel="preload" href="./fonts/newsreader-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="./fonts/plex-mono-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="./css/fonts.css">
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   THE DESK — refined card catalog.
+
+   What changed from the first catalog, and why:
+
+   1. It opens on a COVER, not on a card. The old version landed on
+      a single-card drawer, so the index pane was measured 87% empty
+      on arrival and the page had no front door. The cover is a real
+      landing: name, position, the numbers that matter, and a visible
+      invitation to browse.
+   2. The index shows ALL 19 cards at once, grouped under sticky
+      drawer heads. The old build showed one drawer at a time, which
+      hid most of the content and left the pane blank.
+   3. Three panes became two. A separate rail and index did the same
+      job, so the rail folded into the index as group heads.
+   4. Every card is deep-linkable and the whole cabinet is walkable
+      with arrow keys, so exploring is never a dead end.
+   ═══════════════════════════════════════════════════════════════ */
+:root {
+  --desk:      #e8e3d7;   /* the surface */
+  --desk-2:    #ded8c9;
+  --card:      #fbf9f2;   /* card stock */
+  --card-2:    #f5f2e8;
+  --edge:      #d6d0be;
+  --ink:       #1d1b16;
+  --ink-2:     #45413a;
+  --ink-3:     #7c7669;
+  --rule:      #cfdce5;   /* printed blue ruling */
+  --margin:    #b2483c;   /* red margin rule */
+  --accent:    #8e2b21;
+  --lh:        26px;      /* ruling period === body line-height */
+
+  --serif: 'Newsreader', 'Iowan Old Style', Charter, Georgia, serif;
+  --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+  --t-9: 9px; --t-10: 10px; --t-11: 11px; --t-12: 12px; --t-13: 13px;
+  --t-15: 15px; --t-17: 17px; --t-20: 20px; --t-24: 24px;
+  --tr-xs: .16em; --tr-sm: .12em; --tr-md: .08em;
+  --dur: 180ms; --ease: cubic-bezier(.22,.61,.36,1);
+  --idx: 24rem;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { -webkit-text-size-adjust: 100%; }
+html, body { height: 100%; }
+body {
+  background: var(--desk);
+  background-image: radial-gradient(140% 100% at 50% 0%, var(--desk-2) 0%, var(--desk) 62%);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: var(--t-13);
+  line-height: 1.55;
+  overflow: hidden;              /* the desk does not scroll; panes do */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-variant-numeric: tabular-nums;
+}
+ul, ol { list-style: none; }
+a { color: inherit; }
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+h1, h2, h3 { font-weight: 500; font-optical-sizing: auto; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+.skip {
+  position: absolute; left: -9999px; top: 0; z-index: 99;
+  background: var(--ink); color: var(--card); padding: .7rem 1rem;
+  font-size: var(--t-10); letter-spacing: var(--tr-xs); text-transform: uppercase; text-decoration: none;
+}
+.skip:focus { left: .5rem; top: .5rem; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition-duration: .001ms !important; animation-duration: .001ms !important; } }
+
+/* ── DESK: two panes ──────────────────────────────────────────── */
+.desk {
+  height: 100dvh;
+  display: grid;
+  grid-template-columns: var(--idx) minmax(0, 1fr);
+  gap: 1rem;
+  padding: 1rem;
+}
+.pane { min-height: 0; display: flex; flex-direction: column; }
+
+/* ── INDEX ────────────────────────────────────────────────────── */
+.plate {
+  background: var(--card);
+  border: 1px solid var(--edge);
+  box-shadow: 0 1px 1px rgba(29,27,22,.05), 0 2px 8px rgba(29,27,22,.05);
+  padding: 1rem 1.1rem;
+  display: grid; grid-template-columns: minmax(0,1fr) auto; gap: .75rem; align-items: center;
+}
+.plate h1 {
+  font-family: var(--serif); font-size: var(--t-24);
+  font-variation-settings: 'opsz' 28, 'wght' 600;
+  line-height: 1.05; letter-spacing: -.022em;
+}
+.plate .sub {
+  margin-top: .3rem; font-size: var(--t-9);
+  letter-spacing: var(--tr-xs); text-transform: uppercase; color: var(--ink-3); line-height: 1.55;
+}
+.plate .gpa {
+  border: 2px solid var(--accent); color: var(--accent);
+  font-size: var(--t-9); font-weight: 500; letter-spacing: var(--tr-xs);
+  text-transform: uppercase; padding: .25rem .4rem; text-align: center;
+  transform: rotate(-1.5deg); opacity: .82; line-height: 1.35; white-space: nowrap;
+}
+.plate .gpa b { display: block; font-size: var(--t-15); font-weight: 600; letter-spacing: .03em; }
+
+/* search + index head */
+.ihead {
+  margin-top: .75rem; display: flex; align-items: baseline; gap: .6rem;
+  padding-bottom: .5rem; border-bottom: 1px solid var(--edge);
+}
+.ihead h2 { font-size: var(--t-10); font-weight: 600; letter-spacing: var(--tr-sm); text-transform: uppercase; }
+.ihead .ct { margin-left: auto; font-size: var(--t-9); letter-spacing: var(--tr-xs); text-transform: uppercase; color: var(--ink-3); }
+.find {
+  margin-top: .6rem; position: relative;
+}
+.find input {
+  width: 100%; font: inherit; font-size: var(--t-12);
+  background: var(--card); color: var(--ink);
+  border: 1px solid var(--edge); padding: .5rem .6rem .5rem 1.7rem;
+}
+.find input::placeholder { color: var(--ink-3); }
+.find input:focus-visible { outline: 2px solid var(--accent); outline-offset: -1px; }
+.find::before {
+  content: '⌕'; position: absolute; left: .5rem; top: 50%; transform: translateY(-52%);
+  color: var(--ink-3); font-size: var(--t-15); pointer-events: none;
+}
+
+/* The index: every card, always. Grouped, scrollable, never empty. */
+.index { flex: 1; overflow: auto; margin-top: .6rem; padding-right: 2px; }
+.grp { margin-bottom: .35rem; }
+.grp > h3 {
+  position: sticky; top: 0; z-index: 2;
+  background: linear-gradient(var(--desk) 78%, rgba(232,227,215,0));
+  padding: .55rem 0 .35rem;
+  font-size: var(--t-9); font-weight: 600; letter-spacing: var(--tr-xs);
+  text-transform: uppercase; color: var(--ink-3);
+  display: flex; gap: .5rem; align-items: baseline;
+}
+.grp > h3 .n { color: var(--accent); }
+.grp > h3 .c { margin-left: auto; }
+.tab {
+  display: grid; grid-template-columns: 2.7rem minmax(0,1fr); gap: .15rem .6rem;
+  width: 100%; text-align: left;
+  background: var(--card); border: 1px solid var(--edge);
+  border-left: 3px solid transparent;
+  padding: .55rem .6rem;
+  margin-bottom: 3px;
+  transition: border-left-color var(--dur) var(--ease), transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+}
+.tab:hover { transform: translateX(2px); box-shadow: 0 1px 1px rgba(29,27,22,.06); }
+.tab .tn { font-size: var(--t-9); letter-spacing: .05em; color: var(--ink-3); padding-top: 2px; }
+.tab .tt {
+  font-family: var(--serif); font-size: var(--t-15);
+  font-variation-settings: 'opsz' 18, 'wght' 580;
+  line-height: 1.2; letter-spacing: -.01em;
+}
+.tab .ts { grid-column: 2; font-size: var(--t-9); letter-spacing: var(--tr-xs); text-transform: uppercase; color: var(--ink-3); line-height: 1.5; }
+.tab .tm { grid-column: 2; font-size: var(--t-10); color: var(--accent); letter-spacing: .03em; }
+.tab[aria-current='true'] {
+  border-left-color: var(--margin);
+  box-shadow: 0 1px 1px rgba(29,27,22,.06), 0 2px 8px rgba(29,27,22,.06);
+}
+.tab[aria-current='true'] .tt { font-variation-settings: 'opsz' 18, 'wght' 680; }
+.nohit { padding: 1rem .1rem; font-size: var(--t-11); color: var(--ink-3); }
+
+.ifoot {
+  margin-top: .6rem; padding-top: .55rem; border-top: 1px solid var(--edge);
+  display: flex; flex-wrap: wrap; gap: .2rem .9rem;
+  font-size: var(--t-9); letter-spacing: var(--tr-xs); text-transform: uppercase;
+}
+.ifoot a { color: var(--ink-3); text-decoration: none; border-bottom: 1px solid transparent; transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease); }
+.ifoot a:hover, .ifoot a:focus-visible { color: var(--accent); border-bottom-color: currentColor; }
+
+/* ── READING PANE ─────────────────────────────────────────────── */
+.read { flex: 1; min-height: 0; overflow: auto; }
+/* mockup switcher, quiet until hovered */
+.sw {
+  position: fixed; right: 12px; bottom: 12px; z-index: 60; display: flex;
+  background: rgba(29,27,22,.92); border: 1px solid rgba(255,255,255,.14);
+  font-size: var(--t-9); font-weight: 500; letter-spacing: var(--tr-xs);
+  text-transform: uppercase; opacity: .5; transition: opacity var(--dur) var(--ease);
+}
+.sw:hover, .sw:focus-within { opacity: 1; }
+.sw a { color: rgba(251,249,242,.7); text-decoration: none; padding: 7px 10px; border-right: 1px solid rgba(255,255,255,.12); }
+.sw a:last-child { border-right: 0; }
+.sw a:hover { color: #fff; background: rgba(255,255,255,.1); }
+.sw a[aria-current='page'] { color: #fff; background: rgba(255,255,255,.16); }
+
+/* Shared card stock. Ruling belongs to the typed area so it stops
+   where the entry stops, leaving blank stock below. */
+.sheet {
+  --gutter: 5.5rem;
+  --pad-t: 30px;
+  background: var(--card);
+  border: 1px solid var(--edge);
+  box-shadow: 0 1px 1px rgba(29,27,22,.05), 0 4px 22px rgba(29,27,22,.08);
+  position: relative;
+  min-height: 100%;
+}
+.sheet::before {
+  content: ''; position: absolute; left: var(--gutter); top: 0; bottom: 0;
+  width: 1px; background: var(--margin); opacity: .42;
+}
+.ruled {
+  padding: var(--pad-t) 2.5rem calc(var(--lh) * 2) calc(var(--gutter) + 1.25rem);
+  background-image: repeating-linear-gradient(180deg, transparent 0 calc(var(--lh) - 1px), var(--rule) calc(var(--lh) - 1px) var(--lh));
+  background-position: 0 calc(var(--pad-t) - 6px);
+  background-repeat: repeat-x;
+  background-size: 100% calc(100% - var(--lh) * 2);
+}
+.callno {
+  position: absolute; left: 1rem; top: var(--pad-t);
+  font-size: var(--t-9); letter-spacing: .07em; color: var(--ink-3);
+  line-height: var(--lh); width: calc(var(--gutter) - 1.5rem);
+}
+.callno b { display: block; font-weight: 500; color: var(--accent); text-transform: uppercase; }
+
+/* ── COVER: the front door ────────────────────────────────────
+   A real landing state. It is a card like any other, so the
+   metaphor holds, but it carries the whole pitch: who, what,
+   the numbers, and a visible way in.                          */
+/* Sized off the reading pane, not the viewport: vw would keep
+   growing while this column stays fixed, so the name overflowed
+   its own card. cqi measures the container. */
+.read { container-type: inline-size; }
+.cover .big {
+  font-family: var(--serif);
+  font-size: clamp(1.9rem, 5.2cqi, 3.4rem);
+  font-variation-settings: 'opsz' 40, 'wght' 620;
+  line-height: 1.06; letter-spacing: -.022em;
+  max-width: 22ch; text-wrap: balance;
+}
+.cover .big em { font-style: italic; font-weight: 460; color: var(--accent); }
+.cover .std {
+  margin-top: var(--lh);
+  font-family: var(--serif); font-size: var(--t-20);
+  font-variation-settings: 'opsz' 20, 'wght' 440;
+  line-height: var(--lh); color: var(--ink-2); max-width: 46ch;
+}
+.cover .std + .std { margin-top: var(--lh); }
+/* headline numbers, the 10-second read */
+.cover .nums {
+  margin-top: calc(var(--lh) * 1.5);
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  border-top: 2px solid var(--ink);
+}
+.cover .nums div { padding: .85rem 1rem .3rem 0; border-right: 1px solid var(--edge); }
+.cover .nums div:last-child { border-right: 0; }
+.cover .nums dt { font-size: var(--t-9); letter-spacing: var(--tr-xs); text-transform: uppercase; color: var(--ink-3); }
+.cover .nums dd {
+  margin-top: .3rem;
+  font-family: var(--serif); font-size: var(--t-24);
+  font-variation-settings: 'opsz' 28, 'wght' 620;
+  color: var(--accent); line-height: 1.1; letter-spacing: -.02em;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+.cover .nums dd small {
+  display: block; font-family: var(--mono); font-size: var(--t-9); font-weight: 400;
+  letter-spacing: var(--tr-xs); text-transform: uppercase; color: var(--ink-3);
+  margin-top: .25rem; line-height: 1.45;
+}
+/* the invitation: what to do next, stated plainly */
+.cover .go {
+  margin-top: calc(var(--lh) * 1.5); padding-top: var(--lh);
+  border-top: 1px solid var(--edge);
+  display: flex; flex-wrap: wrap; gap: .6rem;
+}
+.cover .go a, .cover .go button {
+  font-size: var(--t-10); font-weight: 500; letter-spacing: var(--tr-sm);
+  text-transform: uppercase; text-decoration: none;
+  border: 1px solid var(--edge); padding: .55rem .8rem;
+  transition: border-color var(--dur) var(--ease), color var(--dur) var(--ease), background var(--dur) var(--ease);
+}
+.cover .go a:hover, .cover .go button:hover { border-color: var(--accent); color: var(--accent); background: var(--card-2); }
+.cover .go .pri { background: var(--accent); border-color: var(--accent); color: var(--card); }
+.cover .go .pri:hover { background: var(--ink); border-color: var(--ink); color: var(--card); }
+.cover .hint { margin-top: var(--lh); font-size: var(--t-9); letter-spacing: var(--tr-xs); text-transform: uppercase; color: var(--ink-3); }
+.cover .hint kbd {
+  font-family: var(--mono); font-size: var(--t-9); border: 1px solid var(--edge);
+  padding: 1px 4px; margin: 0 1px; background: var(--card-2);
+}
+
+/* ── ENTRY CARD ───────────────────────────────────────────────── */
+.ehead {
+  display: grid; grid-template-columns: minmax(0,1fr) auto;
+  column-gap: 2rem; align-items: start;
+  border-bottom: 1px solid var(--edge);
+  padding-bottom: calc(var(--lh) - 1px);
+}
+.ehead h2 {
+  font-family: var(--serif);
+  font-size: clamp(1.7rem, 1.3rem + 1.6vw, 2.4rem);
+  font-variation-settings: 'opsz' 32, 'wght' 620;
+  line-height: calc(var(--lh) * 2); letter-spacing: -.024em;
+}
+.ehead .role {
+  display: block; font-family: var(--serif); font-size: var(--t-17);
+  font-style: italic; font-weight: 430; color: var(--ink-3); line-height: var(--lh);
+}
+.ehead .side { text-align: right; height: calc(var(--lh) * 3); }
+.ehead .per { display: block; font-size: var(--t-10); letter-spacing: var(--tr-sm); text-transform: uppercase; color: var(--ink-3); line-height: var(--lh); white-space: nowrap; }
+.ehead .met {
+  display: block; font-family: var(--serif);
+  font-size: clamp(1.6rem, 1.3rem + 1.2vw, 2.2rem);
+  font-variation-settings: 'opsz' 28, 'wght' 620;
+  color: var(--accent); line-height: calc(var(--lh) * 1.5); letter-spacing: -.025em;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+.ehead .metl {
+  display: block; font-family: var(--mono); font-size: var(--t-9);
+  letter-spacing: var(--tr-xs); text-transform: uppercase; color: var(--ink-3);
+  line-height: calc(var(--lh) * .5); max-width: 11rem; margin-left: auto;
+}
+.body { margin-top: var(--lh); }
+.body p.t, .body li {
+  font-family: var(--serif); font-size: var(--t-15);
+  line-height: var(--lh); color: var(--ink-2);
+  margin-bottom: var(--lh); max-width: 74ch;
+}
+.body li { position: relative; padding-left: 1.25rem; }
+.body li::before { content: '·'; position: absolute; left: .5rem; color: var(--accent); font-weight: 600; }
+.body p.t:last-child, .body li:last-child { margin-bottom: 0; }
+.body a { color: var(--accent); text-decoration: none; border-bottom: 1px solid currentColor; }
+
+.kv { margin-top: var(--lh); border-top: 1px solid var(--edge); }
+.kv > div {
+  display: grid; grid-template-columns: 8.5rem minmax(0,1fr); gap: 1rem;
+  border-bottom: 1px dotted var(--edge); align-items: baseline;
+}
+.kv dt { font-size: var(--t-9); font-weight: 600; letter-spacing: var(--tr-xs); text-transform: uppercase; color: var(--ink-3); line-height: var(--lh); }
+.kv dd { font-family: var(--serif); font-size: var(--t-15); line-height: var(--lh); color: var(--ink-2); }
+.kv dd em { color: var(--ink-3); }
+.kv dd a { color: var(--accent); text-decoration: none; border-bottom: 1px solid currentColor; }
+
+.flow { columns: 3; column-gap: 2.5rem; }
+.flow li { break-inside: avoid; border-bottom: 1px dotted var(--edge); padding-left: 0; margin-bottom: 0; }
+.flow li::before { content: none; }
+
+.efoot {
+  margin-top: var(--lh); padding-top: calc(var(--lh) - 1px);
+  border-top: 1px solid var(--edge);
+  display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
+  font-size: var(--t-9); letter-spacing: var(--tr-xs); text-transform: uppercase;
+  color: var(--ink-3); line-height: var(--lh);
+}
+/* prev / next keeps browsing from dead-ending */
+.turn { display: flex; gap: .5rem; }
+.turn button { font-size: var(--t-9); letter-spacing: var(--tr-xs); text-transform: uppercase; color: var(--ink-3); border-bottom: 1px solid transparent; }
+.turn button:hover { color: var(--accent); border-bottom-color: currentColor; }
+
+/* ── NARROW / SHORT: becomes one honest scrolling column ─────── */
+@media (max-width: 68rem), (max-height: 34rem) {
+  body { overflow: auto; }
+  .desk { height: auto; grid-template-columns: minmax(0,1fr); }
+  /* Card first, index second. Stacking in source order would make a
+     phone visitor scroll 19 index rows before learning who this is. */
+  .desk > .pane:first-child { order: 2; }
+  .desk > .pane:last-child { order: 1; }
+  .index, .read { overflow: visible; }
+  .sheet { min-height: 0; --gutter: 3rem; }
+  .ruled { padding: 1.25rem 1.25rem 1.5rem calc(var(--gutter) + 1rem); }
+  .callno { position: static; width: auto; margin-bottom: .5rem; }
+  .ehead { grid-template-columns: minmax(0,1fr); }
+  .ehead .side { text-align: left; height: auto; margin-top: .5rem; }
+  .ehead .metl { margin-left: 0; }
+  .flow { columns: 1; }
+  .index { max-height: none; }
+  /* The plate repeats the name and GPA that the card above already
+     shows, so it goes away rather than saying everything twice. */
+  .plate { display: none; }
+  .ihead { margin-top: 0; }
+  .grp > h3 { background: linear-gradient(var(--desk) 86%, rgba(232,227,215,0)); }
+}
+@media (max-width: 40rem) { .cover .nums { grid-template-columns: minmax(0,1fr); } .cover .nums div { border-right: 0; border-bottom: 1px solid var(--edge); } }
+</style>
+</head>
+<body>
+<a class="skip" href="#read">Skip to card</a>
+<div class="desk" id="app"></div>
+
+<script type="module">
+import { meta, bio, experience, projects, stack, awards, personal, links } from './content.js';
+import { esc, mount } from './css/render.js';
+
+const ext = (href, text) =>
+  `<a href="${esc(href)}"${href.startsWith('http') ? ' target="_blank" rel="noopener"' : ''}>${esc(text)}</a>`;
+const lis = (arr) => `<ul>${arr.map((b) => `<li>${esc(b)}</li>`).join('')}</ul>`;
+const kv = (rows, cls = '') => `<dl class="kv ${cls}">${rows
+  .map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${v}</dd></div>`).join('')}</dl>`;
+
+/* Every card has the same shape, which is what keeps the catalogue
+   metaphor honest. `kind: cover` is the landing card. */
+const COVER = {
+  code: 'KG000', kind: 'cover', drawer: 'front',
+  title: meta.name, sub: 'Front matter', per: meta.location,
+  metric: { value: '3.95', label: 'GPA of 4.00' },
+  search: `${meta.name} front matter about cover ${meta.tagline}`,
+};
+
+const DRAWERS = [
+  { id: 'front', no: '01', label: 'Front matter', cards: [COVER] },
+  {
+    id: 'experience', no: '02', label: 'Experience',
+    cards: experience.map((e, i) => ({
+      code: `KG${101 + i}`, drawer: 'experience',
+      title: e.org, sub: `${e.role}${e.unit ? `, ${e.unit}` : ''}`,
+      per: e.period, metric: e.metric,
+      body: `<p class="t" style="font-style:italic">${esc(e.headline)}.</p>${lis(e.bullets)}`,
+      tags: e.tags,
+      search: `${e.org} ${e.role} ${e.unit || ''} ${e.tags.join(' ')} ${e.bullets.join(' ')}`,
+    })),
+  },
+  {
+    id: 'projects', no: '03', label: 'Projects',
+    cards: projects.map((p, i) => ({
+      code: `KG${201 + i}`, drawer: 'projects',
+      title: p.name, sub: p.award, per: 'Project', metric: p.metric,
+      body: `<p class="t" style="font-style:italic">${esc(p.short)}</p><p class="t">${esc(p.desc)}</p>`,
+      tags: p.stack,
+      search: `${p.name} ${p.award} ${p.stack.join(' ')} ${p.desc}`,
+    })),
+  },
+  {
+    id: 'stack', no: '04', label: 'Subject headings',
+    cards: stack.map((s, i) => ({
+      code: `KG${301 + i}`, drawer: 'stack',
+      title: s.label, sub: 'Subject heading', per: 'Stack',
+      metric: { value: String(s.items.length), label: 'entries' },
+      body: `<ul class="flow">${s.items.map((it) => `<li>${esc(it)}</li>`).join('')}</ul>`,
+      search: `${s.label} ${s.items.join(' ')}`,
+    })),
+  },
+  {
+    id: 'reference', no: '05', label: 'Reference',
+    cards: [
+      {
+        code: 'KG401', drawer: 'reference',
+        title: 'Awards', sub: 'Honours and placements', per: 'Reference',
+        metric: { value: String(awards.length), label: 'entries' },
+        body: kv(awards.map((a) => [a.rank, `${esc(a.name)}${a.note ? ` <em>${esc(a.note)}</em>` : ''}`])),
+        search: `awards honours ${awards.map((a) => a.rank + ' ' + a.name).join(' ')}`,
+      },
+      {
+        code: 'KG402', drawer: 'reference',
+        title: 'Beyond code', sub: 'Marginalia', per: 'Reference',
+        metric: { value: '35+', label: 'keyboards built' },
+        body: kv(personal.map((p) => [p.label,
+          `${esc(p.body)}${p.link ? ` ${ext(p.link.href, `${p.link.text} ↗`)}` : ''}`])),
+        search: `beyond code personal film keyboards ${personal.map((p) => p.label + ' ' + p.body).join(' ')}`,
+      },
+      {
+        code: 'KG403', drawer: 'reference',
+        title: 'Circulation card', sub: 'How to reach me', per: meta.date,
+        metric: { value: '6', label: 'ways to reach me' },
+        body: `<p class="t">Open to internships and collaboration. Cold emails welcome.</p>`
+          + kv(links.map((l) => [l.name, l.href ? ext(l.href, l.handle) : esc(l.handle)])),
+        search: `contact circulation email github linkedin discord ${links.map((l) => l.name + ' ' + l.handle).join(' ')}`,
+      },
+    ],
+  },
+];
+
+const ALL = DRAWERS.flatMap((d) => d.cards);
+const byCode = (c) => ALL.find((x) => x.code === c);
+
+mount('#app', `
+<div class="pane">
+  <header class="plate">
+    <div>
+      <h1>${esc(meta.name)}</h1>
+      <p class="sub">${esc(meta.tagline)}<br>${esc(meta.location)}</p>
+    </div>
+    <p class="gpa">GPA<b>3.95</b></p>
+  </header>
+
+  <div class="ihead"><h2>Card index</h2><span class="ct" id="ct">${ALL.length} cards</span></div>
+  <div class="find">
+    <label class="vh" for="q">Find a card</label>
+    <input id="q" type="search" placeholder="Find a card, skill, project…" autocomplete="off" spellcheck="false">
+  </div>
+  <nav class="index" id="index" aria-label="Card index"></nav>
+  <p class="ifoot">
+    ${links.filter((l) => l.href).map((l) => ext(l.href, l.name)).join('')}
+    ${ext(meta.resume, 'Résumé ↓')}
+  </p>
+</div>
+
+<div class="pane">
+  <div class="read" id="read"><article class="sheet" id="face" tabindex="-1"></article></div>
+</div>
+`);
+
+const idxEl = document.getElementById('index');
+const faceEl = document.getElementById('face');
+const readEl = document.getElementById('read');
+const ctEl = document.getElementById('ct');
+const qEl = document.getElementById('q');
+
+let current = 'KG000';
+let filter = '';
+
+function visible() {
+  if (!filter) return ALL;
+  const q = filter.toLowerCase();
+  return ALL.filter((c) => (`${c.title} ${c.sub} ${c.search || ''}`).toLowerCase().includes(q));
+}
+
+function renderIndex() {
+  const vis = visible();
+  const set = new Set(vis.map((c) => c.code));
+  ctEl.textContent = filter ? `${vis.length} of ${ALL.length}` : `${ALL.length} cards`;
+  if (!vis.length) {
+    idxEl.innerHTML = `<p class="nohit">No card matches “${esc(filter)}”.</p>`;
+    return;
+  }
+  idxEl.innerHTML = DRAWERS.map((d) => {
+    const cards = d.cards.filter((c) => set.has(c.code));
+    if (!cards.length) return '';
+    return `<section class="grp">
+      <h3><span class="n">${esc(d.no)}</span><span>${esc(d.label)}</span><span class="c">${cards.length}</span></h3>
+      ${cards.map((c) => `
+        <button type="button" class="tab" data-code="${esc(c.code)}"${c.code === current ? ' aria-current="true"' : ''}>
+          <span class="tn">${esc(c.code)}</span>
+          <span class="tt">${esc(c.title)}</span>
+          <span class="ts">${esc(c.sub)}</span>
+          <span class="tm">${esc(c.metric.value)} ${esc(c.metric.label)}</span>
+        </button>`).join('')}
+    </section>`;
+  }).join('');
+}
+
+function coverHTML() {
+  const top = experience.slice(0, 2);
+  return `
+  <div class="ruled cover">
+    <p class="callno">KG 000<b>Front matter</b></p>
+    <h2 class="big">${esc(meta.name)}, software <em>engineer</em></h2>
+    ${bio.slice(0, 2).map((p) => `<p class="std">${esc(p)}</p>`).join('')}
+    <dl class="nums">
+      <div><dt>GPA</dt><dd>3.95<small>of 4.00</small></dd></div>
+      ${top.map((e) => `<div><dt>${esc(e.org)}</dt><dd>${esc(e.metric.value)}<small>${esc(e.metric.label)}</small></dd></div>`).join('')}
+      <div><dt>Hack Canada</dt><dd>1st<small>$5,000 prize</small></dd></div>
+    </dl>
+    <p class="go">
+      <button type="button" class="pri" data-code="KG101">Read the work →</button>
+      <button type="button" data-code="KG201">Projects</button>
+      <button type="button" data-code="KG403">Contact</button>
+      <a href="${esc(meta.resume)}" download>Résumé ↓</a>
+    </p>
+    <p class="hint">${ALL.length} cards in the cabinet · <kbd>↑</kbd><kbd>↓</kbd> to browse · <kbd>/</kbd> to search</p>
+  </div>`;
+}
+
+function entryHTML(c) {
+  const i = ALL.indexOf(c);
+  const prev = ALL[(i - 1 + ALL.length) % ALL.length];
+  const next = ALL[(i + 1) % ALL.length];
+  return `
+  <div class="ruled">
+    <p class="callno">${esc(c.code.replace(/^KG/, 'KG '))}<b>${esc(c.drawer)}</b></p>
+    <header class="ehead">
+      <div>
+        <h2>${esc(c.title)}</h2>
+        <span class="role">${esc(c.sub)}</span>
+      </div>
+      <div class="side">
+        <span class="per">${esc(c.per)}</span>
+        <span class="met">${esc(c.metric.value)}</span>
+        <small class="metl">${esc(c.metric.label)}</small>
+      </div>
+    </header>
+    <div class="body">${c.body}</div>
+    <p class="efoot">
+      <span>${c.tags ? c.tags.map(esc).join(' · ') : `Catalogued ${esc(meta.date)}`}</span>
+      <span class="turn">
+        <button type="button" data-code="${esc(prev.code)}">← ${esc(prev.title)}</button>
+        <button type="button" data-code="${esc(next.code)}">${esc(next.title)} →</button>
+      </span>
+    </p>
+  </div>`;
+}
+
+function show(code, focusTab) {
+  const c = byCode(code) || ALL[0];
+  current = c.code;
+  faceEl.innerHTML = c.kind === 'cover' ? coverHTML() : entryHTML(c);
+  readEl.scrollTop = 0;
+  renderIndex();
+  const tab = idxEl.querySelector(`[data-code="${c.code}"]`);
+  if (tab) {
+    tab.scrollIntoView({ block: 'nearest' });
+    if (focusTab) tab.focus();
+  }
+  const hash = `#${c.code}`;
+  if (location.hash !== hash) history.replaceState(null, '', hash);
+}
+
+document.addEventListener('click', (ev) => {
+  const t = ev.target.closest('[data-code]');
+  if (t) { ev.preventDefault(); show(t.dataset.code); }
+});
+
+qEl.addEventListener('input', () => { filter = qEl.value.trim(); renderIndex(); });
+qEl.addEventListener('keydown', (ev) => {
+  if (ev.key === 'Escape') { qEl.value = ''; filter = ''; renderIndex(); }
+  if (ev.key === 'Enter') {
+    const first = visible()[0];
+    if (first) { show(first.code); qEl.blur(); }
+  }
+});
+
+// Arrow keys walk the whole cabinet; "/" jumps to search.
+document.addEventListener('keydown', (ev) => {
+  if (ev.target.matches('input, textarea')) return;
+  if (ev.key === '/') { ev.preventDefault(); qEl.focus(); return; }
+  if (ev.key !== 'ArrowDown' && ev.key !== 'ArrowUp') return;
+  const pool = visible();
+  if (!pool.length) return;
+  const i = pool.findIndex((c) => c.code === current);
+  const step = ev.key === 'ArrowDown' ? 1 : pool.length - 1;
+  const next = pool[(Math.max(i, 0) + step) % pool.length];
+  ev.preventDefault();
+  show(next.code, true);
+});
+
+// Respond to back/forward and to a hash typed into the address bar,
+// not just the first load.
+window.addEventListener('hashchange', () => {
+  const code = location.hash.slice(1);
+  if (code && code !== current) show(code);
+});
+
+show(location.hash.slice(1) || 'KG000');
+</script>
+</body>
+</html>

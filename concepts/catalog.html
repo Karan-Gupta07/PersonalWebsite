@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Karan Gupta — Card Catalog</title>
+<meta name="description" content="Karan Gupta. Computer engineering at Waterloo. AI agents, computer vision, automation.">
+<link rel="preload" href="./fonts/newsreader-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="./fonts/plex-mono-400.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="./css/fonts.css">
+<link rel="stylesheet" href="./css/base.css">
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   CARD CATALOG — desktop cabinet
+   One viewport, three panes, no page scroll: drawer list, card
+   index, and the pulled card. The reference is a library
+   catalogue card, so the ruling and the body line-height are the
+   same 26px and the type sits on the printed lines.
+   ═══════════════════════════════════════════════════════════════ */
+:root {
+  --desk:      #ebe7dd;
+  --desk-2:    #e2ddd0;
+  --card:      #fbf9f2;
+  --card-edge: #d9d3c2;
+  --ink:       #1d1b16;
+  --ink-2:     #454138;
+  --ink-3:     #7c7666;
+  --rule:      #cfdce5;   /* printed blue ruling, faint like real stock */
+  --margin:    #b2483c;   /* red margin rule */
+  --accent:    #8e2b21;
+  --lh:        26px;      /* THE baseline: ruling === line-height */
+  --rail:      15.5rem;
+  --index:     21rem;
+}
+
+html, body { height: 100%; }
+body {
+  background: var(--desk);
+  background-image: radial-gradient(130% 90% at 50% 0%, var(--desk-2) 0%, var(--desk) 60%);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: var(--t-13);
+  line-height: 1.55;
+  overflow: hidden;   /* the cabinet does not scroll; its panes do */
+}
+
+/* ── CABINET ──────────────────────────────────────────────────── */
+.cabinet {
+  height: 100dvh;
+  display: grid;
+  grid-template-columns: var(--rail) var(--index) minmax(0, 1fr);
+  gap: var(--s-4);
+  padding: var(--s-4);
+  align-items: stretch;
+}
+.pane { min-height: 0; display: flex; flex-direction: column; }
+
+/* ── RAIL: identity plate + drawers ───────────────────────────── */
+.plate {
+  background: var(--card);
+  border: var(--rw-hair) solid var(--card-edge);
+  padding: var(--s-5) var(--s-4);
+  box-shadow: 0 1px 1px rgba(29, 27, 22, .05), 0 2px var(--s-2) rgba(29, 27, 22, .05);
+}
+.plate h1 {
+  font-family: var(--serif);
+  font-size: var(--t-29);
+  font-variation-settings: 'opsz' 32, 'wght' 600;
+  line-height: 1.02; letter-spacing: -.028em;
+}
+.plate .sub {
+  font-size: var(--t-9); letter-spacing: var(--tr-caps-xs);
+  text-transform: uppercase; color: var(--ink-3);
+  margin-top: var(--s-2); line-height: 1.6;
+}
+.plate .stamp {
+  display: inline-block; margin-top: var(--s-4);
+  border: var(--rw-med) solid var(--accent); color: var(--accent);
+  font-size: var(--t-9); font-weight: 500; letter-spacing: var(--tr-caps-xs);
+  text-transform: uppercase; padding: var(--s-1) var(--s-2);
+  transform: rotate(-1.6deg); opacity: .8;
+}
+
+.drawers { margin-top: var(--s-4); flex: 1; overflow: auto; }
+.drawers h2 {
+  font-size: var(--t-9); letter-spacing: var(--tr-caps-xs);
+  text-transform: uppercase; color: var(--ink-3);
+  padding-bottom: var(--s-2); margin-bottom: var(--s-2);
+  border-bottom: var(--rw-hair) solid var(--card-edge);
+}
+.drawers button {
+  display: grid; grid-template-columns: 1.9rem minmax(0, 1fr) auto;
+  align-items: baseline; gap: var(--s-2);
+  width: 100%; text-align: left;
+  padding: var(--s-2) var(--s-2) var(--s-2) 0;
+  border-bottom: var(--rw-hair) dotted var(--card-edge);
+  font-size: var(--t-11); letter-spacing: .02em;
+  color: var(--ink-2);
+  transition: color var(--dur) var(--ease), padding-left var(--dur) var(--ease);
+}
+.drawers button:hover { color: var(--accent); padding-left: var(--s-1); }
+.drawers button .dn { color: var(--ink-3); font-size: var(--t-9); letter-spacing: var(--tr-caps-xs); }
+.drawers button .dct { color: var(--ink-3); font-size: var(--t-9); }
+.drawers button[aria-current='true'] { color: var(--accent); font-weight: 500; }
+.drawers button[aria-current='true'] .dn,
+.drawers button[aria-current='true'] .dct { color: var(--accent); }
+
+.railfoot {
+  margin-top: var(--s-4); padding-top: var(--s-3);
+  border-top: var(--rw-hair) solid var(--card-edge);
+  display: flex; flex-wrap: wrap; gap: var(--s-1) var(--s-3);
+  font-size: var(--t-9); letter-spacing: var(--tr-caps-xs); text-transform: uppercase;
+}
+.railfoot a {
+  color: var(--ink-3); text-decoration: none;
+  border-bottom: var(--rw-hair) solid transparent;
+  transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+.railfoot a:hover, .railfoot a:focus-visible { color: var(--accent); border-bottom-color: currentColor; }
+
+/* ── INDEX: the card edges you flick through ──────────────────── */
+.indexhead {
+  display: flex; align-items: baseline; gap: var(--s-2);
+  padding-bottom: var(--s-2); margin-bottom: var(--s-2);
+  border-bottom: var(--rw-thin) solid var(--card-edge);
+}
+.indexhead h2 {
+  font-size: var(--t-11); font-weight: 600;
+  letter-spacing: var(--tr-caps-sm); text-transform: uppercase;
+}
+.indexhead .hint {
+  margin-left: auto; font-size: var(--t-9);
+  letter-spacing: var(--tr-caps-xs); text-transform: uppercase; color: var(--ink-3);
+}
+.tabs { flex: 1; overflow: auto; display: grid; gap: var(--s-1); align-content: start; padding-right: var(--s-1); }
+/* Each entry is a card seen edge-on: a thin slip with its call
+   number, title and headline figure. */
+.tab {
+  display: grid; grid-template-columns: 2.6rem minmax(0, 1fr);
+  gap: var(--s-1) var(--s-3);
+  width: 100%; text-align: left;
+  background: var(--card);
+  border: var(--rw-hair) solid var(--card-edge);
+  border-left: var(--rw-bold) solid transparent;
+  padding: var(--s-3);
+  transition: border-left-color var(--dur) var(--ease), transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+}
+.tab:hover { transform: translateX(2px); box-shadow: 0 1px 1px rgba(29, 27, 22, .05); }
+.tab .tno { font-size: var(--t-9); letter-spacing: .06em; color: var(--ink-3); padding-top: 2px; }
+.tab .tname {
+  font-family: var(--serif); font-size: var(--t-17);
+  font-variation-settings: 'opsz' 20, 'wght' 580;
+  letter-spacing: -.012em; line-height: 1.18;
+}
+.tab .tsub {
+  grid-column: 2; font-size: var(--t-9);
+  letter-spacing: var(--tr-caps-xs); text-transform: uppercase;
+  color: var(--ink-3); line-height: 1.5;
+}
+.tab .tmet { grid-column: 2; font-size: var(--t-10); color: var(--accent); letter-spacing: .04em; }
+.tab[aria-current='true'] {
+  border-left-color: var(--margin);
+  box-shadow: 0 1px 1px rgba(29, 27, 22, .06), 0 2px var(--s-2) rgba(29, 27, 22, .06);
+}
+.tab[aria-current='true'] .tname { font-variation-settings: 'opsz' 20, 'wght' 660; }
+
+/* ── THE PULLED CARD ──────────────────────────────────────────── */
+/* The whole face is ruled, like real card stock, not just the
+   paragraph block. --pad-t is chosen so the first baseline lands
+   on a printed line. */
+/* The card fills the pane so the desktop composition stays whole,
+   but the ruling belongs to the typed area only. Blank stock below
+   the last line is what a real card looks like. */
+.pane.desk { overflow: auto; }
+.face {
+  --gutter: 5.5rem;
+  --pad-t: 30px;
+  flex: 1 0 auto; position: relative;
+  background: var(--card);
+  border: var(--rw-hair) solid var(--card-edge);
+  box-shadow: 0 1px 1px rgba(29, 27, 22, .05), 0 var(--s-1) var(--s-6) rgba(29, 27, 22, .08);
+}
+.face::before {   /* red margin rule, full card height */
+  content: ''; position: absolute; left: var(--gutter); top: 0; bottom: 0;
+  width: 1px; background: var(--margin); opacity: .45;
+}
+/* Ruling lives on the typed area, so it stops where the entry
+   stops rather than running to the bottom of the pane. */
+.facein {
+  padding: var(--pad-t) var(--s-8) calc(var(--lh) * 2) calc(var(--gutter) + var(--s-5));
+  background-image: repeating-linear-gradient(
+    180deg, transparent 0 calc(var(--lh) - 1px),
+    var(--rule) calc(var(--lh) - 1px) var(--lh));
+  background-position: 0 calc(var(--pad-t) - 6px);
+  background-repeat: repeat-x;
+  background-size: 100% calc(100% - var(--lh) * 2);
+}
+.callno {
+  position: absolute; left: var(--s-4); top: var(--pad-t);
+  font-size: var(--t-9); letter-spacing: .08em; color: var(--ink-3);
+  line-height: var(--lh); width: calc(var(--gutter) - var(--s-6));
+}
+.callno b { display: block; font-weight: 500; color: var(--accent); }
+
+/* Header height is always a whole number of --lh, so the ruled
+   body below it stays on the printed lines no matter how the org
+   name wraps. The metric column is fixed at 3 units so it never
+   becomes the thing that drives the row height off-grid. */
+.fhead {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: var(--s-6); align-items: start;
+  border-bottom: 1px solid var(--card-edge);
+  padding-bottom: calc(var(--lh) - 1px);
+}
+.fhead h2 {
+  font-family: var(--serif);
+  font-size: clamp(1.75rem, 2.4vw, 2.25rem);
+  font-variation-settings: 'opsz' 36, 'wght' 620;
+  line-height: calc(var(--lh) * 2); letter-spacing: -.026em;
+}
+.fhead .frole {
+  display: block; font-family: var(--serif); font-size: var(--t-17);
+  font-style: italic; color: var(--ink-3); line-height: var(--lh);
+}
+.fhead .fmetwrap { height: calc(var(--lh) * 3); text-align: right; }
+.fhead .fper {
+  display: block; font-size: var(--t-10); letter-spacing: var(--tr-caps-sm);
+  text-transform: uppercase; color: var(--ink-3); white-space: nowrap;
+  line-height: var(--lh);
+}
+.fhead .fmet {
+  display: block; font-family: var(--serif);
+  font-size: var(--t-35); font-variation-settings: 'opsz' 40, 'wght' 620;
+  letter-spacing: -.03em; line-height: calc(var(--lh) * 1.5); color: var(--accent);
+  font-variant-numeric: tabular-nums lining-nums;
+}
+.fhead .fmetl {
+  display: block; font-family: var(--mono); font-size: var(--t-9);
+  letter-spacing: var(--tr-caps-xs); text-transform: uppercase;
+  color: var(--ink-3); line-height: calc(var(--lh) * .5); max-width: 10rem;
+  margin-left: auto;
+}
+
+/* Body rides the face ruling, so every block is a whole number of
+   --lh units. That is what keeps the type on the lines. */
+.fbody { margin-top: var(--lh); }
+.fbody ul { list-style: none; max-width: 78ch; }
+.fbody li, .fbody p.t {
+  font-family: var(--serif); font-size: var(--t-15);
+  line-height: var(--lh); color: var(--ink-2);
+  position: relative; padding-left: var(--s-5);
+  margin-bottom: var(--lh); max-width: 78ch;
+}
+.fbody li::before {
+  content: '·'; position: absolute; left: var(--s-2);
+  color: var(--accent); font-weight: 600;
+}
+.fbody li:last-child, .fbody p.t:last-child { margin-bottom: 0; }
+.fbody a { color: var(--accent); text-decoration: none; border-bottom: var(--rw-hair) solid currentColor; }
+
+/* Typed entry rows: the key/value block on a real catalogue card.
+   Each row is exactly one ruled line tall. */
+.fkv { margin-top: var(--lh); border-top: 1px solid var(--card-edge); }
+.fkv div {
+  display: grid; grid-template-columns: 8.5rem minmax(0, 1fr); gap: var(--s-4);
+  border-bottom: 1px dotted var(--card-edge);
+  align-items: baseline;
+}
+.fkv dt {
+  font-size: var(--t-9); font-weight: 600; letter-spacing: var(--tr-caps-xs);
+  text-transform: uppercase; color: var(--ink-3); line-height: var(--lh);
+}
+.fkv dd { font-family: var(--serif); font-size: var(--t-15); line-height: var(--lh); color: var(--ink-2); }
+.fkv dd em { color: var(--ink-3); }
+.fkv dd a { color: var(--accent); text-decoration: none; border-bottom: 1px solid currentColor; }
+
+/* Subject-heading list: flowed in columns, one ruled line each.
+   No invented numbering, because a subject heading has none. */
+.flist { columns: 3; column-gap: var(--s-8); list-style: none; }
+.fbody .flist li {
+  font-family: var(--serif); font-size: var(--t-15); line-height: var(--lh);
+  color: var(--ink-2); break-inside: avoid;
+  border-bottom: 1px dotted var(--card-edge);
+  padding-left: 0; margin-bottom: 0; max-width: none;
+}
+.fbody .flist li::before { content: none; }
+
+.ftags {
+  margin-top: var(--lh); padding-top: calc(var(--lh) - 1px);
+  border-top: 1px solid var(--card-edge);
+  display: flex; justify-content: space-between; gap: var(--s-4); flex-wrap: wrap;
+  font-size: var(--t-9); letter-spacing: var(--tr-caps-xs);
+  text-transform: uppercase; color: var(--ink-3); line-height: var(--lh);
+}
+
+/* ── NARROW / SHORT FALLBACK ──────────────────────────────────── */
+@media (max-width: 68rem), (max-height: 34rem) {
+  body { overflow: auto; }
+  .cabinet { height: auto; grid-template-columns: minmax(0, 1fr); }
+  .drawers, .tabs, .face { overflow: visible; }
+  .tabs { grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); }
+  .face { --gutter: 3rem; }
+  .facein { padding: var(--s-5) var(--s-5) var(--s-6) calc(var(--gutter) + var(--s-4)); }
+  .callno { position: static; width: auto; margin-bottom: var(--s-3); }
+  .fhead { grid-template-columns: minmax(0, 1fr); }
+  .fhead .fper, .fhead .fmet, .fhead .fmetl { text-align: left; margin-left: 0; }
+}
+
+@media print {
+  body { background: #fff; overflow: visible; }
+  .cabinet { height: auto; grid-template-columns: minmax(0, 1fr); }
+  .plate, .face { box-shadow: none; }
+  .drawers, .tabs, .indexhead { display: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#face">Skip to card</a>
+<div class="cabinet" id="app"></div>
+
+<script type="module">
+import { meta, bio, experience, projects, stack, awards, personal, links } from './content.js';
+import { esc, mount } from './css/render.js';
+
+const lis = (arr) => `<ul>${arr.map((b) => `<li>${esc(b)}</li>`).join('')}</ul>`;
+const kv = (rows) => `<dl class="fkv">${rows
+  .map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${v}</dd></div>`).join('')}</dl>`;
+const ext = (href, text) =>
+  `<a href="${esc(href)}"${href.startsWith('http') ? ' target="_blank" rel="noopener"' : ''}>${esc(text)}</a>`;
+
+/* Every card is {code, name, sub, per, metric, body}. The drawers
+   are just groupings; the card shape never changes, which is what
+   keeps the catalogue metaphor honest across sections. */
+const DRAWERS = [
+  {
+    id: 'front', no: '01', label: 'Front matter',
+    cards: [{
+      code: 'KG 000', name: meta.name, sub: meta.tagline, per: meta.location,
+      metric: { value: '3.95', label: 'GPA of 4.00' },
+      body: lis(bio) + kv([
+        ['Program', 'Computer Engineering, University of Waterloo'],
+        ['Minor', 'Economics'],
+        ['Focus', meta.disciplines.join(', ')],
+        ['Résumé', ext(meta.resume, 'KaranGuptaResume.pdf ↗')],
+      ]),
+    }],
+  },
+  {
+    id: 'experience', no: '02', label: 'Experience',
+    cards: experience.map((e, i) => ({
+      code: `KG ${String(101 + i)}`,
+      name: e.org, sub: `${e.role}${e.unit ? `, ${e.unit}` : ''}`,
+      per: e.period, metric: e.metric,
+      body: `<p class="t" style="font-style:italic">${esc(e.headline)}.</p>${lis(e.bullets)}`,
+      tags: e.tags,
+    })),
+  },
+  {
+    id: 'projects', no: '03', label: 'Projects',
+    cards: projects.map((p, i) => ({
+      code: `KG ${String(201 + i)}`,
+      name: p.name, sub: p.award, per: 'Project', metric: p.metric,
+      body: `<p class="t" style="font-style:italic">${esc(p.short)}</p><p class="t">${esc(p.desc)}</p>`,
+      tags: p.stack,
+    })),
+  },
+  {
+    id: 'stack', no: '04', label: 'Subject headings',
+    cards: stack.map((s, i) => ({
+      code: `KG ${String(301 + i)}`,
+      name: s.label, sub: 'Subject heading', per: 'Stack',
+      metric: { value: String(s.items.length), label: 'entries' },
+      body: `<ul class="flist">${s.items.map((it) => `<li>${esc(it)}</li>`).join('')}</ul>`,
+    })),
+  },
+  {
+    id: 'reference', no: '05', label: 'Reference',
+    cards: [
+      {
+        code: 'KG 401', name: 'Awards', sub: 'Honours and placements', per: 'Reference',
+        metric: { value: String(awards.length), label: 'entries' },
+        body: kv(awards.map((a) => [a.rank, `${esc(a.name)}${a.note ? ` <em>${esc(a.note)}</em>` : ''}`])),
+      },
+      {
+        code: 'KG 402', name: 'Beyond code', sub: 'Marginalia', per: 'Reference',
+        metric: { value: '35+', label: 'keyboards built' },
+        body: kv(personal.map((p) => [p.label,
+          `${esc(p.body)}${p.link ? ` ${ext(p.link.href, `${p.link.text} ↗`)}` : ''}`])),
+      },
+      {
+        code: 'KG 403', name: 'Circulation card', sub: 'How to reach me', per: meta.date,
+        metric: { value: '6', label: 'ways to reach me' },
+        body: `<p class="t">Open to internships and collaboration. Cold emails welcome.</p>`
+          + kv(links.map((l) => [l.name, l.href ? ext(l.href, l.handle) : esc(l.handle)])),
+      },
+    ],
+  },
+];
+
+const ALL = DRAWERS.flatMap((d) => d.cards.map((c) => ({ ...c, drawer: d.id })));
+const find = (code) => ALL.find((c) => c.code.replace(/\s+/g, '') === code) || ALL[0];
+
+mount('#app', `
+<div class="pane">
+  <header class="plate">
+    <h1>${esc(meta.name)}</h1>
+    <p class="sub">${esc(meta.tagline)}<br>${esc(meta.location)}</p>
+    <p class="stamp">GPA ${esc(meta.gpa)}</p>
+  </header>
+  <nav class="drawers" aria-label="Drawers">
+    <h2>Cabinet</h2>
+    ${DRAWERS.map((d) => `
+      <button type="button" data-drawer="${esc(d.id)}">
+        <span class="dn">${esc(d.no)}</span><span>${esc(d.label)}</span><span class="dct">${d.cards.length}</span>
+      </button>`).join('')}
+    <p class="railfoot">
+      ${links.filter((l) => l.href).map((l) => ext(l.href, l.name)).join('')}
+    </p>
+  </nav>
+</div>
+
+<div class="pane">
+  <div class="indexhead"><h2 id="idxlabel">Experience</h2><span class="hint">↑ ↓ to browse</span></div>
+  <div class="tabs" id="tabs" role="list"></div>
+</div>
+
+<div class="pane desk">
+  <article class="face" id="face" tabindex="-1"></article>
+</div>
+`);
+
+const tabsEl = document.getElementById('tabs');
+const faceEl = document.getElementById('face');
+const idxEl = document.getElementById('idxlabel');
+let drawerId = 'front';
+
+function renderTabs() {
+  const d = DRAWERS.find((x) => x.id === drawerId);
+  idxEl.textContent = d.label;
+  tabsEl.innerHTML = d.cards.map((c) => `
+    <button type="button" class="tab" role="listitem" data-code="${esc(c.code.replace(/\s+/g, ''))}">
+      <span class="tno">${esc(c.code)}</span>
+      <span class="tname">${esc(c.name)}</span>
+      <span class="tsub">${esc(c.sub)}</span>
+      <span class="tmet">${esc(c.metric.value)} ${esc(c.metric.label)}</span>
+    </button>`).join('');
+  document.querySelectorAll('[data-drawer]').forEach((b) => {
+    b.setAttribute('aria-current', String(b.dataset.drawer === drawerId));
+  });
+}
+
+function renderCard(code, focus) {
+  const c = find(code);
+  drawerId = c.drawer;
+  renderTabs();
+  faceEl.innerHTML = `
+    <div class="facein">
+      <p class="callno">${esc(c.code)}<b>${esc(c.drawer)}</b></p>
+      <header class="fhead">
+        <div>
+          <h2>${esc(c.name)}</h2>
+          <span class="frole">${esc(c.sub)}</span>
+        </div>
+        <div class="fmetwrap">
+          <span class="fper">${esc(c.per)}</span>
+          <span class="fmet">${esc(c.metric.value)}</span>
+          <small class="fmetl">${esc(c.metric.label)}</small>
+        </div>
+      </header>
+      <div class="fbody">${c.body}</div>
+      ${c.tags ? `<p class="ftags"><span>${c.tags.map(esc).join(' · ')}</span><span>${esc(meta.rev)}</span></p>`
+               : `<p class="ftags"><span>Catalogued ${esc(meta.date)}</span><span>${esc(meta.rev)}</span></p>`}
+    </div>`;
+  faceEl.parentElement.scrollTop = 0;
+  const active = tabsEl.querySelector(`[data-code="${c.code.replace(/\s+/g, '')}"]`);
+  if (active) {
+    active.setAttribute('aria-current', 'true');
+    active.scrollIntoView({ block: 'nearest' });
+    if (focus) active.focus();
+  }
+  const hash = `#${c.code.replace(/\s+/g, '')}`;
+  if (location.hash !== hash) history.replaceState(null, '', hash);
+}
+
+document.addEventListener('click', (ev) => {
+  const drawer = ev.target.closest('[data-drawer]');
+  if (drawer) { drawerId = drawer.dataset.drawer; renderCard(DRAWERS.find((d) => d.id === drawerId).cards[0].code.replace(/\s+/g, '')); return; }
+  const tab = ev.target.closest('.tab');
+  if (tab) renderCard(tab.dataset.code);
+});
+
+// Arrow keys walk the whole catalogue, crossing drawer boundaries.
+document.addEventListener('keydown', (ev) => {
+  if (ev.key !== 'ArrowDown' && ev.key !== 'ArrowUp') return;
+  if (ev.target.matches('input, textarea')) return;
+  const cur = tabsEl.querySelector('[aria-current="true"]')?.dataset.code;
+  const i = ALL.findIndex((c) => c.code.replace(/\s+/g, '') === cur);
+  const next = ALL[(i + (ev.key === 'ArrowDown' ? 1 : ALL.length - 1)) % ALL.length];
+  ev.preventDefault();
+  renderCard(next.code.replace(/\s+/g, ''), true);
+});
+
+renderCard(location.hash.slice(1) || ALL[0].code.replace(/\s+/g, ''));
+</script>
+</body>
+</html>

@@ -1,0 +1,151 @@
+/* ═══════════════════════════════════════════════════════════════
+   Shared foundation for the concept mockups.
+   Tokens first: type scale, spacing scale, rule weights. Every
+   mockup composes from these instead of picking numbers by feel,
+   which is what makes a layout read as designed rather than typed.
+   ═══════════════════════════════════════════════════════════════ */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  /* ── typefaces ──────────────────────────────────────────────
+     Newsreader: a screen-native editorial serif with optical
+     sizing, so large display sizes get tighter fitting for free.
+     IBM Plex Mono: engineering-credible mono with a real italic.
+     Two families only. System stacks are the listed fallback so
+     first paint is never blank.                                */
+  --serif: 'Newsreader', 'Iowan Old Style', 'Source Serif 4', Charter, Georgia, serif;
+  --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+
+  /* ── type scale (1.2 minor third, rounded to whole px) ─────── */
+  --t-9:   9px;    /* micro caps: sheet numbers, zone letters   */
+  --t-10: 10px;    /* label caps                                 */
+  --t-11: 11px;    /* small caps, tabular meta                   */
+  --t-12: 12px;
+  --t-13: 13px;    /* mono body                                  */
+  --t-14: 14px;
+  --t-15: 15px;    /* serif body                                 */
+  --t-17: 17px;
+  --t-20: 20px;
+  --t-24: 24px;
+  --t-29: 29px;
+  --t-35: 35px;
+
+  /* ── spacing scale (4px base, no off-scale values) ─────────── */
+  --s-1:  4px;   --s-2:  8px;   --s-3: 12px;  --s-4: 16px;
+  --s-5: 20px;   --s-6: 24px;   --s-7: 32px;  --s-8: 40px;
+  --s-9: 56px;  --s-10: 72px;  --s-11: 96px;
+
+  /* ── rule weights ───────────────────────────────────────────
+     Print hairlines are thinner than 1px. On retina we can get
+     closer; on 1x we clamp to 1px so rules never vanish.      */
+  --rw-hair: 1px;
+  --rw-thin: 1px;
+  --rw-med:  2px;
+  --rw-bold: 3px;
+
+  /* ── tracking ───────────────────────────────────────────────
+     Uppercase needs more tracking as it gets smaller. These are
+     tuned per size rather than a single global value, which is
+     the difference between set type and typed type.           */
+  --tr-caps-xs: .16em;   /* 9-10px uppercase  */
+  --tr-caps-sm: .12em;   /* 11-12px uppercase */
+  --tr-caps-md: .08em;   /* 14-16px uppercase */
+  --tr-display: -.03em;  /* 40px+ display     */
+
+  /* ── motion ─────────────────────────────────────────────────
+     One duration, one easing. Inconsistent timing across a page
+     is a strong amateur signal.                               */
+  --dur: 180ms;
+  --ease: cubic-bezier(.22, .61, .36, 1);
+}
+
+@supports (border-width: 0.5px) {
+  :root { --rw-hair: 0.5px; }
+}
+
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  /* tabular figures everywhere: metrics must align in columns */
+  font-variant-numeric: tabular-nums;
+  font-kerning: normal;
+  font-feature-settings: 'kern' 1, 'liga' 1;
+}
+
+/* Optical sizing where the family supports it (Newsreader does). */
+h1, h2, h3, .display { font-optical-sizing: auto; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+img, svg { display: block; max-width: 100%; }
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+a { color: inherit; }
+
+/* Hanging punctuation and proper quotes where supported. */
+blockquote, .lede { hanging-punctuation: first last; }
+
+/* ── focus: one ring, everywhere, always visible ─────────────── */
+:focus-visible {
+  outline: var(--rw-med) solid currentColor;
+  outline-offset: 2px;
+}
+/* Never remove the ring for mouse users on interactive summaries */
+summary { cursor: pointer; }
+
+.skip {
+  position: absolute; left: -9999px; top: 0; z-index: 99;
+  padding: var(--s-3) var(--s-4); background: #000; color: #fff;
+  font: 500 var(--t-12)/1 var(--mono); letter-spacing: var(--tr-caps-sm);
+  text-transform: uppercase; text-decoration: none;
+}
+.skip:focus { left: var(--s-2); top: var(--s-2); }
+
+.vh {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip-path: inset(50%); white-space: nowrap;
+}
+
+/* ── concept switcher ────────────────────────────────────────────
+   Deliberately quiet: it is scaffolding for comparing mockups,
+   not part of any concept. Low contrast until hovered.        */
+.switcher {
+  position: fixed; right: var(--s-4); bottom: var(--s-4); z-index: 50;
+  display: flex; align-items: stretch;
+  background: rgba(20, 20, 15, .92);
+  backdrop-filter: saturate(140%) blur(6px);
+  border: var(--rw-hair) solid rgba(255, 255, 255, .14);
+  font: 500 var(--t-10)/1 var(--mono);
+  letter-spacing: var(--tr-caps-xs); text-transform: uppercase;
+  box-shadow: 0 var(--s-1) var(--s-5) rgba(0, 0, 0, .3);
+  opacity: .55; transition: opacity var(--dur) var(--ease);
+}
+.switcher:hover, .switcher:focus-within { opacity: 1; }
+.switcher a {
+  color: rgba(244, 241, 234, .72); text-decoration: none;
+  padding: var(--s-2) var(--s-3);
+  border-right: var(--rw-hair) solid rgba(255, 255, 255, .1);
+  transition: color var(--dur) var(--ease), background var(--dur) var(--ease);
+}
+.switcher a:last-child { border-right: 0; }
+.switcher a:hover { color: #fff; background: rgba(255, 255, 255, .08); }
+.switcher a[aria-current='page'] { color: #fff; background: rgba(255, 255, 255, .14); }
+
+@media print {
+  .switcher, .skip { display: none !important; }
+  html, body { background: #fff !important; }
+  a[href^='http']::after { content: ' (' attr(href) ')'; font-size: 8pt; word-break: break-all; }
+  h1, h2, h3 { break-after: avoid; }
+  tr, li, .card, .part { break-inside: avoid; }
+}
