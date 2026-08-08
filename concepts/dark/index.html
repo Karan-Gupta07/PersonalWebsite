@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Karan Gupta — Dark themes</title>
+<link rel="preload" href="./fonts/newsreader-wide.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="./fonts/plex-mono-medium.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+@font-face{font-family:'NR';src:url('./fonts/newsreader-wide.woff2')format('woff2-variations');font-weight:300 800;font-display:swap}
+@font-face{font-family:'NR';src:url('./fonts/newsreader-wide-italic.woff2')format('woff2-variations');font-weight:300 800;font-style:italic;font-display:swap}
+@font-face{font-family:'PM';src:url('./fonts/plex-mono-regular.woff2')format('woff2');font-weight:400;font-display:swap}
+@font-face{font-family:'PM';src:url('./fonts/plex-mono-medium.woff2')format('woff2');font-weight:500;font-display:swap}
+@font-face{font-family:'PM';src:url('./fonts/plex-mono-semibold.woff2')format('woff2');font-weight:600;font-display:swap}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;overflow-x:hidden;scroll-padding-top:5rem}
+body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility;font-kerning:normal}
+h1,h2,h3,h4{font-weight:500}
+ul,ol{list-style:none}a{color:inherit}img,svg{display:block;max-width:100%}
+:focus-visible{outline:2px solid currentColor;outline-offset:3px}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+.skip{position:absolute;left:-9999px;top:0;z-index:99;padding:.75rem 1rem;font-family:'PM';font-size:11px;letter-spacing:.16em;text-transform:uppercase;text-decoration:none}
+.skip:focus{left:.5rem;top:.5rem}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{transition-duration:.001ms!important;animation-duration:.001ms!important}}
+
+.sw{position:fixed;right:14px;bottom:14px;z-index:80;display:flex;font-family:'PM';font-size:10px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;background:rgba(8,8,10,.94);border:1px solid rgba(255,255,255,.16);opacity:.5;transition:opacity 180ms ease;backdrop-filter:blur(6px)}
+.sw:hover,.sw:focus-within{opacity:1}
+.sw a{color:rgba(255,255,255,.66);text-decoration:none;padding:8px 11px;border-right:1px solid rgba(255,255,255,.12)}
+.sw a:last-child{border-right:0}
+.sw a:hover{color:#fff;background:rgba(255,255,255,.09)}
+.sw a[aria-current=page]{color:#fff;background:rgba(255,255,255,.16)}
+
+body{background:#0c0c0e;color:#eceae5;font-family:'PM';font-size:14px;line-height:1.6;padding:clamp(2rem,7vh,5rem) clamp(1.25rem,4vw,3rem)}
+.w{max-width:60rem;margin:0 auto}
+h1{font-family:'NR';font-size:clamp(2rem,1.5rem + 2.5vw,3.4rem);font-variation-settings:'opsz' 36;font-weight:420;letter-spacing:-.02em;line-height:1.05}
+.sub{margin-top:1rem;font-family:'NR';font-size:1.15rem;font-style:italic;font-weight:380;color:#a09d95;max-width:50ch;line-height:1.55}
+ol{margin-top:2.5rem;border-top:1px solid #23242a}
+li{border-bottom:1px solid #23242a}
+a.t{display:grid;grid-template-columns:3rem minmax(0,10rem) minmax(0,1fr) auto;gap:1.25rem;align-items:baseline;padding:1.35rem 0;text-decoration:none;transition:color .2s,padding-left .2s}
+a.t:hover{color:#d98324;padding-left:.4rem}
+.n{font-size:10px;letter-spacing:.18em;color:#6c6a63}
+.nm{font-family:'NR';font-size:1.65rem;font-variation-settings:'opsz' 28;font-weight:460;letter-spacing:-.015em}
+.ds{font-size:13px;color:#a09d95;line-height:1.55}
+.ar{font-size:13px;color:#6c6a63}
+.ft{margin-top:2.5rem;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6c6a63}
+@media(max-width:52rem){a.t{grid-template-columns:2.5rem minmax(0,1fr)}.ds,.ar{display:none}}
+</style>
+</head><body>
+<a class="skip" href="#main">Skip to content</a>
+
+<div class="w">
+  <h1>Dark themes</h1>
+  <p class="sub">Four dark directions for the portfolio. Same content throughout, so the difference you are judging is the design.</p>
+  <ol>
+    <li><a class="t" href="./ink.html">
+      <span class="n">01</span>
+      <span class="nm">Ink</span>
+      <span class="ds">Warm near-black with amber. Alternating dark bands give the scroll a pulse; full-height opening spread.</span>
+      <span class="ar">→</span>
+    </a></li>
+    <li><a class="t" href="./brut.html">
+      <span class="n">02</span>
+      <span class="nm">Brutalist</span>
+      <span class="ds">Pure black, acid lime, hard grid. Everything boxed in visible rules; name as an uppercase mono slab.</span>
+      <span class="ar">→</span>
+    </a></li>
+    <li><a class="t" href="./noir.html">
+      <span class="n">03</span>
+      <span class="nm">Noir</span>
+      <span class="ds">Blue-black and cold white with deep red. Centred film-title cards between sections, figures as watermarks.</span>
+      <span class="ar">→</span>
+    </a></li>
+    <li><a class="t" href="./plate.html">
+      <span class="n">04</span>
+      <span class="nm">Plate</span>
+      <span class="ds">Charcoal and brass. Content on raised panels split by hairlines, asymmetric plate grid for projects.</span>
+      <span class="ar">→</span>
+    </a></li>
+  </ol>
+  <p class="ft">Serve from the repo root, then open /concepts/dark/</p>
+</div>
+<nav class="sw" aria-label="Theme"><a href="./ink.html">Ink</a><a href="./brut.html">Brutalist</a><a href="./noir.html">Noir</a><a href="./plate.html">Plate</a></nav>
+</body></html>
