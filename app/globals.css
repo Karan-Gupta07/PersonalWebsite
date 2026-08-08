@@ -450,6 +450,51 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 
 /* Sections are short, so they get their own rhythm rather than the
    full page --section gap, which would strand each paragraph. */
+/* ── architecture diagram ──────────────────────────────────────
+   Drawn in type and rules, not an image: it stays sharp at any
+   zoom, is readable by a screen reader as an ordered list, and
+   costs no bytes. Each stage carries the metric it owns.       */
+.arch { margin-top: clamp(3.5rem, 2rem + 5vw, 6.5rem); }
+.arch .flow {
+  margin-top: 1.75rem;
+  display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr);
+  border-top: 2px solid var(--ink);
+}
+.arch .flow li {
+  padding: 1.5rem 1.5rem 1.5rem 0;
+  border-right: 1px solid var(--hair);
+  position: relative;
+}
+.arch .flow li:last-child { border-right: 0; }
+/* No connector marks between stages. Both a text arrow and a drawn
+   chevron were too small to read at this size and collided with the
+   copy. The numbered order plus the divider rules already carry the
+   sequence, so the marks were noise doing no work. */
+.arch .n { font-family: var(--mono); font-size: var(--t-meta); letter-spacing: var(--track-caps); color: var(--accent); }
+.arch .nm {
+  display: block; margin-top: .5rem;
+  font-family: var(--serif); font-size: var(--t-h3);
+  font-variation-settings: 'opsz' 24;
+  font-weight: 520; letter-spacing: -.015em; line-height: 1.05;
+}
+.arch .note { display: block; margin-top: .5rem; font-size: .875rem; line-height: 1.5; color: var(--ink-2); }
+.arch .tech { display: block; margin-top: .75rem; font-family: var(--mono); font-size: var(--t-meta); letter-spacing: .06em; color: var(--ink-3); }
+.arch .met {
+  display: inline-block; margin-top: .75rem;
+  font-family: var(--mono); font-size: var(--t-meta); font-weight: 500;
+  letter-spacing: var(--track-caps-sm); text-transform: uppercase;
+  color: var(--accent); border-top: 1px solid var(--accent-soft); padding-top: .4rem;
+}
+.arch figcaption { margin-top: 1.5rem; }
+
+@media (max-width: 62rem) {
+  /* Stack the flow. The connector rotates to point down the page. */
+  .arch .flow { grid-auto-flow: row; grid-auto-columns: auto; }
+  .arch .flow li { border-right: 0; border-bottom: 1px solid var(--hair); padding: 1rem 0 1.25rem; }
+  .arch .flow li:last-child { border-bottom: 0; }
+  .arch .nm { font-size: 1.375rem; }
+}
+
 .case-sec {
   margin-top: clamp(3rem, 2rem + 4vw, 5.5rem);
   display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);

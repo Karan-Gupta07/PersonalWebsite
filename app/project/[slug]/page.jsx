@@ -48,6 +48,28 @@ export default function ProjectPage({ params }) {
           <figcaption className="cap meta">{p.figure.label}</figcaption>
         </figure>
 
+        {p.diagram ? (
+          <figure className="wrap arch">
+            <div className="section-head">
+              <span className="no">Fig. 1</span>
+              <h2>Pipeline</h2>
+              <span className="meta aside">{p.diagram.stages.length} stages</span>
+            </div>
+            <ol className="flow">
+              {p.diagram.stages.map((s) => (
+                <li key={s.n}>
+                  <span className="n">{s.n}</span>
+                  <span className="nm">{s.name}</span>
+                  <span className="note">{s.note}</span>
+                  <span className="tech">{s.tech}</span>
+                  {s.metric ? <span className="met">{s.metric}</span> : null}
+                </li>
+              ))}
+            </ol>
+            <figcaption className="meta">{p.diagram.caption}</figcaption>
+          </figure>
+        ) : null}
+
         <div className="wrap">
           {p.sections.map((s) => (
             <section className="reveal case-sec" key={s.n}>

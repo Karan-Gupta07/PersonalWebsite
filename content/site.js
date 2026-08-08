@@ -122,6 +122,19 @@ export const projects = [
     result: '1st place · Hack Canada 2026 · $5,000',
     figure: { value: '90%+', label: 'classification accuracy', index: '01' },
     featured: true,
+    // Real pipeline, drawn as a flow. Each stage carries the metric
+    // it is actually responsible for, so the diagram is evidence
+    // rather than decoration.
+    diagram: {
+      caption: 'Photo in, purchasable repair plan out.',
+      stages: [
+        { n: '01', name: 'Capture', note: 'Photo of the broken product', tech: 'Swift' },
+        { n: '02', name: 'Classify', note: 'Vision model identifies item and damage', tech: 'Gemini', metric: '90%+ accuracy' },
+        { n: '03', name: 'Reason', note: 'Iterative loop emits steps, tools, cost', tech: 'Python' },
+        { n: '04', name: 'Source', note: 'Parts matched against live listings', tech: 'Shopify · SerpAPI', metric: '1,000+ listings' },
+        { n: '05', name: 'Checkout', note: 'One unified basket', tech: 'React · Node.js', metric: '−70% search time' },
+      ],
+    },
     sections: [
       {
         n: '01', title: 'Overview',
@@ -162,6 +175,16 @@ export const projects = [
     result: '90%+ less manual monitoring',
     figure: { value: '90%', label: 'less manual monitoring', index: '02' },
     featured: true,
+    diagram: {
+      caption: 'Continuous sensing at the bedside, humans only for judgement.',
+      stages: [
+        { n: '01', name: 'Sense', note: 'Camera and environmental sensors', tech: 'Arduino · C/C++' },
+        { n: '02', name: 'Ingest', note: 'Serial read with threshold validation', tech: 'Python', metric: '0 dropped readings' },
+        { n: '03', name: 'Detect', note: 'Eye tracking classifies sleep and blink', tech: 'OpenCV' },
+        { n: '04', name: 'Flag', note: 'Abnormal conditions raise an alert', tech: 'Python', metric: '−90% manual checks' },
+        { n: '05', name: 'Dashboard', note: 'Role-gated live view for staff', tech: 'Flask · SQL' },
+      ],
+    },
     sections: [
       {
         n: '01', title: 'Overview',
@@ -202,6 +225,16 @@ export const projects = [
     result: '10+ measurements per user · +40% consistency',
     figure: { value: '+40%', label: 'measurement consistency', index: '03' },
     featured: true,
+    diagram: {
+      caption: 'A camera replaces the tape measure.',
+      stages: [
+        { n: '01', name: 'Upload', note: 'User photo, no manual sizing', tech: 'React' },
+        { n: '02', name: 'Landmarks', note: 'Body keypoints located', tech: 'OpenCV', metric: '200+ images' },
+        { n: '03', name: 'Normalize', note: 'Scale and pose corrected', tech: 'scikit-learn', metric: '+40% consistency' },
+        { n: '04', name: 'Derive', note: 'Tailor-usable dimensions extracted', tech: 'TensorFlow', metric: '10+ per user' },
+        { n: '05', name: 'Catalog', note: 'Order against the item catalog', tech: 'MongoDB', metric: 'sub-200ms' },
+      ],
+    },
     sections: [
       {
         n: '01', title: 'Overview',
@@ -242,6 +275,15 @@ export const projects = [
     result: 'Reach / target / safety classification',
     figure: { value: '3', label: 'tiers: reach, target, safety', index: '04' },
     featured: false,
+    diagram: {
+      caption: 'Public outcomes, structured, then scored.',
+      stages: [
+        { n: '01', name: 'Scrape', note: 'Real posted admissions outcomes', tech: 'PRAW' },
+        { n: '02', name: 'Structure', note: 'Messy posts into records', tech: 'MongoDB' },
+        { n: '03', name: 'Score', note: 'Similarity on GPA, tests, interests', tech: 'Python' },
+        { n: '04', name: 'Classify', note: 'Reach, target, safety per school', tech: 'Python' },
+      ],
+    },
     sections: [
       {
         n: '01', title: 'Overview',
@@ -274,6 +316,15 @@ export const projects = [
     result: 'Boots straight to kiosk playback',
     figure: { value: '0', label: 'phones required', index: '05' },
     featured: false,
+    diagram: {
+      caption: 'Power on, music appears. No phone in the loop.',
+      stages: [
+        { n: '01', name: 'Boot', note: 'systemd starts the service', tech: 'Raspberry Pi' },
+        { n: '02', name: 'Auth', note: 'Cached OAuth token, no re-login', tech: 'Spotipy' },
+        { n: '03', name: 'Serve', note: 'Local REST API on the device', tech: 'FastAPI' },
+        { n: '04', name: 'Kiosk', note: 'Chromium fullscreen touch UI', tech: 'JS', metric: '3s poll' },
+      ],
+    },
     sections: [
       {
         n: '01', title: 'Overview',
