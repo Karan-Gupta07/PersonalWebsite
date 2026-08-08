@@ -1,25 +1,20 @@
 import '@/app/globals.css';
+import { meta } from '@/content/site';
 
 export const metadata = {
-  title: 'Karan Gupta — Software Engineer',
-  description: 'Personal website of Karan Gupta, software engineer specialized in robotics and web backend service integrations.',
+  title: `${meta.name} — ${meta.title}`,
+  description: `${meta.name}. ${meta.school}. AI agents, computer vision, automation.`,
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&family=VT323&display=swap"
-          rel="stylesheet"
-        />
+        <link rel="preload" href="/fonts/newsreader-var.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+        <link rel="preload" href="/fonts/plex-mono-medium.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
         <link rel="icon" href="/favicon.png" type="image/png" />
       </head>
-      <body>
-        {children}
-      </body>
+      <body>{children}</body>
     </html>
   );
 }

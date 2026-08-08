@@ -1,333 +1,200 @@
-'use client';
-
-import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import Sidebar from '@/components/Sidebar';
+import { meta, links, experience, projects, skills, awards, about } from '@/content/site';
+import { SiteHeader, SiteFooter } from '@/components/SiteChrome';
+import Reveal from '@/components/Reveal';
 import SpotifyWidget from '@/components/SpotifyWidget';
 
+function SectionHead({ no, title, aside }) {
+  return (
+    <div className="section-head">
+      <span className="no">{no}</span>
+      <h2>{title}</h2>
+      {aside ? <span className="meta aside">{aside}</span> : null}
+    </div>
+  );
+}
+
+function FeaturedWork({ p, i }) {
+  return (
+    <Reveal as="article" className={`work${i % 2 === 1 ? ' flip' : ''}`}>
+      <Link href={`/project/${p.slug}`} className="hit">
+        <div className="inner">
+          <div className="txt">
+            <span className="idx">{p.figure.index} / Selected work</span>
+            <h3>{p.name}</h3>
+            <p className="deck">{p.deck}</p>
+          </div>
+          <div className="fig" aria-hidden="true">
+            <span className="big">{p.figure.value}</span>
+            <span className="cap meta">{p.figure.label}</span>
+          </div>
+        </div>
+        <div className="specs meta">
+          <div>Role<span className="v">{p.role}</span></div>
+          <div>Technology<span className="v">{p.tech}</span></div>
+          <div>Result<span className="v">{p.result}</span></div>
+        </div>
+      </Link>
+    </Reveal>
+  );
+}
+
 export default function Home() {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [year, setYear] = useState(2026);
-
-  useEffect(() => {
-    setYear(new Date().getFullYear());
-  }, []);
-
-  const handleToggleMenu = () => {
-    setMenuOpen((prev) => {
-      document.body.style.overflow = !prev ? 'hidden' : '';
-      return !prev;
-    });
-  };
+  const featured = projects.filter((p) => p.featured);
+  const rest = projects.filter((p) => !p.featured);
 
   return (
-    <div className="main-layout-wrap">
-      {/* Sidebar navigation and interactive retro Terminal */}
-      <Sidebar menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
+    <>
+      <a className="skip" href="#main">Skip to content</a>
+      <SiteHeader />
 
-      <div className="main-wrap">
-        {/* Sticky Header */}
-        <header className="header">
-          <div className="header-title-wrap">
-            <Link href="/" className="header-name">
-              Karan Gupta
-            </Link>
-            <span className="header-subtitle mono">swe / cv / automation</span>
+      <main id="main">
+        {/* ── hero ── */}
+        <section className="wrap hero">
+          <div className="kicker meta">
+            <span>{meta.location}</span>
+            <span>{meta.year} →</span>
           </div>
-          <a href="/KaranGuptaResume.pdf" className="header-resume" download target="_blank" rel="noopener noreferrer">
-            Resume
-          </a>
-          <button 
-            className={`menu-btn ${menuOpen ? 'is-open' : ''}`} 
-            aria-label="Toggle menu"
-            onClick={handleToggleMenu}
-          >
-            <span></span>
-            <span></span>
-            <span></span>
-          </button>
-        </header>
-
-        {/* Main Contents */}
-        <main className="main">
-          {/* Hero Section */}
-          <section className="hero">
-            <p className="hero-label">
-              <span className="mono">// Computer Engineering + Econ minor @ Waterloo · GPA 3.95</span>
-            </p>
-            <h1 className="hero-headline">Karan Gupta.</h1>
-            <p className="hero-meta mono">
-              <a href="mailto:k79gupta@uwaterloo.ca">k79gupta@uwaterloo.ca</a>
-              <span className="sep">/</span>
-              <a href="https://www.linkedin.com/in/karan-gupta-2b72a735a/" target="_blank" rel="noopener noreferrer">linkedin</a>
-              <span className="sep">/</span>
-              <a href="https://github.com/Karan-Gupta07" target="_blank" rel="noopener noreferrer">github</a>
-            </p>
-          </section>
-
-          {/* Experience Section */}
-          <section id="experience" className="section">
-            <h2 className="sec-title">
-              <span className="sec-num">01</span> experience
-            </h2>
-            <div className="card-grid">
-              <article className="card">
-                <div className="card-head">
-                  <span className="card-role">Software Development Engineer Intern</span>
-                  <span className="card-company mono">Amazon</span>
-                  <span className="card-date mono">May 2026 – Present</span>
-                </div>
-                <ul className="card-bullets">
-                  <li>Reduced legacy service migration time by 98% (2 weeks → 1 hour per stage) by building multi-step AI agents using prompt chaining and CoT reasoning to automate Java architecture transformation across thousands of lines.</li>
-                  <li>Architected an agentic RAG pipeline with few-shot prompting to achieve 92% translation accuracy across legacy API calls, algorithm structures, and AWS cloud deployment patterns into modernized service frameworks.</li>
-                  <li>Developed a pluggable natural language interface enabling on-demand algorithm adjustments during automated migration, allowing seamless integration with modern service handlers without manual intervention.</li>
-                </ul>
-              </article>
-              <article className="card">
-                <div className="card-head">
-                  <span className="card-role">AI Software Engineer, Evaluation Lead</span>
-                  <span className="card-company mono">Wat.ai (TRACE Subteam)</span>
-                  <span className="card-date mono">May 2026 – Present</span>
-                </div>
-                <ul className="card-bullets">
-                  <li>Engineered TRACE, an AI agent reliability engine that automates multi-step execution tracing and failure isolation, reducing root-cause diagnostic latency by 70% for complex RAG and tool-use workflows.</li>
-                  <li>Eliminated 95% of runtime non-determinism across 4 downstream production applications by architecting a canonical verifier interface and Pydantic schemas to enforce strict data contracts over subjective LLM logic.</li>
-                  <li>Enforced 100% compliance for financial-action workflows by deploying a high-throughput, 7-check deterministic execution engine that intercepts policy violations and eliminates manual operational triage.</li>
-                </ul>
-              </article>
-              <article className="card">
-                <div className="card-head">
-                  <span className="card-role">Software Engineering Intern</span>
-                  <span className="card-company mono">Manulife Financial Corporation</span>
-                  <span className="card-date mono">January 2026 – April 2026</span>
-                </div>
-                <ul className="card-bullets">
-                  <li>Reduced system downtime risk by scripting a New Relic data exporter and architecting NRQL queries, enabling early detection of 3+ resource bottlenecks before system failure.</li>
-                  <li>Designed a Python analysis script and SQL telemetry pipeline to process clickstream data, identifying 20+ suspicious user anomalies by applying mathematical modeling and cross-referencing behavioral logs.</li>
-                  <li>Implemented 15+ Salesforce features to automate data entry during document uploads for specialized lending workflows, reducing manual input for high-value client processing using Apex and LWC.</li>
-                </ul>
-              </article>
-              <article className="card">
-                <div className="card-head">
-                  <span className="card-role">Autonomy Software Developer</span>
-                  <span className="card-company mono">Waterloo Aerial Robotics Group</span>
-                  <span className="card-date mono">Sep 2025 – Present</span>
-                </div>
-                <ul className="card-bullets">
-                  <li>Improved real-time signal detection accuracy by 13% using OpenCV2 computer vision algorithms through iterative parameter tuning and validation.</li>
-                  <li>Built multi-process telemetry and command systems in Python (PyMAVLink) to simulate UAV communication, reducing message latency by 30% across distributed processes.</li>
-                </ul>
-              </article>
-              <article className="card">
-                <div className="card-head">
-                  <span className="card-role">Computer Support Specialist</span>
-                  <span className="card-company mono">C2C Development Holdings</span>
-                  <span className="card-date mono">May 2022 – Sep 2025</span>
-                </div>
-                <ul className="card-bullets">
-                  <li>Engineered a Python-based automation bot that auto-responded to Facebook Marketplace messages, improving response time by over 70% and automating 700+ customer interactions.</li>
-                  <li>Provided technical support in database management, hardware setup, and network troubleshooting.</li>
-                </ul>
-              </article>
-              <article className="card">
-                <div className="card-head">
-                  <span className="card-role">Founder & Operator</span>
-                  <span className="card-company mono">Custom Gaming Keyboards</span>
-                  <span className="card-date mono">Sep 2022 – Present</span>
-                </div>
-                <ul className="card-bullets">
-                  <li>Designed and sold 35+ custom keyboards, generating $5,500+ in revenue, while building and maintaining an e-commerce platform for orders, client communication, and margin optimization.</li>
-                </ul>
-              </article>
-              <article className="card">
-                <div className="card-head">
-                  <span className="card-role">Build & Design Team Planner</span>
-                  <span className="card-company mono">FRC Team 8089</span>
-                  <span className="card-date mono">High School</span>
-                </div>
-                <ul className="card-bullets">
-                  <li>Planned and designed electrical engineering (EE) components and constrained the robot's physical build process.</li>
-                  <li>Collaborated with design and build sub-teams to define functional boundaries and integrate electronics efficiently.</li>
-                </ul>
-              </article>
+          <h1>
+            {meta.first} {meta.last},<br />
+            software <em>engineer</em>
+          </h1>
+          <div className="under">
+            <p className="standfirst">{meta.standfirst}</p>
+            <div className="facts">
+              <div className="row"><span className="meta">Studying</span><span className="v">{meta.school}</span></div>
+              <div className="row"><span className="meta">GPA</span><span className="v">{meta.gpa}</span></div>
+              <div className="row"><span className="meta">Currently</span><span className="v">SDE Intern, Amazon</span></div>
+              <div className="row"><span className="meta">Resume</span><a className="v" href={meta.resume} download>KaranGuptaResume.pdf ↓</a></div>
             </div>
-          </section>
+          </div>
+        </section>
 
-          {/* Projects Section */}
-          <section id="projects" className="section">
-            <h2 className="sec-title">
-              <span className="sec-num">02</span> projects
-            </h2>
-            <div className="card-grid card-grid--projects">
-              <Link href="/project/reparo" className="card card--project">
-                <span className="card-stack mono">Python, Gemini API, React, Node.js, Swift, PyTorch</span>
-                <span className="card-role">Reparo (Hack Canada 2026 Winner)</span>
-                <p className="card-desc">Won 1st place ($5,000) by building an Agentic AI system using Gemini vision models for product classification with 90%+ accuracy. Reduced search time by 70% and enabled access to 1,000+ real-time listings by integrating Shopify Storefront API and SerpAPI.</p>
-                <span className="card-arrow">→</span>
-              </Link>
-              <Link href="/project/deliriumwatch" className="card card--project">
-                <span className="card-stack mono">Raspberry Pi, Arduino, Python, OpenCV, HTML, CSS, Flask, C/C++</span>
-                <span className="card-role">DeliriumWatch</span>
-                <p className="card-desc">Built a real-time Python monitoring pipeline with SQL-backed secure login and role-based access control for hospital staff, resulting in over 90% reduction in manual monitoring. Implemented OpenCV-based eye detection and live Flask web visualizations to flag abnormal conditions.</p>
-                <span className="card-arrow">→</span>
-              </Link>
-              <Link href="/project/ai-admissions" className="card card--project">
-                <span className="card-stack mono">Python, PRAW, MongoDB</span>
-                <span className="card-role">AI Admissions Similarity Tool</span>
-                <p className="card-desc">AI-driven tool to scrape admissions data and compute similarity scores (GPA, tests, interests). Applicant benchmarking with reach, target, and safety school classification.</p>
-                <span className="card-arrow">→</span>
-              </Link>
-              <Link href="/project/silhouette" className="card card--project">
-                <span className="card-stack mono">Python, TensorFlow, scikit-learn, OpenCV, Node.js, React, MongoDB</span>
-                <span className="card-role">TailorAI (Silhouette)</span>
-                <p className="card-desc">Built a full-stack AI platform using computer vision and the MERN stack, processing 200+ images to automatically extract 10+ body measurements per user. Implemented Python CV pipeline with landmark normalization, improving measurement consistency by 40%. Designed scalable backend APIs, MongoDB schema, and responsive React frontend.</p>
-                <span className="card-arrow">→</span>
-              </Link>
-              <Link href="/project/spotify-pi" className="card card--project">
-                <span className="card-stack mono">Raspberry Pi, Python 3, FastAPI, Spotipy, JS</span>
-                <span className="card-role">Spotify Pi Thing</span>
-                <p className="card-desc">A standalone Raspberry Pi Spotify controller with a touchscreen UI acting like an in-car console. Uses FastAPI matching OAuth caching for independent boot-time kiosk playback.</p>
-                <span className="card-arrow">→</span>
-              </Link>
-            </div>
-          </section>
+        {/* ── selected work ── */}
+        <section className="wrap section" id="projects">
+          <SectionHead no="01" title="Selected work" aside={`${projects.length} projects`} />
+          {featured.map((p, i) => <FeaturedWork key={p.slug} p={p} i={i} />)}
+          <ul className="work-etc">
+            {rest.map((p) => (
+              <li key={p.slug}>
+                <Link href={`/project/${p.slug}`}>
+                  <span className="meta">{p.figure.index}</span>
+                  <span className="nm">{p.name}</span>
+                  <span className="dk">{p.deck}</span>
+                  <span className="arrow" aria-hidden="true">→</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
 
-          {/* Beyond Code / Personal Section */}
-          <section id="personal" className="section section--personal">
-            <h2 className="sec-title">
-              <span className="sec-num">03</span> beyond code
-            </h2>
-            <div className="personal-card">
-              <ul className="personal-list">
-                <li>
-                  <strong>film</strong> — I log everything on{' '}
-                  <a href="https://letterboxd.com/Exoxeon/" target="_blank" rel="noopener noreferrer">Letterboxd</a>.
-                </li>
-                <li>
-                  <strong>keyboards & PC building</strong> — 35+ custom boards built/sold, love the craft. Current rig: NZXT H6 Flow, 13600KF, 9070XT, Vengeance 7000MHz CL34.
-                </li>
-                <li>otherwise: manga, martial arts, motorsports, music (rage, EDM, Hyperpop).</li>
-                <li className="personal-cta">
-                  wanna know more?{' '}
-                  <a href="/KaranGuptaResume.pdf" download target="_blank" rel="noopener noreferrer">
-                    check out my resume ↗
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </section>
-
-          {/* Stack Section */}
-          <section id="skills" className="section">
-            <h2 className="sec-title">
-              <span className="sec-num">04</span> stack
-            </h2>
-            <div className="skills-row">
-              <div className="skill-block">
-                <span className="skill-label mono">languages</span>
-                <div className="skill-tags skill-tags--lang">
-                  <span>Python</span><span>Java</span><span>C</span><span>C++</span><span>Swift</span><span>TypeScript</span><span>JavaScript</span><span>SQL</span><span>Apex</span><span>HTML</span><span>CSS</span><span>VBA</span>
+        {/* ── experience ── */}
+        <section className="wrap section" id="experience">
+          <SectionHead no="02" title="Experience" aside="2022 — present" />
+          {experience.map((e) => (
+            <Reveal as="article" className="xp" key={e.org + e.role}>
+              <div className="inner">
+                <span className="year" aria-hidden="true">{e.year}</span>
+                <div>
+                  <h3>{e.org}{e.unit ? <small>{e.unit}</small> : null}</h3>
+                  <p className="role">
+                    <span className="meta">{e.role}</span>
+                    <span className="r">{e.summary}</span>
+                  </p>
                 </div>
+                <div className="side">
+                  <span className="big">{e.result.value}</span>
+                  <span className="cap meta">{e.result.label}</span>
+                  <span className="cap meta">{e.period}</span>
+                </div>
+                <ul className="body">
+                  {e.bullets.map((b) => <li key={b.slice(0, 32)}>{b}</li>)}
+                </ul>
+                <p className="tech meta">{e.tech}</p>
               </div>
-              <div className="skill-block">
-                <span className="skill-label mono">frameworks</span>
-                <div className="skill-tags skill-tags--lib">
-                  <span>PyTorch</span><span>TensorFlow</span><span>scikit-learn</span><span>RAG</span><span>React</span><span>Node.js</span><span>Flask</span><span>FastAPI</span><span>OpenCV2</span><span>REST API</span><span>PyMAVLink</span><span>NumPy</span><span>JUnit</span><span>Dagger</span>
-                </div>
+            </Reveal>
+          ))}
+        </section>
+
+        {/* ── skills ── */}
+        <section className="wrap section" id="skills">
+          <SectionHead no="03" title="Skills" aside="proven by the work" />
+          <div className="skills">
+            {skills.map((cat) => (
+              <div key={cat.label}>
+                <h3>{cat.label}</h3>
+                <ul>
+                  {cat.items.map((s) => (
+                    <li key={s.name}>
+                      <span className="nm">{s.name}</span>
+                      {s.via ? <span className="via">{s.via}</span> : null}
+                    </li>
+                  ))}
+                </ul>
               </div>
-              <div className="skill-block">
-                <span className="skill-label mono">tools & cloud</span>
-                <div className="skill-tags skill-tags--tool">
-                  <span>Git</span><span>GitHub</span><span>Docker</span><span>VS Code</span><span>AWS (S3, SQS, SNS)</span><span>Salesforce</span><span>Postman</span><span>Kubernetes</span><span>Xcode</span><span>MongoDB</span><span>SQL</span>
-                </div>
+            ))}
+          </div>
+          <div className="awards">
+            <SectionHead no="+" title="Recognition" aside={`${awards.length} entries`} />
+            <ul style={{ marginTop: '1.5rem' }}>
+              {awards.map((a) => (
+                <li key={a.name}>
+                  <span className="rk">{a.rank}</span>
+                  <span className="aw">{a.name}{a.note ? <em>{a.note}</em> : null}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+
+        {/* ── about ── */}
+        <section className="wrap section" id="about">
+          <SectionHead no="04" title="About" />
+          <div className="about">
+            <div>
+              <p className="lead">{about.lead}</p>
+              <div className="prose">
+                {about.body.map((p) => <p key={p.slice(0, 24)}>{p}</p>)}
               </div>
             </div>
-            <div className="awards">
-              <h3 className="awards-title mono">awards</h3>
-              <ul className="awards-list">
-                <li><span className="award-name">Valedictorian</span></li>
-                <li><span className="award-name">1st</span> Euclid Math Contest — School Medal</li>
-                <li><span className="award-name">1st</span> Amazon Robotics Hackathon</li>
-                <li><span className="award-name">Bronze</span> Chess AI Bot — Waterloo Tech Week</li>
-                <li><span className="award-name">Gov. General's</span> Academic Award</li>
-                <li><span className="award-name">1st</span> Hack Canada 2026 — Reactiv Track ($5,000)</li>
-                <li><span className="award-name">Shortlisted</span> Most Complex AI Hack — Hack Canada 2026</li>
-              </ul>
-            </div>
-          </section>
+            <aside>
+              <div className="row"><span className="meta">Elsewhere</span>
+                <span className="v">
+                  {links.filter((l) => l.href && l.name !== 'Email').map((l, i, arr) => (
+                    <span key={l.name}>
+                      <a href={l.href} target="_blank" rel="noopener noreferrer">{l.name}</a>
+                      {i < arr.length - 1 ? ' · ' : ''}
+                    </span>
+                  ))}
+                </span>
+              </div>
+              <div className="row"><span className="meta">Discord</span><span className="v">exo1k</span></div>
+              <div className="row"><span className="meta">Off the clock</span><span className="v">Keyboards, film, motorsports, manga, martial arts, music.</span></div>
+              <SpotifyWidget />
+            </aside>
+          </div>
+        </section>
 
-          {/* Connect Section */}
-          <section id="connect" className="section section--connect">
-            <h2 className="sec-title">
-              <span className="sec-num">05</span> see me in action
-            </h2>
-            <p className="connect-desc mono">Find me on these platforms — code, music, film, and everything in between.</p>
-            <div className="connect-icons">
-              <a href="https://letterboxd.com/Exoxeon/" target="_blank" rel="noopener noreferrer" className="connect-icon" aria-label="Letterboxd">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                  <path d="M18 4l2 4h-3l-2-4h-2l2 4h-3l-2-4H8l2 4H7L5 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4h-4z" />
-                </svg>
-                <span>Letterboxd</span>
-              </a>
-              <a href="https://www.albumoftheyear.org/user/exoxoen/" target="_blank" rel="noopener noreferrer" className="connect-icon" aria-label="Album of the Year">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 14.5c-2.49 0-4.5-2.01-4.5-4.5S9.51 7.5 12 7.5s4.5 2.01 4.5 4.5-2.01 4.5-4.5 4.5zm0-5.5c-.55 0-1 .45-1 1s.45 1 1 1 1-.45 1-1-.45-1-1-1z" />
-                </svg>
-                <span>AOTY</span>
-              </a>
-              <a href="https://github.com/Karan-Gupta07" target="_blank" rel="noopener noreferrer" className="connect-icon" aria-label="GitHub">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                  <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
-                </svg>
-                <span>GitHub</span>
-              </a>
-              <a href="https://www.linkedin.com/in/karan-gupta-2b72a735a/" target="_blank" rel="noopener noreferrer" className="connect-icon" aria-label="LinkedIn">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                  <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-                </svg>
-                <span>LinkedIn</span>
-              </a>
-              <a href="https://discord.com" target="_blank" rel="noopener noreferrer" className="connect-icon" aria-label="Discord: exo1k" title="Discord: exo1k">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                  <path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028 14.09 14.09 0 001.226-1.994.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z" />
-                </svg>
-                <span>exo1k</span>
-              </a>
-              <a href="#" className="connect-icon" aria-label="Spotify" title="Add your Spotify URL">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                  <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z" />
-                </svg>
-                <span>Spotify</span>
-              </a>
-            </div>
-          </section>
+        {/* ── contact ── */}
+        <section className="wrap contact" id="contact">
+          <p className="close serif">
+            The interesting problems have numbers attached.{' '}
+            <a href={`mailto:${meta.email}`}>Send me one.</a>
+          </p>
+          <div className="grid meta">
+            {links.map((l) => (
+              <div key={l.name}>
+                {l.name}
+                {l.href
+                  ? <a className="v" href={l.href} {...(l.href.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>{l.handle}</a>
+                  : <span className="v">{l.handle}</span>}
+              </div>
+            ))}
+          </div>
+        </section>
+      </main>
 
-          {/* Contact Section */}
-          <section id="contact" className="section section--contact">
-            <h2 className="sec-title">
-              <span className="sec-num">06</span> contact
-            </h2>
-            <p className="contact-text">Open to internships & collaboration.</p>
-            <p className="contact-links mono">
-              <a href="mailto:k79gupta@uwaterloo.ca">$ mail k79gupta@uwaterloo.ca</a>
-              <a href="https://www.linkedin.com/in/karan-gupta-2b72a735a/" target="_blank" rel="noopener noreferrer">
-                $ open linkedin
-              </a>
-              <a href="https://github.com/Karan-Gupta07" target="_blank" rel="noopener noreferrer">
-                $ open github
-              </a>
-            </p>
-          </section>
-        </main>
-
-        {/* Footer */}
-        <footer className="footer">
-          <p className="mono">© {year} Karan Gupta</p>
-        </footer>
-      </div>
-
-      {/* Spotify floating widget */}
-      <SpotifyWidget />
-    </div>
+      <SiteFooter />
+    </>
   );
 }
