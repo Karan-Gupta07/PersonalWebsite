@@ -17,9 +17,12 @@ function FeaturedWork({ p, i }) {
   return (
     <article className={`reveal work${i % 2 === 1 ? ' flip' : ''}`}>
       <Link href={`/project/${p.slug}`} className="hit">
+        {/* The index sits above the row so the project name and its
+            metric share a baseline instead of the metric aligning to
+            a small kicker and appearing to float. */}
+        <span className="idx">{p.figure.index} / Selected work</span>
         <div className="inner">
           <div className="txt">
-            <span className="idx">{p.figure.index} / Selected work</span>
             <h3>{p.name}</h3>
             <p className="deck">{p.deck}</p>
           </div>
