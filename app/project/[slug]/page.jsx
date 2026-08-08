@@ -2,7 +2,6 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { meta, projects } from '@/content/site';
 import { SiteHeader, SiteFooter } from '@/components/SiteChrome';
-import Reveal from '@/components/Reveal';
 
 export function generateStaticParams() {
   return projects.map((p) => ({ slug: p.slug }));
@@ -44,20 +43,20 @@ export default function ProjectPage({ params }) {
           </div>
         </header>
 
-        <Reveal as="figure" className="case-fig">
+        <figure className="reveal case-fig">
           <span className="big">{p.figure.value}</span>
           <figcaption className="cap meta">{p.figure.label}</figcaption>
-        </Reveal>
+        </figure>
 
         <div className="wrap">
           {p.sections.map((s) => (
-            <Reveal as="section" className="case-sec" key={s.n}>
+            <section className="reveal case-sec" key={s.n}>
               <div className="label">
                 <span className="no">{s.n}</span>
                 <h2>{s.title}</h2>
               </div>
               <p className="body">{s.body}</p>
-            </Reveal>
+            </section>
           ))}
 
           <nav className="case-next" aria-label="Next project">

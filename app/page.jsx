@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import { meta, links, experience, projects, skills, awards, about } from '@/content/site';
 import { SiteHeader, SiteFooter } from '@/components/SiteChrome';
-import Reveal from '@/components/Reveal';
 import SpotifyWidget from '@/components/SpotifyWidget';
 
 function SectionHead({ no, title, aside }) {
@@ -16,7 +15,7 @@ function SectionHead({ no, title, aside }) {
 
 function FeaturedWork({ p, i }) {
   return (
-    <Reveal as="article" className={`work${i % 2 === 1 ? ' flip' : ''}`}>
+    <article className={`reveal work${i % 2 === 1 ? ' flip' : ''}`}>
       <Link href={`/project/${p.slug}`} className="hit">
         <div className="inner">
           <div className="txt">
@@ -35,7 +34,7 @@ function FeaturedWork({ p, i }) {
           <div>Result<span className="v">{p.result}</span></div>
         </div>
       </Link>
-    </Reveal>
+    </article>
   );
 }
 
@@ -92,7 +91,7 @@ export default function Home() {
         <section className="wrap section" id="experience">
           <SectionHead no="02" title="Experience" aside="2022 — present" />
           {experience.map((e) => (
-            <Reveal as="article" className="xp" key={e.org + e.role}>
+            <article className="reveal xp" key={e.org + e.role}>
               <div className="inner">
                 <span className="year" aria-hidden="true">{e.year}</span>
                 <div>
@@ -112,7 +111,7 @@ export default function Home() {
                 </ul>
                 <p className="tech meta">{e.tech}</p>
               </div>
-            </Reveal>
+            </article>
           ))}
         </section>
 

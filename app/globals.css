@@ -146,11 +146,16 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   clip-path: inset(50%); white-space: nowrap;
 }
 
-/* Reveal-on-scroll. The wrapper starts shifted; .in settles it.
-   Reduced motion collapses the transition to nothing. */
-.reveal { opacity: 0; transform: translateY(14px); transition: opacity 500ms var(--ease), transform 500ms var(--ease); }
-.reveal.in { opacity: 1; transform: none; }
-@media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; } }
+/* No entrance animation on body content.
+   Two implementations were tried and both could leave text at
+   opacity 0: an IntersectionObserver whose class was clobbered by
+   the next React render, and a scroll-driven view() timeline, which
+   ties opacity to scroll position rather than firing once, so
+   scrolling back up faded the text out again. Content that can
+   become invisible is a worse failure than no animation, so the
+   motion budget goes to hover and focus transitions, which cannot
+   hide anything. .reveal is kept as a hook and is a no-op. */
+.reveal { opacity: 1; }
 
 /* ── header ──────────────────────────────────────────────────── */
 .site-head {
