@@ -39,7 +39,11 @@
   --rule:      #cfdce5;   /* printed blue ruling */
   --margin:    #b2483c;   /* red margin rule */
   --accent:    #8e2b21;
-  --lh:        26px;      /* ruling period === body line-height */
+  /* THE baseline. The printed ruling and the body line-height are the
+     same value, which is what makes text sit on the lines. 30px for
+     15px serif is a 2.0 ratio: a real catalogue card is generously
+     leaded, and 26px was cramping the descenders. */
+  --lh:        30px;
 
   --serif: 'Newsreader', 'Iowan Old Style', Charter, Georgia, serif;
   --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
@@ -202,7 +206,7 @@ h1, h2, h3 { font-weight: 500; font-optical-sizing: auto; }
    where the entry stops, leaving blank stock below. */
 .sheet {
   --gutter: 5.5rem;
-  --pad-t: 30px;
+  --pad-t: var(--lh);        /* first baseline lands on the first rule */
   background: var(--card);
   border: 1px solid var(--edge);
   box-shadow: 0 1px 1px rgba(29,27,22,.05), 0 4px 22px rgba(29,27,22,.08);
@@ -213,10 +217,15 @@ h1, h2, h3 { font-weight: 500; font-optical-sizing: auto; }
   content: ''; position: absolute; left: var(--gutter); top: 0; bottom: 0;
   width: 1px; background: var(--margin); opacity: .42;
 }
+/* The rule sits just under each baseline. --drop is the distance from
+   the top of a line box down to its rule, derived from --lh rather
+   than hand-tuned, so changing the leading keeps the ruling aligned. */
 .ruled {
-  padding: var(--pad-t) 2.5rem calc(var(--lh) * 2) calc(var(--gutter) + 1.25rem);
-  background-image: repeating-linear-gradient(180deg, transparent 0 calc(var(--lh) - 1px), var(--rule) calc(var(--lh) - 1px) var(--lh));
-  background-position: 0 calc(var(--pad-t) - 6px);
+  --drop: calc(var(--lh) - 7px);
+  padding: var(--pad-t) 3rem calc(var(--lh) * 2) calc(var(--gutter) + 1.5rem);
+  background-image: repeating-linear-gradient(180deg,
+    transparent 0 calc(var(--lh) - 1px), var(--rule) calc(var(--lh) - 1px) var(--lh));
+  background-position: 0 calc(var(--pad-t) + var(--drop) - var(--lh));
   background-repeat: repeat-x;
   background-size: 100% calc(100% - var(--lh) * 2);
 }
@@ -235,14 +244,19 @@ h1, h2, h3 { font-weight: 500; font-optical-sizing: auto; }
    growing while this column stays fixed, so the name overflowed
    its own card. cqi measures the container. */
 .read { container-type: inline-size; }
+/* Display type must still land on the ruling, so its line-height is
+   a whole number of --lh rather than a ratio. Two units per line at
+   this size, which also stops the descenders touching the rule. */
 .cover .big {
   font-family: var(--serif);
-  font-size: clamp(1.9rem, 5.2cqi, 3.4rem);
-  font-variation-settings: 'opsz' 40, 'wght' 620;
-  line-height: 1.06; letter-spacing: -.022em;
-  max-width: 22ch; text-wrap: balance;
+  font-size: clamp(1.75rem, 4.6cqi, 2.75rem);
+  font-variation-settings: 'opsz' 36, 'wght' 620;
+  line-height: calc(var(--lh) * 2); letter-spacing: -.02em;
+  max-width: 24ch; text-wrap: balance;
 }
-.cover .big em { font-style: italic; font-weight: 460; color: var(--accent); }
+/* Inherit the line box: an inline with its own leading would make the
+   heading taller than a whole number of ruled lines. */
+.cover .big em { font-style: italic; font-weight: 460; color: var(--accent); line-height: inherit; }
 .cover .std {
   margin-top: var(--lh);
   font-family: var(--serif); font-size: var(--t-20);
@@ -250,49 +264,66 @@ h1, h2, h3 { font-weight: 500; font-optical-sizing: auto; }
   line-height: var(--lh); color: var(--ink-2); max-width: 46ch;
 }
 .cover .std + .std { margin-top: var(--lh); }
-/* headline numbers, the 10-second read */
+/* Headline numbers, the 10-second read.
+   The whole strip is exactly 3 ruled lines tall: label, figure,
+   caption, one unit each. No padding chosen by feel. */
 .cover .nums {
-  margin-top: calc(var(--lh) * 1.5);
+  /* The 2px rule sits inside the block, so the margin gives those 2px
+     back and the strip starts exactly on a rule. */
+  margin-top: calc(var(--lh) * 2 - 2px);
   display: grid; grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
   border-top: 2px solid var(--ink);
 }
-.cover .nums div { padding: .85rem 1rem .3rem 0; border-right: 1px solid var(--edge); }
+.cover .nums div { border-right: 1px solid var(--edge); padding-right: 1rem; }
 .cover .nums div:last-child { border-right: 0; }
-.cover .nums dt { font-size: var(--t-9); letter-spacing: var(--tr-xs); text-transform: uppercase; color: var(--ink-3); }
+.cover .nums dt {
+  font-size: var(--t-9); letter-spacing: var(--tr-xs); text-transform: uppercase;
+  color: var(--ink-3); line-height: var(--lh);
+}
 .cover .nums dd {
-  margin-top: .3rem;
   font-family: var(--serif); font-size: var(--t-24);
   font-variation-settings: 'opsz' 28, 'wght' 620;
-  color: var(--accent); line-height: 1.1; letter-spacing: -.02em;
+  color: var(--accent); line-height: var(--lh); letter-spacing: -.02em;
   font-variant-numeric: tabular-nums lining-nums;
 }
 .cover .nums dd small {
   display: block; font-family: var(--mono); font-size: var(--t-9); font-weight: 400;
   letter-spacing: var(--tr-xs); text-transform: uppercase; color: var(--ink-3);
-  margin-top: .25rem; line-height: 1.45;
+  line-height: var(--lh);
 }
-/* the invitation: what to do next, stated plainly */
+/* The invitation. Buttons are one ruled line tall including their
+   border, so the row occupies exactly two units. */
 .cover .go {
-  margin-top: calc(var(--lh) * 1.5); padding-top: var(--lh);
+  margin-top: var(--lh); padding-top: calc(var(--lh) - 1px);
   border-top: 1px solid var(--edge);
-  display: flex; flex-wrap: wrap; gap: .6rem;
+  display: flex; flex-wrap: wrap; gap: calc(var(--lh) / 2) .5rem;
 }
 .cover .go a, .cover .go button {
   font-size: var(--t-10); font-weight: 500; letter-spacing: var(--tr-sm);
   text-transform: uppercase; text-decoration: none;
-  border: 1px solid var(--edge); padding: .55rem .8rem;
+  border: 1px solid var(--edge); padding: 0 .8rem;
+  height: var(--lh); line-height: calc(var(--lh) - 2px);
+  display: inline-flex; align-items: center;
   transition: border-color var(--dur) var(--ease), color var(--dur) var(--ease), background var(--dur) var(--ease);
 }
 .cover .go a:hover, .cover .go button:hover { border-color: var(--accent); color: var(--accent); background: var(--card-2); }
 .cover .go .pri { background: var(--accent); border-color: var(--accent); color: var(--card); }
 .cover .go .pri:hover { background: var(--ink); border-color: var(--ink); color: var(--card); }
-.cover .hint { margin-top: var(--lh); font-size: var(--t-9); letter-spacing: var(--tr-xs); text-transform: uppercase; color: var(--ink-3); }
+.cover .hint {
+  margin-top: var(--lh); font-size: var(--t-9); letter-spacing: var(--tr-xs);
+  text-transform: uppercase; color: var(--ink-3); line-height: var(--lh);
+}
+/* Zero-height inline box so the chips cannot stretch the hint line. */
 .cover .hint kbd {
   font-family: var(--mono); font-size: var(--t-9); border: 1px solid var(--edge);
   padding: 1px 4px; margin: 0 1px; background: var(--card-2);
+  line-height: 1; display: inline-block; vertical-align: baseline;
 }
 
-/* ── ENTRY CARD ───────────────────────────────────────────────── */
+/* ── ENTRY CARD ───────────────────────────────────────────────────
+   Header height is pinned to 3 ruled lines. Both columns are built
+   from whole units, so a long org name wrapping to two lines cannot
+   knock the ruled body below it off the grid.                     */
 .ehead {
   display: grid; grid-template-columns: minmax(0,1fr) auto;
   column-gap: 2rem; align-items: start;
@@ -301,27 +332,27 @@ h1, h2, h3 { font-weight: 500; font-optical-sizing: auto; }
 }
 .ehead h2 {
   font-family: var(--serif);
-  font-size: clamp(1.7rem, 1.3rem + 1.6vw, 2.4rem);
-  font-variation-settings: 'opsz' 32, 'wght' 620;
-  line-height: calc(var(--lh) * 2); letter-spacing: -.024em;
+  font-size: clamp(1.5rem, 3.4cqi, 2.05rem);
+  font-variation-settings: 'opsz' 28, 'wght' 620;
+  line-height: calc(var(--lh) * 2); letter-spacing: -.02em;
 }
 .ehead .role {
   display: block; font-family: var(--serif); font-size: var(--t-17);
   font-style: italic; font-weight: 430; color: var(--ink-3); line-height: var(--lh);
 }
-.ehead .side { text-align: right; height: calc(var(--lh) * 3); }
+.ehead .side { text-align: right; }
 .ehead .per { display: block; font-size: var(--t-10); letter-spacing: var(--tr-sm); text-transform: uppercase; color: var(--ink-3); line-height: var(--lh); white-space: nowrap; }
 .ehead .met {
   display: block; font-family: var(--serif);
-  font-size: clamp(1.6rem, 1.3rem + 1.2vw, 2.2rem);
-  font-variation-settings: 'opsz' 28, 'wght' 620;
-  color: var(--accent); line-height: calc(var(--lh) * 1.5); letter-spacing: -.025em;
+  font-size: clamp(1.5rem, 3cqi, 1.95rem);
+  font-variation-settings: 'opsz' 26, 'wght' 620;
+  color: var(--accent); line-height: var(--lh); letter-spacing: -.022em;
   font-variant-numeric: tabular-nums lining-nums;
 }
 .ehead .metl {
   display: block; font-family: var(--mono); font-size: var(--t-9);
   letter-spacing: var(--tr-xs); text-transform: uppercase; color: var(--ink-3);
-  line-height: calc(var(--lh) * .5); max-width: 11rem; margin-left: auto;
+  line-height: var(--lh); max-width: 11rem; margin-left: auto;
 }
 .body { margin-top: var(--lh); }
 .body p.t, .body li {
@@ -334,31 +365,53 @@ h1, h2, h3 { font-weight: 500; font-optical-sizing: auto; }
 .body p.t:last-child, .body li:last-child { margin-bottom: 0; }
 .body a { color: var(--accent); text-decoration: none; border-bottom: 1px solid currentColor; }
 
-.kv { margin-top: var(--lh); border-top: 1px solid var(--edge); }
+/* Each row is exactly one ruled line INCLUDING its dotted rule, so a
+   long list of rows cannot accumulate a 1px-per-row drift. */
+.kv { margin-top: calc(var(--lh) - 1px); border-top: 1px solid var(--edge); }
 .kv > div {
   display: grid; grid-template-columns: 8.5rem minmax(0,1fr); gap: 1rem;
   border-bottom: 1px dotted var(--edge); align-items: baseline;
+  height: var(--lh);
 }
-.kv dt { font-size: var(--t-9); font-weight: 600; letter-spacing: var(--tr-xs); text-transform: uppercase; color: var(--ink-3); line-height: var(--lh); }
-.kv dd { font-family: var(--serif); font-size: var(--t-15); line-height: var(--lh); color: var(--ink-2); }
+.kv dt { font-size: var(--t-9); font-weight: 600; letter-spacing: var(--tr-xs); text-transform: uppercase; color: var(--ink-3); line-height: calc(var(--lh) - 1px); }
+.kv dd { font-family: var(--serif); font-size: var(--t-15); line-height: calc(var(--lh) - 1px); color: var(--ink-2); overflow: hidden; text-overflow: ellipsis; }
 .kv dd em { color: var(--ink-3); }
 .kv dd a { color: var(--accent); text-decoration: none; border-bottom: 1px solid currentColor; }
 
+/* Flowed list: each item one ruled line including its dotted rule. */
 .flow { columns: 3; column-gap: 2.5rem; }
-.flow li { break-inside: avoid; border-bottom: 1px dotted var(--edge); padding-left: 0; margin-bottom: 0; }
-.flow li::before { content: none; }
+.body .flow li {
+  break-inside: avoid; border-bottom: 1px dotted var(--edge);
+  padding-left: 0; margin-bottom: 0; max-width: none;
+  height: var(--lh); line-height: calc(var(--lh) - 1px);
+}
+.body .flow li::before { content: none; }
 
+/* One ruled line tall including the top rule. The buttons carry a
+   1px underline on hover, so their line box is 1px short to keep the
+   row from growing when you point at it. */
 .efoot {
-  margin-top: var(--lh); padding-top: calc(var(--lh) - 1px);
+  margin-top: calc(var(--lh) - 1px); padding-top: 0;
   border-top: 1px solid var(--edge);
   display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
   font-size: var(--t-9); letter-spacing: var(--tr-xs); text-transform: uppercase;
-  color: var(--ink-3); line-height: var(--lh);
+  color: var(--ink-3);
+  height: var(--lh); align-items: center;
 }
-/* prev / next keeps browsing from dead-ending */
-.turn { display: flex; gap: .5rem; }
-.turn button { font-size: var(--t-9); letter-spacing: var(--tr-xs); text-transform: uppercase; color: var(--ink-3); border-bottom: 1px solid transparent; }
-.turn button:hover { color: var(--accent); border-bottom-color: currentColor; }
+.efoot > span { line-height: calc(var(--lh) - 2px); }
+/* prev / next keeps browsing from dead-ending. A divider between them
+   stops the two titles reading as one string. */
+.turn { display: flex; }
+.turn button {
+  font-size: var(--t-9); letter-spacing: var(--tr-xs); text-transform: uppercase;
+  color: var(--ink-3); line-height: calc(var(--lh) - 2px);
+  display: inline-flex; align-items: baseline; gap: .4rem;
+  padding: 0 .7rem;
+}
+.turn button + button { border-left: 1px solid var(--edge); }
+.turn button i { font-style: normal; color: var(--accent); }
+.turn button:last-child { padding-right: 0; }
+.turn button:hover { color: var(--accent); }
 
 /* ── NARROW / SHORT: becomes one honest scrolling column ─────── */
 @media (max-width: 68rem), (max-height: 34rem) {
@@ -585,8 +638,8 @@ function entryHTML(c) {
     <p class="efoot">
       <span>${c.tags ? c.tags.map(esc).join(' · ') : `Catalogued ${esc(meta.date)}`}</span>
       <span class="turn">
-        <button type="button" data-code="${esc(prev.code)}">← ${esc(prev.title)}</button>
-        <button type="button" data-code="${esc(next.code)}">${esc(next.title)} →</button>
+        <button type="button" data-code="${esc(prev.code)}"><i>←</i>${esc(prev.title)}</button>
+        <button type="button" data-code="${esc(next.code)}">${esc(next.title)}<i>→</i></button>
       </span>
     </p>
   </div>`;
