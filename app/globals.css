@@ -6,17 +6,21 @@
    not boxes. Whitespace does the composition.
    ═══════════════════════════════════════════════════════════════ */
 
+/* Self-hosted variable subsets: only the 149 glyphs these pages
+   use, with both axes clamped to the range the CSS asks for
+   (opsz 16-72, wght 400-640). Newsreader carries no arrow glyphs,
+   so arrows are always set in the mono, never the serif. */
 @font-face {
   font-family: 'Newsreader';
   src: url('/fonts/newsreader-var.woff2') format('woff2-variations');
-  font-weight: 200 800;
+  font-weight: 400 640;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: 'Newsreader';
   src: url('/fonts/newsreader-italic-var.woff2') format('woff2-variations');
-  font-weight: 200 800;
+  font-weight: 400 640;
   font-style: italic;
   font-display: swap;
 }
@@ -471,7 +475,10 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   font-variation-settings: 'opsz' 60;
   font-weight: 520; line-height: 1; letter-spacing: -.028em;
   margin-top: .75rem; transition: color var(--dur) var(--ease);
+  display: flex; align-items: baseline; gap: .4em;
 }
+/* Arrows live in the mono, which has the glyph. */
+.case-next .nm .arw { font-family: var(--mono); font-size: .5em; font-weight: 400; color: var(--ink-3); }
 .case-next a:hover .nm { color: var(--accent); }
 
 /* ── responsive ──────────────────────────────────────────────── */

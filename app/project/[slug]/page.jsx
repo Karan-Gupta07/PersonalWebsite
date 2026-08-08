@@ -62,7 +62,7 @@ export default function ProjectPage({ params }) {
           <nav className="case-next" aria-label="Next project">
             <Link href={`/project/${next.slug}`}>
               <span className="meta">Next / {next.figure.index}</span>
-              <span className="nm">{next.name} →</span>
+              <span className="nm">{next.name}<span className="arw" aria-hidden="true">→</span></span>
             </Link>
           </nav>
         </div>
