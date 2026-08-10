@@ -95,6 +95,10 @@ h1, h2, h3 { font-weight: 500; font-optical-sizing: auto; }
 .pane { min-height: 0; display: flex; flex-direction: column; }
 
 /* ── INDEX ────────────────────────────────────────────────────── */
+/* The plate is the only chrome that never changes, so the resume link
+   lives here. It used to sit in the index footer, which measured
+   off-screen: once a visitor left the cover there was no visible
+   resume link anywhere, and that is the one link a recruiter wants. */
 .plate {
   background: var(--card);
   border: 1px solid var(--edge);
@@ -102,6 +106,19 @@ h1, h2, h3 { font-weight: 500; font-optical-sizing: auto; }
   padding: 1rem 1.1rem;
   display: grid; grid-template-columns: minmax(0,1fr) auto; gap: .75rem; align-items: center;
 }
+.plate .cta {
+  grid-column: 1 / -1; margin-top: .25rem;
+  display: flex; gap: .4rem; flex-wrap: wrap;
+}
+.plate .cta a {
+  font-size: var(--t-9); font-weight: 500; letter-spacing: var(--tr-sm);
+  text-transform: uppercase; text-decoration: none;
+  border: 1px solid var(--edge); padding: .3rem .55rem;
+  transition: border-color var(--dur) var(--ease), color var(--dur) var(--ease), background var(--dur) var(--ease);
+}
+.plate .cta a:hover { border-color: var(--accent); color: var(--accent); background: var(--card-2); }
+.plate .cta .pri { background: var(--accent); border-color: var(--accent); color: var(--card); }
+.plate .cta .pri:hover { background: var(--ink); border-color: var(--ink); color: var(--card); }
 .plate h1 {
   font-family: var(--serif); font-size: var(--t-24);
   font-variation-settings: 'opsz' 28, 'wght' 600;
@@ -430,10 +447,14 @@ h1, h2, h3 { font-weight: 500; font-optical-sizing: auto; }
   .ehead .metl { margin-left: 0; }
   .flow { columns: 1; }
   .index { max-height: none; }
-  /* The plate repeats the name and GPA that the card above already
-     shows, so it goes away rather than saying everything twice. */
-  .plate { display: none; }
-  .ihead { margin-top: 0; }
+  /* The name and GPA repeat what the cover card already shows, so
+     they go. The resume/email/GitHub row must NOT go: hiding the
+     whole plate left a phone visitor with no visible resume link
+     once they moved off the cover. */
+  .plate > div, .plate .gpa { display: none; }
+  .plate { padding: .6rem .75rem; }
+  .plate .cta { margin-top: 0; }
+  .ihead { margin-top: .75rem; }
   .grp > h3 { background: linear-gradient(var(--desk) 86%, rgba(232,227,215,0)); }
 }
 @media (max-width: 40rem) { .cover .nums { grid-template-columns: minmax(0,1fr); } .cover .nums div { border-right: 0; border-bottom: 1px solid var(--edge); } }
@@ -536,6 +557,11 @@ mount('#app', `
       <p class="sub">${esc(meta.tagline)}<br>${esc(meta.location)}</p>
     </div>
     <p class="gpa">GPA<b>3.95</b></p>
+    <p class="cta">
+      <a class="pri" href="${esc(meta.resume)}" download>Résumé ↓</a>
+      <a href="mailto:${esc(meta.email)}">Email</a>
+      <a href="${esc(meta.github)}" target="_blank" rel="noopener">GitHub</a>
+    </p>
   </header>
 
   <div class="ihead"><h2>Card index</h2><span class="ct" id="ct">${ALL.length} cards</span></div>
