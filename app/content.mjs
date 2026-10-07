@@ -1,6 +1,7 @@
 export const profile = {
   name: "Karan Gupta",
   email: "k79gupta@uwaterloo.ca",
+  location: "San Francisco, CA",
   education: "Computer Engineering",
   university: "University of Waterloo",
   minor: "Economics minor",

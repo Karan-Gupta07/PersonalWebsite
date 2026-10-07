@@ -15,6 +15,7 @@ export default function Home() {
             <br />
             Software, AI &amp; robotics.
           </p>
+          <p className="intro-location"><span aria-hidden="true" className="location-dot" />Currently in {profile.location}</p>
         </section>
 
         <section className="home-section experience-section" id="experience" aria-labelledby="experience-heading">

@@ -65,6 +65,8 @@ a:hover > .arrow { transform: translateX(3px); }
 .career-links a { display: inline-flex; align-items: center; gap: 7px; min-height: 44px; color: var(--accent); text-decoration: none; }
 .career-links a:hover { color: var(--warm); text-decoration: underline; }
 .career-links .arrow { width: 12px; height: 12px; }
+.intro-location { display: flex; align-items: center; gap: 8px; margin-top: 14px; font-size: 13px; color: var(--muted); }
+.location-dot { width: 6px; height: 6px; background: var(--signal); }
 .personal-link { position: relative; grid-area: personnel; align-self: end; padding-bottom: 12px; }
 .personal-link a { display: inline-flex; align-items: center; gap: 16px; min-height: 44px; font-size: 15px; text-decoration: none; }
 .personal-link a:hover { text-decoration: underline; }
