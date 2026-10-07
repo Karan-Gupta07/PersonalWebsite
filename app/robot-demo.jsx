@@ -216,16 +216,38 @@ const cleanSpeech = {
 };
 
 export function CleanPreview() {
-  const { out } = cleanRoutes("stack");
+  const { out, back } = cleanRoutes("stack");
+  const [progress, setProgress] = useState(0);
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) { setProgress(.5); return; }
+    let request, start;
+    const tick = (now) => {
+      start ??= now;
+      const value = Math.min(1, (now - start) / 4200);
+      setProgress(value);
+      if (value < 1 && !document.hidden) request = requestAnimationFrame(tick);
+    };
+    request = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(request);
+  }, []);
+  // 0–.45 drive out, .45–.55 grasp, .55–1 drive back.
+  const stage = progress < .45 ? "out" : progress < .55 ? "grasp" : progress < 1 ? "back" : "done";
+  const position = stage === "out" ? pointOnRoute(out, progress / .45) : stage === "grasp" ? room.pickup.stop : pointOnRoute(back, (progress - .55) / .45);
+  const carrying = stage !== "out";
+  const table = room.obstacles.find((item) => item.name === room.pickup.table);
+  const labels = { out: "Following A*", grasp: "ACT grasp", back: "Bringing it back", done: "Cube delivered" };
   return (
     <figure className="robot-demo robot-demo--preview" data-demo="clean">
-      <svg className="robot-scene" viewBox="0 0 480 240" role="img" aria-label="Mr. Clean planning a route" shapeRendering="crispEdges">
+      <svg className="robot-scene" viewBox="0 0 480 240" role="img" aria-label={`Mr. Clean: ${labels[stage]}`} shapeRendering="crispEdges">
         <rect width="480" height="240" fill="#111" />
-        {room.obstacles.map((item) => <rect key={item.name} x={pixel(item.x) - 9} y={pixel(item.y) - 9} width={item.w * 18} height={item.h * 18} fill="#282828" stroke="#666" />)}
-        <polyline points={line(out)} fill="none" stroke="var(--signal)" strokeWidth="2" strokeDasharray="4 4" />
-        <Robot point={room.dock} label="MC" active />
+        {room.obstacles.map((item) => <rect key={item.name} x={pixel(item.x) - 9} y={pixel(item.y) - 9} width={item.w * 18} height={item.h * 18} fill={item === table ? "#3a3a3a" : "#282828"} stroke={item === table ? "#bbb" : "#666"} />)}
+        <polyline points={line(stage === "out" ? out : back)} fill="none" stroke="var(--signal)" strokeWidth="2" strokeDasharray="4 4" />
+        {!carrying && <rect x={pixel(table.x + 1) - 5} y={pixel(table.y + 1) - 5} width="10" height="10" fill="#4f7bd9" />}
+        <Robot point={position} label="MC" active />
+        {carrying && <rect x={pixel(position[0]) - 5} y={pixel(position[1]) - 20} width="10" height="10" fill="#4f7bd9" />}
+        <Bubble point={position} lines={cleanSpeech.stack[stage]} />
       </svg>
-      <figcaption className="preview-caption">Mr. Clean · Three ways to fetch a cube<span>Illustration</span></figcaption>
+      <figcaption className="preview-caption">Mr. Clean · {labels[stage]}<span>Illustration</span></figcaption>
     </figure>
   );
 }

@@ -175,8 +175,14 @@ export function GuardrailDemo({ preview = false }) {
 }
 
 export function ClipDemo({ preview = false }) {
-  const [adaptive, setAdaptive] = useState(preview);
-  const [found, setFound] = useState(preview);
+  const [adaptive, setAdaptive] = useState(false);
+  const [found, setFound] = useState(false);
+  useEffect(() => {
+    if (!preview) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) { setAdaptive(true); setFound(true); return; }
+    const timers = [setTimeout(() => setAdaptive(true), 1200), setTimeout(() => setFound(true), 2600)];
+    return () => timers.forEach(clearTimeout);
+  }, [preview]);
   const { motion, segmentMinutes } = longVideo;
   const frames = sampleFrames(motion, 72, adaptive);
   const clips = topClips(motion);
@@ -201,7 +207,7 @@ export function ClipDemo({ preview = false }) {
         {[0, 60, 120, 180].map((minute) => <text key={minute} x={28 + minute / segmentMinutes * width} y="204" textAnchor={minute ? minute === 180 ? "end" : "middle" : "start"} className="scene-label">{timestamp(minute)}</text>)}
       </svg>
   );
-  if (preview) return <figure className="robot-demo robot-demo--preview" data-demo="clips">{timeline}<figcaption className="preview-caption">Overlap · Frames follow the action<span>Illustration</span></figcaption></figure>;
+  if (preview) return <figure className="robot-demo robot-demo--preview" data-demo="clips">{timeline}<figcaption className="preview-caption">Overlap · {found ? "Clips found" : adaptive ? "Frames follow the action" : "Frames spread evenly"}<span>Illustration</span></figcaption></figure>;
   return (
     <DemoFrame title="Find the clips in a three-hour video" name="clips" note="Example motion scores and a fixed 72-frame budget. Nothing is uploaded, and no video or Gemini model runs on this page.">
       <div className="scenario-picker" aria-label="Frame sampling">
