@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import RobotDemo from "./robot-demo";
-import { StoryDemo, MonitoringDemo, GuardrailDemo } from "./project-demos";
+import RobotDemo, { CleanPreview } from "./robot-demo";
+import { StoryDemo, MonitoringDemo, GuardrailDemo, ClipDemo } from "./project-demos";
 
 export default function HomePreview() {
   const [hovered, setHovered] = useState(null);
@@ -43,6 +43,8 @@ export default function HomePreview() {
     repair: <StoryDemo kind="repair" key={kind} preview />,
     pipeline: <MonitoringDemo kind="pipeline" key={kind} preview />,
     guardrail: <GuardrailDemo key={kind} preview />,
+    clips: <ClipDemo key={kind} preview />,
+    clean: <CleanPreview key={kind} />,
   }[kind];
   return available && content ? <div className="home-preview" aria-hidden="true">{content}</div> : null;
 }

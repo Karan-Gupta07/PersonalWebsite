@@ -83,7 +83,7 @@ if (process.argv[2]) {
   );
   assert.ok(html.includes('class="site-shell site-shell--home"'));
   assert.ok(html.includes('class="pixel-feedback"'));
-  for (const kind of ["warehouse", "mission", "repair", "pipeline", "guardrail"])
+  for (const kind of ["clips", "warehouse", "mission", "clean", "repair", "pipeline", "guardrail"])
     assert.ok(html.includes(`data-robot-preview="${kind}"`));
   assert.match(html, /<dt>Now<\/dt>.*?Overlap.*?Wat.ai/s);
   assert.match(html, /<dt>Previously<\/dt>.*?Amazon.*?Manulife/s);

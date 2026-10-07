@@ -38,7 +38,7 @@ export function ProjectArchive({ items = projects, compact = false }) {
     <ul className={`project-list${compact ? " project-list--compact" : ""}`}>
       {items.map((project) => (
         <li key={project.slug}>
-          <Link className="project-link" href={`/project/${project.slug}`} data-robot-preview={compact ? { dominiq: "mission", reparo: "repair" }[project.slug] : undefined}>
+          <Link className="project-link" href={`/project/${project.slug}`} data-robot-preview={compact ? { dominiq: "mission", "mr-clean": "clean", reparo: "repair" }[project.slug] : undefined}>
             <span>
               <strong>{project.title}</strong>
               <span className="project-description">{compact ? project.category : project.short}</span>

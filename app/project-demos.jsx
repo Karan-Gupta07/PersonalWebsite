@@ -174,19 +174,14 @@ export function GuardrailDemo({ preview = false }) {
   );
 }
 
-export function ClipDemo() {
-  const [adaptive, setAdaptive] = useState(false);
-  const [found, setFound] = useState(false);
+export function ClipDemo({ preview = false }) {
+  const [adaptive, setAdaptive] = useState(preview);
+  const [found, setFound] = useState(preview);
   const { motion, segmentMinutes } = longVideo;
   const frames = sampleFrames(motion, 72, adaptive);
   const clips = topClips(motion);
   const width = 424 / motion.length;
-  return (
-    <DemoFrame title="Find the clips in a three-hour video" name="clips" note="Example motion scores and a fixed 72-frame budget. Nothing is uploaded, and no video or Gemini model runs on this page.">
-      <div className="scenario-picker" aria-label="Frame sampling">
-        <button aria-pressed={!adaptive} onClick={() => { setAdaptive(false); setFound(false); }}>Uniform sampling</button>
-        <button aria-pressed={adaptive} onClick={() => { setAdaptive(true); setFound(false); }}>Motion-adaptive</button>
-      </div>
+  const timeline = (
       <svg className="robot-scene" viewBox="0 0 480 220" role="img" aria-label={`Three-hour timeline. ${adaptive ? "Motion-adaptive" : "Uniform"} sampling puts ${actionShare(frames, motion)}% of frames on high-motion footage.`} shapeRendering="crispEdges">
         <rect width="480" height="220" fill="#111" />
         <text x="28" y="22" className="scene-label">MOTION</text>
@@ -205,6 +200,15 @@ export function ClipDemo() {
         <path d="M28 188h424" stroke="#555" />
         {[0, 60, 120, 180].map((minute) => <text key={minute} x={28 + minute / segmentMinutes * width} y="204" textAnchor={minute ? minute === 180 ? "end" : "middle" : "start"} className="scene-label">{timestamp(minute)}</text>)}
       </svg>
+  );
+  if (preview) return <figure className="robot-demo robot-demo--preview" data-demo="clips">{timeline}<figcaption className="preview-caption">Overlap · Frames follow the action<span>Illustration</span></figcaption></figure>;
+  return (
+    <DemoFrame title="Find the clips in a three-hour video" name="clips" note="Example motion scores and a fixed 72-frame budget. Nothing is uploaded, and no video or Gemini model runs on this page.">
+      <div className="scenario-picker" aria-label="Frame sampling">
+        <button aria-pressed={!adaptive} onClick={() => { setAdaptive(false); setFound(false); }}>Uniform sampling</button>
+        <button aria-pressed={adaptive} onClick={() => { setAdaptive(true); setFound(false); }}>Motion-adaptive</button>
+      </div>
+      {timeline}
       <dl className="demo-measurements">
         <div><dt>Frames on high motion</dt><dd>{actionShare(frames, motion)}%</dd></div>
         <div><dt>Frames on static footage</dt><dd>{100 - actionShare(frames, motion)}%</dd></div>

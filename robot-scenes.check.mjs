@@ -36,21 +36,25 @@ for (const point of [final.scout, final.responder])
   assert.ok(Math.hypot(point[0] - final.vessel[0], point[1] - final.vessel[1]) < 3, "Both robots should converge on the vessel");
 assert.deepEqual(missionFrame(2), missionFrame(1));
 
-const { room, isBlocked, tightCells, planPath } = await import("./app/robot-scenes.mjs");
-for (const target of room.targets) {
-  for (const inflate of [0, 1]) {
-    const path = planPath(room.dock, target.stop, inflate);
-    assert.ok(path, `${target.label} must be reachable (inflate ${inflate})`);
-    assert.deepEqual(path[0], room.dock);
-    assert.deepEqual(path.at(-1), target.stop);
-    for (let i = 1; i < path.length; i++)
-      assert.equal(Math.abs(path[i][0] - path[i - 1][0]) + Math.abs(path[i][1] - path[i - 1][1]), 1, "A* steps must be 4-connected");
-    assert.ok(path.every((point) => !isBlocked(point, inflate)), "Path entered an obstacle");
-    // Shortest: never longer than the uninflated path when unconstrained, and at least Manhattan distance.
-    assert.ok(path.length - 1 >= Math.abs(target.stop[0] - room.dock[0]) + Math.abs(target.stop[1] - room.dock[1]));
-  }
-  assert.equal(tightCells(planPath(room.dock, target.stop, 1)), 0, `${target.label}: inflated path should keep clearance`);
+const { room, isBlocked, tightCells, planPath, reactivePath, cleanApproaches, cleanRoutes } = await import("./app/robot-scenes.mjs");
+const steps = (path) => path.length - 1;
+const adjacent = (path) => path.every((point, i) => !i || Math.abs(point[0] - path[i - 1][0]) + Math.abs(point[1] - path[i - 1][1]) === 1);
+for (const inflate of [0, 1]) {
+  const path = planPath(room.dock, room.pickup.stop, inflate);
+  assert.deepEqual([path[0], path.at(-1)], [room.dock, room.pickup.stop]);
+  assert.ok(adjacent(path), "A* steps must be 4-connected");
+  assert.ok(path.every((point) => !isBlocked(point, inflate)), "Path entered an obstacle");
 }
-assert.ok(room.targets.some((target) => tightCells(planPath(room.dock, target.stop, 0)) > 0), "Raw paths should show why inflation matters");
+assert.equal(tightCells(planPath(room.dock, room.pickup.stop, 1)), 0, "Inflated path keeps clearance");
+assert.ok(tightCells(planPath(room.dock, room.pickup.stop, 0)) > 0, "Raw path shows why inflation matters");
+assert.equal(steps(planPath(room.dock, room.pickup.stop, 0)), 20, "Manhattan-optimal on open floor");
 assert.equal(planPath(room.dock, [15, 1]), null, "Goal inside furniture is unreachable");
-assert.equal(planPath(room.dock, [15, 4], 0).length - 1, 20, "Manhattan-optimal on open floor");
+assert.equal(reactivePath(room.dock, [15, 1]), null, "Reactive search gives up on an unreachable goal");
+assert.equal(cleanApproaches.length, 3);
+for (const { id } of cleanApproaches) {
+  const { out, back } = cleanRoutes(id);
+  assert.deepEqual([out[0], out.at(-1), back[0], back.at(-1)], [room.dock, room.pickup.stop, room.pickup.stop, room.dock], id);
+  assert.ok(adjacent(out) && adjacent(back), id);
+  assert.ok([...out, ...back].every((point) => !isBlocked(point, 1)), `${id} hit furniture`);
+}
+assert.ok(steps(cleanRoutes("fly").out) + steps(cleanRoutes("fly").back) > steps(cleanRoutes("stack").out) + steps(cleanRoutes("stack").back), "Reactive control should travel further than A*");

@@ -62,18 +62,14 @@ export const room = {
   height: 12,
   dock: [1, 10],
   obstacles: [
-    { name: "ACT TABLE", x: 2, y: 1, w: 2, h: 2 },
+    { name: "CUBES TABLE", x: 2, y: 1, w: 2, h: 2 },
     { name: "COUCH", x: 6, y: 0, w: 4, h: 3 },
-    { name: "CUBE TABLE", x: 14, y: 1, w: 3, h: 2 },
+    { name: "PICK TABLE", x: 14, y: 1, w: 3, h: 2 },
     { name: "COFFEE TABLE", x: 9, y: 6, w: 4, h: 3 },
     { name: "PLANT", x: 16, y: 6, w: 1, h: 2 },
     { name: "BALL TABLE", x: 19, y: 8, w: 3, h: 3 },
   ],
-  targets: [
-    { label: "Cube table", task: "Tidy the cubes", stop: [15, 4] },
-    { label: "Ball table", task: "Pick up the ball", stop: [20, 6] },
-    { label: "ACT table", task: "Run the ACT policy", stop: [2, 4] },
-  ],
+  pickup: { table: "PICK TABLE", stop: [15, 4] },
 };
 
 export function isBlocked([x, y], inflate = 0) {
@@ -118,3 +114,46 @@ export function planPath(start, goal, inflate = 0) {
   }
   return null;
 }
+
+const toward = (goal) => ([x, y]) => Math.hypot(x - goal[0], y - goal[1]);
+
+// The fly-brain stand-in: no map, no plan. Each step it moves to a free, unvisited neighbour that
+// feels closer to the goal, and backs up when boxed in. Every `wobble`-th step takes the second-best
+// neighbour, standing in for a noisy learned policy. The trail it leaves is what gets drawn.
+// ponytail: deterministic illustration, not a connectome simulation.
+export function reactivePath(start, goal, inflate = 1, wobble = 3) {
+  const key = ([x, y]) => `${x},${y}`;
+  const distance = toward(goal);
+  const seen = new Set([key(start)]);
+  const stack = [start];
+  const trail = [start];
+  while (stack.length) {
+    const current = stack.at(-1);
+    if (key(current) === key(goal)) return trail;
+    const options = [[1, 0], [-1, 0], [0, 1], [0, -1]].map(([dx, dy]) => [current[0] + dx, current[1] + dy]).filter((point) => !isBlocked(point, inflate) && !seen.has(key(point))).sort((a, b) => distance(a) - distance(b));
+    const next = options[trail.length % wobble === 0 && options.length > 1 ? 1 : 0];
+    if (next) { seen.add(key(next)); stack.push(next); trail.push(next); }
+    else { stack.pop(); if (stack.length) trail.push(stack.at(-1)); }
+  }
+  return null;
+}
+
+export const cleanApproaches = [
+  { id: "stack", label: "Robotics stack", manipulation: "ACT", summary: "Simulated lidar, wheel encoders and IMU feed SLAM Toolbox in ROS 2. Obstacles are inflated by the robot’s footprint, A* finds a collision-free route, and ACT predicts the arm’s reach, grasp and lift as 32-step action chunks." },
+  { id: "fly", label: "Fly brain", manipulation: "Fly-brain arm policy", summary: "No map and no planned route. Sensor readings pass through a 512-neuron graph cut from the fruit-fly connectome and come out as actions, so the robot reacts step by step." },
+  { id: "agent", label: "AI agent", manipulation: "Agent skills", summary: "The agent gets the room, the objects, the robot’s state and its tools, plus a goal. It decides which tool to call next instead of following a fixed sequence." },
+];
+
+export function cleanRoutes(approach) {
+  const { dock, pickup } = room;
+  if (approach === "fly") return { out: reactivePath(dock, pickup.stop), back: reactivePath(pickup.stop, dock) };
+  return { out: planPath(dock, pickup.stop, 1), back: planPath(pickup.stop, dock, 1) };
+}
+
+export const agentLog = [
+  ["out", "look(room) → blue cube on the pick table"],
+  ["out", "go_to(\"pick table\")"],
+  ["grasp", "manipulate(\"blue cube\")"],
+  ["back", "go_to(\"dock\")"],
+  ["done", "finished(\"Blue cube delivered\")"],
+];

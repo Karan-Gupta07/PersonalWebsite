@@ -28,7 +28,7 @@ export default function Home() {
                 <dt>{current ? "Now" : "Previously"}</dt>
                 <dd>
                   {experience.slice(0, 4).filter((job) => Boolean(job.current) === current).map((job) => (
-                    <Link key={job.slug} href={`/experience/${job.slug}`} data-robot-preview={{ amazon: "warehouse", manulife: "pipeline", "wat-ai": "guardrail" }[job.slug]}>{job.company}<Arrow diagonal /></Link>
+                    <Link key={job.slug} href={`/experience/${job.slug}`} data-robot-preview={{ overlap: "clips", amazon: "warehouse", manulife: "pipeline", "wat-ai": "guardrail" }[job.slug]}>{job.company}<Arrow diagonal /></Link>
                   ))}
                 </dd>
               </div>

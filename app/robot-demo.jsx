@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
-import { warehouse, routeLength, pointOnRoute, warehouseFrame, missionFrame, room, planPath, tightCells } from "./robot-scenes.mjs";
+import { warehouse, routeLength, pointOnRoute, warehouseFrame, missionFrame, room, cleanApproaches, cleanRoutes, agentLog } from "./robot-scenes.mjs";
 
 const pixel = (value) => Math.round((24 + value * 18) / 2) * 2;
 const line = (route) => route.map(([x, y]) => `${pixel(x)},${pixel(y)}`).join(" ");
@@ -208,78 +208,112 @@ export default function RobotDemo({ kind, preview = false }) {
   );
 }
 
+const cleanStages = ["plan", "out", "grasp", "back", "done"];
+const cleanSpeech = {
+  stack: { plan: ["Map built.", "Route planned."], out: ["Following A*."], grasp: ["ACT: reach, grasp,", "lift."], back: ["Heading back."], done: ["Delivered."] },
+  fly: { plan: ["No map.", "Just sensing."], out: ["Closer… closer…"], grasp: ["Grasping."], back: ["Finding home."], done: ["Delivered."] },
+  agent: { plan: ["Goal: bring the", "blue cube back."], out: ["go_to(pick table)"], grasp: ["manipulate(cube)"], back: ["go_to(dock)"], done: ["finished()"] },
+};
+
+export function CleanPreview() {
+  const { out } = cleanRoutes("stack");
+  return (
+    <figure className="robot-demo robot-demo--preview" data-demo="clean">
+      <svg className="robot-scene" viewBox="0 0 480 240" role="img" aria-label="Mr. Clean planning a route" shapeRendering="crispEdges">
+        <rect width="480" height="240" fill="#111" />
+        {room.obstacles.map((item) => <rect key={item.name} x={pixel(item.x) - 9} y={pixel(item.y) - 9} width={item.w * 18} height={item.h * 18} fill="#282828" stroke="#666" />)}
+        <polyline points={line(out)} fill="none" stroke="var(--signal)" strokeWidth="2" strokeDasharray="4 4" />
+        <Robot point={room.dock} label="MC" active />
+      </svg>
+      <figcaption className="preview-caption">Mr. Clean · Three ways to fetch a cube<span>Illustration</span></figcaption>
+    </figure>
+  );
+}
+
 export function CleanDemo() {
   const id = useId();
-  const [target, setTarget] = useState(0);
-  const [inflate, setInflate] = useState(true);
+  const [approach, setApproach] = useState("stack");
   const [stage, setStage] = useState("plan");
   const [progress, setProgress] = useState(0);
   const [ready, setReady] = useState(false);
-  const goal = room.targets[target];
-  const path = planPath(room.dock, goal.stop, inflate ? 1 : 0);
-  const tight = tightCells(path);
-  const steps = path.length - 1;
-  const position = stage === "plan" ? room.dock : pointOnRoute(path, progress);
-  const table = room.obstacles.find((item) => item.name === goal.label.toUpperCase());
+  const info = cleanApproaches.find((item) => item.id === approach);
+  const routes = cleanRoutes(approach);
+  const leg = stage === "back" || stage === "done" ? routes.back : routes.out;
+  const steps = leg.length - 1;
+  const position = stage === "plan" ? room.dock : stage === "grasp" ? room.pickup.stop : stage === "done" ? room.dock : pointOnRoute(leg, progress);
+  const travelled = stage === "plan" ? 0 : stage === "out" ? Math.round(progress * steps) : stage === "back" ? routes.out.length - 1 + Math.round(progress * steps) : routes.out.length - 1 + (stage === "done" ? routes.back.length - 1 : 0);
+  const trail = (path, amount) => path.slice(0, Math.max(1, Math.floor(amount * (path.length - 1)) + 1)).concat([pointOnRoute(path, amount)]);
+  const drawn = approach === "fly"
+    ? { out: stage === "plan" ? [] : trail(routes.out, stage === "out" ? progress : 1), back: stage === "back" ? trail(routes.back, progress) : stage === "done" ? routes.back : [] }
+    : { out: stage === "back" || stage === "done" ? [] : routes.out, back: stage === "back" || stage === "done" ? routes.back : [] };
+  const table = room.obstacles.find((item) => item.name === room.pickup.table);
+  const carrying = stage === "back" || stage === "done";
+  const index = cleanStages.indexOf(stage);
   useEffect(() => setReady(true), []);
   useEffect(() => {
-    if (stage !== "driving") return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) { setProgress(1); setStage("arrived"); return; }
+    if (stage !== "out" && stage !== "back") return;
+    const finish = () => setStage(stage === "out" ? "grasp" : "done");
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) { setProgress(1); finish(); return; }
     let request, start;
     const tick = (now) => {
       start ??= now;
       const value = Math.min(1, (now - start) / (steps * 90));
       setProgress(value);
       if (value < 1) request = requestAnimationFrame(tick);
-      else setStage("arrived");
+      else finish();
     };
     request = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(request);
   }, [stage, steps]);
 
-  function reset(next = {}) {
-    setStage("plan");
-    setProgress(0);
-    if ("target" in next) setTarget(next.target);
-    if ("inflate" in next) setInflate(next.inflate);
-  }
+  function go(next) { setProgress(0); setStage(next); }
+  function choose(next) { setApproach(next); go("plan"); }
 
-  const speech = { plan: [`${goal.task}.`, `Path: ${steps} steps.`], driving: ["On my way."], arrived: ["At the table."], done: ["Picked up."] }[stage];
-  const action = { plan: ["Drive", () => setStage("driving")], driving: ["Driving…", null], arrived: ["Pick up", () => setStage("done")], done: ["Back to dock", () => reset()] }[stage];
-  const status = stage === "done" ? "Picked up. In MuJoCo, the trained RL policy reached 95% pickup success." : `A* path to the ${goal.label.toLowerCase()} · ${steps} steps · ${tight ? `${tight} cells scrape furniture` : "full clearance"}`;
+  const action = { plan: ["Start", () => go("out")], out: ["Driving…", null], grasp: [`Grasp with ${info.manipulation}`, () => go("back")], back: ["Returning…", null], done: ["Run again", () => go("plan")] }[stage];
+  const status = stage === "done" ? `Blue cube delivered · ${travelled} steps travelled` : stage === "grasp" ? `At the pick table · ${info.manipulation} takes over the arm` : `${info.label} · ${travelled} steps travelled`;
 
   return (
-    <section className="interactive-demo" data-demo="clean" aria-label="Plan a path, then pick up">
-      <div className="demo-heading"><h2>Plan a path, then pick up</h2><span>Illustrative demo</span></div>
-      <div className="scenario-picker" aria-label="Destination">
-        {room.targets.map((item, i) => <button key={item.label} disabled={!ready} aria-pressed={target === i} onClick={() => reset({ target: i })}>{item.label}</button>)}
+    <section className="interactive-demo" data-demo="clean" aria-label="One robot, three ways to decide">
+      <div className="demo-heading"><h2>One robot, three ways to decide</h2><span>Illustrative demo</span></div>
+      <div className="scenario-picker" aria-label="Control approach">
+        {cleanApproaches.map((item) => <button key={item.id} disabled={!ready} aria-pressed={approach === item.id} onClick={() => choose(item.id)}>{item.label}</button>)}
       </div>
-      <svg className="robot-scene" viewBox="0 0 480 240" role="img" aria-label={`Room map. ${status}`} shapeRendering="crispEdges">
+      <svg className="robot-scene" viewBox="0 0 480 240" role="img" aria-label={`Room map. Task: bring back the blue cube. ${status}`} shapeRendering="crispEdges">
         <defs><pattern id={`${id}-grid`} width="18" height="18" x="6" y="6" patternUnits="userSpaceOnUse"><path d="M0 1h1" stroke="#292929" /></pattern></defs>
         <rect width="480" height="240" fill="#111" />
         <rect x="15" y="15" width="432" height="216" fill={`url(#${id}-grid)`} stroke="#333" />
         {room.obstacles.map((item) => (
           <g key={item.name}>
-            {inflate && <rect x={pixel(item.x - 1) - 9} y={pixel(item.y - 1) - 9} width={(item.w + 2) * 18} height={(item.h + 2) * 18} fill="none" stroke="#444" strokeDasharray="3 3" />}
+            {approach !== "fly" && <rect x={pixel(item.x - 1) - 9} y={pixel(item.y - 1) - 9} width={(item.w + 2) * 18} height={(item.h + 2) * 18} fill="none" stroke="#444" strokeDasharray="3 3" />}
             <rect x={pixel(item.x) - 9} y={pixel(item.y) - 9} width={item.w * 18} height={item.h * 18} fill={item === table ? "#3a3a3a" : "#282828"} stroke={item === table ? "#bbb" : "#666"} />
             <text x={pixel(item.x) - 9} y={pixel(item.y + item.h) + 2} className="scene-label">{item.name}</text>
           </g>
         ))}
-        {stage !== "done" && <rect x={pixel(table.x + table.w / 2) - 14} y={pixel(table.y + table.h - 1) - 4} width="10" height="10" fill="var(--signal)" />}
-        <polyline points={line(path)} fill="none" stroke={tight ? "#b1b1b1" : "var(--signal)"} strokeWidth="2" strokeDasharray={stage === "plan" ? "4 4" : undefined} />
-        {!inflate && path.filter(([x, y]) => tightCells([[x, y]])).map(([x, y]) => <rect key={`${x}-${y}`} x={pixel(x) - 4} y={pixel(y) - 4} width="8" height="8" fill="none" stroke="var(--signal)" />)}
+        {!carrying && stage !== "grasp" && <rect x={pixel(table.x + 1) - 5} y={pixel(table.y + 1) - 5} width="10" height="10" fill="#4f7bd9" />}
+        {drawn.out.length > 1 && <polyline points={line(drawn.out)} fill="none" stroke={approach === "fly" ? "#b1b1b1" : "var(--signal)"} strokeWidth="2" strokeDasharray={approach === "fly" ? undefined : "4 4"} />}
+        {drawn.back.length > 1 && <polyline points={line(drawn.back)} fill="none" stroke="var(--signal)" strokeWidth="2" strokeDasharray={approach === "fly" ? undefined : "4 4"} />}
         <rect x={pixel(room.dock[0]) - 10} y={pixel(room.dock[1]) - 10} width="20" height="20" fill="none" stroke="#858585" strokeDasharray="3 3" />
+        <text x={pixel(room.dock[0]) + 14} y={pixel(room.dock[1]) + 4} className="scene-label">DOCK</text>
         <Robot point={position} label="MC" active={stage !== "plan"} />
-        {stage === "done" && <rect x={pixel(position[0]) - 5} y={pixel(position[1]) - 20} width="10" height="10" fill="var(--signal)" />}
-        <Bubble point={position} lines={speech} />
+        {(carrying || stage === "grasp") && <rect x={pixel(position[0]) - 5} y={pixel(position[1]) - 20} width="10" height="10" fill="#4f7bd9" />}
+        <Bubble point={position} lines={cleanSpeech[approach][stage]} />
       </svg>
-      <label className="loop-option"><input type="checkbox" checked={inflate} disabled={!ready} onChange={(event) => reset({ inflate: event.target.checked })} />Inflate obstacles to keep clearance</label>
+      <div className="story-readout">
+        <h3>{info.label}</h3>
+        <p>{info.summary}</p>
+      </div>
+      {approach === "agent" && (
+        <ol className="agent-log" aria-label="Agent tool calls">
+          {agentLog.filter(([at]) => cleanStages.indexOf(at) <= index).map(([, call]) => <li key={call}><code>{call}</code></li>)}
+          {index === 0 && <li className="demo-note">Waiting for a goal: “bring the blue cube back to the dock.”</li>}
+        </ol>
+      )}
       <div className="demo-controls">
         <button className="demo-primary" disabled={!ready || !action[1]} onClick={action[1] ?? undefined}>{action[0]}</button>
-        {stage !== "plan" && <button className="demo-secondary" disabled={!ready} onClick={() => reset()}>Reset</button>}
+        {stage !== "plan" && <button className="demo-secondary" disabled={!ready} onClick={() => go("plan")}>Reset</button>}
       </div>
       <p className="demo-status" role="status">{status}</p>
-      <p className="demo-note">Real A* on a toy grid, running in your browser. Not the MuJoCo simulation; the pickup is scripted.</p>
+      <p className="demo-note">Same robot, same room, same task. The routes here are computed in your browser for illustration; the real controllers run in MuJoCo, and the fly-brain trail is a stand-in for its reactive behaviour.</p>
     </section>
   );
 }
