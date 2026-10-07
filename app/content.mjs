@@ -18,7 +18,8 @@ export const profile = {
 export const projects = [
   {
     slug: "dominiq",
-    links: { github: "https://github.com/savirsingh/DominIQ" },
+    links: { github: "https://github.com/savirsingh/DominIQ", devpost: "https://devpost.com/software/dominiq" },
+    video: "zN7Yl_UZopU",
     code: "PRJ–06",
     title: "DominIQ",
     category: "ROBOTICS & AUTONOMY",
