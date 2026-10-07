@@ -11,7 +11,7 @@ export const stories = {
   tailor: {
     title: "From a photo to a better fit",
     steps: [
-      { title: "Start with an example silhouette", text: "Choose a synthetic profile to see the photo-to-measurement workflow. No photo is uploaded or analyzed here.", action: "Show landmarks", speech: ["My clothes never fit.", "Can a photo help?"] },
+      { title: "Start with an example silhouette", text: "A synthetic profile shows the photo-to-measurement workflow. No photo is uploaded or analyzed here.", action: "Show landmarks", speech: ["My clothes never fit.", "Can a photo help?"] },
       { title: "Locate the landmarks", text: "Shoulder, torso, and arm landmarks establish the reference points used by the measurement workflow.", action: "Show measurements", speech: ["Shoulders, torso, sleeves.", "A consistent reference."] },
       { title: "Translate landmarks into measurements", text: "These fixed example measurements show the shape of the result—not measurements inferred from your body.", action: "Preview the garment", speech: ["Measurements, not guesses.", "Ready for a custom fit."] },
       { title: "Connect the measurements to apparel", text: "The tailoring flow brings the measurements into a custom-apparel catalog. This is a visual example, not a live order.", action: "Start over", speech: ["A garment built around", "the example measurements."] },
@@ -19,20 +19,38 @@ export const stories = {
   },
 };
 
-export const fittingProfiles = [
-  { name: "Example A", height: 174, chest: 94, shoulder: 42, sleeve: 60 },
-  { name: "Example B", height: 188, chest: 104, shoulder: 46, sleeve: 65 },
+export const fitProfile = { height: 178, chest: 98, shoulder: 44, sleeve: 62 };
+
+// DeliriumWatch: synthetic night-time readings. `openness` is a per-frame eye-openness trace
+// (eye aspect ratio from eye landmarks); `face` drives the drawn landmarks.
+export const roomSamples = [
+  { label: "Resting", online: true, light: 80, noise: 34, face: { eye: 0, brow: 0, mouth: 0, pallor: 0 }, openness: [.06, .05, .06, .05, .05, .06, .05, .06, .05, .05, .06, .05] },
+  { label: "Disrupted rest", online: true, light: 420, noise: 72, face: { eye: 1, brow: 0, mouth: 0, pallor: 0 }, openness: [.31, .3, .08, .32, .29, .07, .3, .31, .06, .3, .07, .31] },
+  { label: "Visible distress", online: true, light: 90, noise: 40, face: { eye: .5, brow: 1, mouth: 1, pallor: 1 }, openness: [.18, .17, .19, .16, .18, .17, .18, .16, .17, .18, .17, .16] },
+  { label: "Camera offline", online: false, light: null, noise: null, face: null, openness: [] },
 ];
 
-export const roomSamples = [
-  { label: "Quiet room", light: 80, noise: 34, sleepInterrupted: false, online: true, trace: [32, 33, 31, 35, 34, 32, 35, 33, 34, 32, 34, 34] },
-  { label: "Disrupted rest", light: 420, noise: 72, sleepInterrupted: true, online: true, trace: [33, 36, 40, 44, 52, 61, 65, 69, 68, 74, 70, 72] },
-  { label: "Sensor offline", light: null, noise: null, sleepInterrupted: false, online: false, trace: [] },
-];
+export const EYES_OPEN = .2;
+
+export function faceReadout(sample) {
+  if (!sample.online || !sample.face || !sample.openness.length) return null;
+  const average = sample.openness.reduce((sum, value) => sum + value, 0) / sample.openness.length;
+  const blinks = sample.openness.filter((value, i) => i && value < EYES_OPEN && sample.openness[i - 1] >= EYES_OPEN).length;
+  const eyes = average < .1 ? "Closed" : blinks >= 3 ? "Open, blinking often" : average >= EYES_OPEN ? "Open" : "Half-open";
+  const expression = sample.face.brow && sample.face.mouth ? "Furrowed brow, grimace" : "Relaxed";
+  return { eyes, blinks, expression, pallor: sample.face.pallor > 0 };
+}
 
 export function roomFlags(sample) {
-  if (!sample.online || !Number.isFinite(sample.light) || !Number.isFinite(sample.noise)) return ["Sensor readings unavailable; review the connection."];
-  return [sample.light >= 300 && "Light exceeds the example threshold.", sample.noise >= 60 && "Noise exceeds the example threshold.", sample.sleepInterrupted && "The example sleep signal is interrupted."].filter(Boolean);
+  const face = faceReadout(sample);
+  if (!face || !Number.isFinite(sample.light) || !Number.isFinite(sample.noise)) return ["Camera or sensor readings unavailable; check the connection."];
+  return [
+    sample.light >= 300 && "Room light exceeds the example night-time threshold.",
+    sample.noise >= 60 && "Room noise exceeds the example threshold.",
+    face.blinks >= 3 && "Eyes open with frequent blinking: rest looks disrupted.",
+    face.expression !== "Relaxed" && "Brow and mouth landmarks show a strained expression.",
+    face.pallor && "Skin tone differs from this patient’s example baseline.",
+  ].filter(Boolean);
 }
 
 export const pipelineSamples = [

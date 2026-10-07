@@ -1,15 +1,17 @@
 import assert from "node:assert/strict";
-import { stories, fittingProfiles, roomSamples, roomFlags, pipelineSamples, pipelineFlags, matchApplicants, guardrailCases, checkAgentTrace, spotifyEmbedUrl, nextTrackIndex, longVideo, sampleFrames, actionShare, topClips, timestamp } from "./app/demo-data.mjs";
+import { stories, fitProfile, roomSamples, roomFlags, faceReadout, pipelineSamples, pipelineFlags, matchApplicants, guardrailCases, checkAgentTrace, spotifyEmbedUrl, nextTrackIndex, longVideo, sampleFrames, actionShare, topClips, timestamp } from "./app/demo-data.mjs";
 
 for (const story of Object.values(stories)) {
   assert.equal(story.steps.length, 4);
   assert.ok(story.steps.every((step) => step.title && step.text && step.action && step.speech.length));
 }
-assert.ok(fittingProfiles.every((profile) => profile.height > 0 && profile.chest > 0 && profile.shoulder > 0 && profile.sleeve > 0));
-assert.equal(roomFlags(roomSamples[0]).length, 0);
-assert.equal(roomFlags(roomSamples[1]).length, 3);
-assert.match(roomFlags(roomSamples[2])[0], /unavailable/);
-assert.match(roomFlags({ online: true, light: NaN, noise: 0 })[0], /unavailable/);
+assert.ok(["height", "chest", "shoulder", "sleeve"].every((key) => fitProfile[key] > 0));
+assert.deepEqual(roomSamples.map((sample) => roomFlags(sample).length), [0, 3, 2, 1]);
+assert.match(roomFlags(roomSamples[3])[0], /unavailable/);
+assert.match(roomFlags({ ...roomSamples[0], light: NaN })[0], /unavailable/);
+assert.deepEqual(roomSamples.slice(0, 3).map((sample) => faceReadout(sample).eyes), ["Closed", "Open, blinking often", "Half-open"]);
+assert.equal(faceReadout(roomSamples[1]).blinks, 4);
+assert.equal(faceReadout(roomSamples[3]), null);
 assert.equal(pipelineFlags(pipelineSamples[0]).length, 0);
 assert.equal(pipelineFlags(pipelineSamples[1]).length, 2);
 assert.match(pipelineFlags(pipelineSamples[2])[0], /stale/);

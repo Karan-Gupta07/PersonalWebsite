@@ -6,7 +6,7 @@ export const profile = {
   minor: "Economics minor",
   gpa: "3.95",
   resume: "/KaranGuptaResume.pdf",
-  resumeUpdated: "2026-10-01",
+  resumeUpdated: "2026-10-06",
   links: {
     github: "https://github.com/Karan-Gupta07",
     linkedin: "https://www.linkedin.com/in/karan-gupta-2b72a735a/",
@@ -106,8 +106,8 @@ export const projects = [
     summary:
       "An agentic AI repair platform that turns a product image into a repair plan, a parts list, and a path back to working order.",
     paragraphs: [
-      "Built an agentic AI repair platform using Gemini vision models and iterative reasoning to analyze product images and automatically generate step-by-step repair plans, specify required tools, and produce cost estimates.",
-      "Integrated the Shopify Storefront API and SerpAPI to dynamically source replacement parts and create a unified checkout flow. The system assessed product repairability with over 90% accuracy and reduced search time by 70%, with access to over 1,000 real-time listings.",
+      "Built an agentic AI repair platform that uses Gemini vision models to classify products and assess repairability with over 90% accuracy, then generates step-by-step repair plans, required tools, and cost estimates.",
+      "Integrated the Shopify Storefront API and SerpAPI to automate part matching and streamline the repair-to-checkout flow, reducing search time for replacement parts by 70% with access to over 1,000 real-time listings.",
       "Won 1st place in the Reactiv Track ($5,000) at Hack Canada 2026, and was shortlisted for the Most Complex AI Hack award.",
     ],
     distinction: "1ST PLACE / HACK CANADA 2026",
@@ -264,10 +264,10 @@ export const experience = [
     current: true,
     location: "San Francisco, CA",
     field: "YC S24 / AI VIDEO SYSTEMS",
-    intro: "At Overlap, I work on the pipeline that turns hours-long videos into short clips. This demo shows the core idea: spend the frame budget where the action is.",
+    intro: "At Overlap, I work on the systems that turn hours-long videos into short clips. This demo shows one idea behind that: spend the analysis budget where the action is.",
     bullets: [
+      "Increased customer engagement by 15% by building a PyTorch trend-forecasting model using 20+ customer, content, engagement, and external signals to guide video topics, editing styles, and publishing timing.",
       "Built a file-size-capped 4 FPS video proxy with motion-adaptive Gemini frame sampling, speeding up scene detection 1.6–2.4× and enabling AI clip generation on long-form videos spanning two to seven hours.",
-      "Implemented batched Gemini spellcheck on Google Cloud Functions, reducing API calls by up to 92% (90 to seven per run) and restoring transcript correction across automated video processing and editing workflows.",
     ],
   },
   {

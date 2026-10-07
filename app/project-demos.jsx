@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useId, useState } from "react";
-import { stories, fittingProfiles, roomSamples, roomFlags, pipelineSamples, pipelineFlags, matchApplicants, guardrailCases, checkAgentTrace, longVideo, sampleFrames, actionShare, topClips, timestamp } from "./demo-data.mjs";
+import { stories, fitProfile, roomSamples, roomFlags, faceReadout, EYES_OPEN, pipelineSamples, pipelineFlags, matchApplicants, guardrailCases, checkAgentTrace, longVideo, sampleFrames, actionShare, topClips, timestamp } from "./demo-data.mjs";
 
 function DemoFrame({ title, name, note, children }) {
   const [ready, setReady] = useState(false);
@@ -58,7 +58,7 @@ function StoryScene({ kind, step, profile }) {
         <g>
           <Person x={330} y={145} scale={scale} />
           {step > 0 && <g stroke="var(--signal)" fill="none"><path d={`M276 ${shoulderY}h104M276 145h104M276 ${waistY}h104M276 ${shoulderY - 4}V${waistY + 4}m104 0V${shoulderY - 4}`} strokeDasharray="3 4" /><rect x={330 - 16 * scale - 3} y={shoulderY - 3} width="6" height="6" /><rect x={330 + 16 * scale - 3} y={shoulderY - 3} width="6" height="6" /></g>}
-          {step >= 3 && <path transform={`translate(330 145) scale(${scale})`} d="M-21-28h42l14 15-10 12-7-6v43h-36v-43l-7 6-10-12Z" fill="#707070" stroke="#eee" />}
+          {step >= 3 && <g transform={`translate(330 145) scale(${scale})`}><path d="M-18-20h12l6 6 6-6h12l8 8v40h-10v12h-32v-12h-10v-40Z" fill="#707070" stroke="#eee" /><path d="M16-8v36M-16-8v36" stroke="#555" /></g>}
           <text x="294" y="246" className="scene-label">{step >= 3 ? "CUSTOM FIT PREVIEW" : "EXAMPLE SILHOUETTE"}</text>
         </g>
       )}
@@ -68,10 +68,8 @@ function StoryScene({ kind, step, profile }) {
 
 export function StoryDemo({ kind, preview = false }) {
   const [step, setStep] = useState(0);
-  const [profileIndex, setProfileIndex] = useState(0);
-  const id = useId();
   const story = stories[kind];
-  const profile = fittingProfiles[profileIndex];
+  const profile = fitProfile;
   useEffect(() => {
     if (!preview) return;
     const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -85,7 +83,6 @@ export function StoryDemo({ kind, preview = false }) {
   if (preview) return <figure className="robot-demo robot-demo--preview" data-demo={kind}>{scene}<figcaption className="preview-caption">{kind === "repair" ? "Reparo" : "TailorAI"} · {story.steps[step].title}</figcaption></figure>;
   return (
     <DemoFrame title={story.title} name={kind} note={kind === "repair" ? "Scripted example: no photo analysis, live inventory, or checkout runs on this page." : "Synthetic silhouettes and fixed example measurements. No image is uploaded or processed."}>
-      {kind === "tailor" && <label className="demo-select" htmlFor={id}>Silhouette<select id={id} value={profileIndex} onChange={(event) => { setProfileIndex(Number(event.target.value)); setStep(0); }}>{fittingProfiles.map((item, i) => <option key={item.name} value={i}>{item.name}</option>)}</select></label>}
       {scene}
       <div className="story-readout" role="status" data-step={step}>
         <span className="demo-note">Step {step + 1} of {story.steps.length}</span>
@@ -98,41 +95,102 @@ export function StoryDemo({ kind, preview = false }) {
   );
 }
 
-function TelemetryChart({ sample, pipeline }) {
-  const maximum = pipeline ? 200 : 100;
-  const threshold = pipeline ? 150 : 60;
+function TelemetryChart({ sample }) {
+  const maximum = 200;
+  const threshold = 150;
   return (
-    <svg className="robot-scene telemetry-chart" viewBox="0 0 480 200" role="img" aria-label={`${pipeline ? "Queue depth" : "Room noise"}, synthetic sample: ${sample.label}`} shapeRendering="crispEdges">
+    <svg className="robot-scene telemetry-chart" viewBox="0 0 480 200" role="img" aria-label={`Queue depth, synthetic sample: ${sample.label}`} shapeRendering="crispEdges">
       <rect width="480" height="200" fill="#111" />
       {[40, 80, 120, 160].map((y) => <path key={y} d={`M32 ${y}h424`} stroke="#303030" />)}
       <path d={`M32 ${164 - threshold / maximum * 136}h424`} stroke="var(--signal)" strokeDasharray="4 4" />
       {sample.trace.map((value, i) => <rect key={i} x={42 + i * 34} y={164 - value / maximum * 136} width="18" height={value / maximum * 136} fill={value >= threshold ? "var(--signal)" : "#aaa"} />)}
       {!sample.trace.length && <text x="240" y="105" textAnchor="middle" className="scene-label">NO RECENT SIGNAL</text>}
-      <text x="32" y="188" className="scene-label">{pipeline ? "QUEUE DEPTH" : "ROOM NOISE (dB)"}</text>
+      <text x="32" y="188" className="scene-label">QUEUE DEPTH</text>
       <text x="456" y="188" textAnchor="end" className="scene-label">EXAMPLE THRESHOLD: {threshold}</text>
     </svg>
   );
 }
 
-export function MonitoringDemo({ kind, preview = false }) {
-  const pipeline = kind === "pipeline";
-  const samples = pipeline ? pipelineSamples : roomSamples;
+export function MonitoringDemo({ preview = false }) {
   const [selected, setSelected] = useState(preview ? 1 : 0);
-  const sample = samples[selected];
-  const flags = pipeline ? pipelineFlags(sample) : roomFlags(sample);
-  const title = pipeline ? "Catch the warning before the failure" : "Make the monitoring signals visible";
-  const chart = <TelemetryChart sample={sample} pipeline={pipeline} />;
-  if (preview) return <figure className="robot-demo robot-demo--preview" data-demo={kind}>{chart}<figcaption className="preview-caption">Manulife · Early-warning example</figcaption></figure>;
-  const metrics = pipeline ? [["Queued jobs", sample.queue], ["Memory", sample.memory === null ? null : `${sample.memory}%`], ["Data age", `${sample.age}s`]] : [["Room light", sample.light === null ? null : `${sample.light} lx`], ["Room noise", sample.noise === null ? null : `${sample.noise} dB`], ["Sleep signal", !sample.online ? null : sample.sleepInterrupted ? "Interrupted" : "Resting"]];
+  const sample = pipelineSamples[selected];
+  const flags = pipelineFlags(sample);
+  const chart = <TelemetryChart sample={sample} />;
+  if (preview) return <figure className="robot-demo robot-demo--preview" data-demo="pipeline">{chart}<figcaption className="preview-caption">Manulife · Early-warning example</figcaption></figure>;
+  const metrics = [["Queued jobs", sample.queue], ["Memory", sample.memory === null ? null : `${sample.memory}%`], ["Data age", `${sample.age}s`]];
   return (
-    <DemoFrame title={title} name={kind} note={pipeline ? "Synthetic telemetry and demonstration thresholds. No live company systems are connected." : "Simulated patient/environment signals and example thresholds. These flags are not a diagnosis or a delirium probability."}>
-      <div className="scenario-picker" aria-label="Example scenario">{samples.map((item, i) => <button key={item.label} aria-pressed={selected === i} onClick={() => setSelected(i)}>{item.label}</button>)}</div>
+    <DemoFrame title="Catch the warning before the failure" name="pipeline" note="Synthetic telemetry and demonstration thresholds. No live company systems are connected.">
+      <div className="scenario-picker" aria-label="Example scenario">{pipelineSamples.map((item, i) => <button key={item.label} aria-pressed={selected === i} onClick={() => setSelected(i)}>{item.label}</button>)}</div>
       {chart}
       <dl className="demo-measurements">{metrics.map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value ?? "Unavailable"}</dd></div>)}</dl>
-      <div className={`monitor-result ${flags.length ? "flagged" : ""}`} role="status">
-        <h3>{flags.length ? "Review flagged signals" : "No example thresholds crossed"}</h3>
-        {flags.length ? <ul>{flags.map((flag) => <li key={flag}>{flag}</li>)}</ul> : <p>The example readings are within the demo’s configured limits.</p>}
-      </div>
+      <FlagResult flags={flags} />
+    </DemoFrame>
+  );
+}
+
+function FlagResult({ flags }) {
+  return (
+    <div className={`monitor-result ${flags.length ? "flagged" : ""}`} role="status">
+      <h3>{flags.length ? "Review flagged signals" : "No example thresholds crossed"}</h3>
+      {flags.length ? <ul>{flags.map((flag) => <li key={flag}>{flag}</li>)}</ul> : <p>The example readings are within the demo’s configured limits.</p>}
+    </div>
+  );
+}
+
+// A pixel face; `face` values run 0–1. Landmarks are drawn where a face-landmark model would place them.
+function PatientFace({ face }) {
+  const lid = 2 + face.eye * 10;
+  const furrow = face.brow > 0;
+  const grimace = face.mouth > 0;
+  const landmarks = [
+    [93, 84], [117, furrow ? 88 : 84], [143, furrow ? 88 : 84], [167, 84],
+    [93, 105], [117, 105], [143, 105], [167, 105], [105, 105 - lid / 2], [105, 105 + lid / 2], [155, 105 - lid / 2], [155, 105 + lid / 2],
+    [130, 132],
+    ...(grimace ? [[104, 156], [156, 156], [130, 148], [130, 158]] : [[112, 154], [148, 154], [130, 152], [130, 156]]),
+    [78, 170], [130, 198], [182, 170],
+  ];
+  return (
+    <g>
+      <path d="M86 40h88v8h8v8h8v120h-8v8h-8v8H86v-8h-8v-8h-8V56h8v-8h8Z" fill={face.pallor ? "#c8c8bc" : "#9a9a9a"} />
+      <path d="M86 40h88v8h8v16H78V48h8Z" fill="#555" />
+      {face.eye < .05
+        ? <path d="M93 104h24v2H93Zm50 0h24v2h-24Z" fill="#171717" />
+        : <g><rect x="93" y={105 - lid / 2} width="24" height={lid} fill="#eee" /><rect x="143" y={105 - lid / 2} width="24" height={lid} fill="#eee" /><rect x="102" y={105 - Math.min(lid, 6) / 2} width="6" height={Math.min(lid, 6)} fill="#171717" /><rect x="152" y={105 - Math.min(lid, 6) / 2} width="6" height={Math.min(lid, 6)} fill="#171717" /></g>}
+      <path d={furrow ? "M93 82h8v2h8v2h8v4h-8v-2h-8v-2h-8Zm50 4h8v-2h8v-2h8v4h-8v2h-8v2h-8Z" : "M93 82h24v4H93Zm50 0h24v4h-24Z"} fill="#444" />
+      <rect x="127" y="112" width="6" height="20" fill={face.pallor ? "#b0b0a4" : "#828282"} />
+      {grimace
+        ? <g><rect x="106" y="148" width="48" height="10" fill="#333" /><rect x="110" y="150" width="40" height="4" fill="#ddd" /><rect x="102" y="156" width="4" height="4" fill="#333" /><rect x="154" y="156" width="4" height="4" fill="#333" /></g>
+        : <rect x="112" y="152" width="36" height="4" fill="#444" />}
+      {face.pallor > 0 && <path d="M184 92h4v8h-4Zm-112 28h4v8h-4Z" fill="#bcd4f2" />}
+      <rect x="62" y="34" width="136" height="172" fill="none" stroke="var(--signal)" strokeDasharray="4 4" />
+      {landmarks.map(([x, y], i) => <rect key={i} x={x - 2} y={y - 2} width="4" height="4" fill="var(--signal)" />)}
+    </g>
+  );
+}
+
+export function WardDemo() {
+  const [selected, setSelected] = useState(0);
+  const sample = roomSamples[selected];
+  const face = faceReadout(sample);
+  const flags = roomFlags(sample);
+  const metrics = [["Eyes", face?.eyes], ["Blinks in window", face?.blinks], ["Expression", face?.expression], ["Room light", sample.light === null ? null : `${sample.light} lx`], ["Room noise", sample.noise === null ? null : `${sample.noise} dB`]];
+  return (
+    <DemoFrame title="Read the face, and the room" name="ward" note="A synthetic face with example landmarks, sensor readings and thresholds. No camera is used. Flags prompt a staff check-in; they are not a diagnosis or a delirium probability.">
+      <div className="scenario-picker" aria-label="Example scenario">{roomSamples.map((item, i) => <button key={item.label} aria-pressed={selected === i} onClick={() => setSelected(i)}>{item.label}</button>)}</div>
+      <svg className="robot-scene" viewBox="0 0 480 240" role="img" aria-label={face ? `Synthetic patient face with landmarks. Eyes: ${face.eyes}. Expression: ${face.expression}.` : "Camera offline"} shapeRendering="crispEdges">
+        <rect width="480" height="240" fill="#111" />
+        {face ? <PatientFace face={sample.face} /> : <text x="130" y="124" textAnchor="middle" className="scene-label">NO CAMERA SIGNAL</text>}
+        <text x="62" y="224" className="scene-label">{face ? "FACE + LANDMARKS" : ""}</text>
+        <path d="M236 30v180" stroke="#303030" />
+        <text x="258" y="30" className="scene-label">EYE OPENNESS</text>
+        <path d={`M258 ${190 - EYES_OPEN / .4 * 140}h198`} stroke="var(--signal)" strokeDasharray="4 4" />
+        {sample.openness.map((value, i) => <rect key={i} x={262 + i * 16} y={190 - value / .4 * 140} width="10" height={value / .4 * 140} fill={value >= EYES_OPEN ? "#ddd" : "#666"} />)}
+        <path d="M258 190h198" stroke="#555" />
+        <text x="258" y="206" className="scene-label">LAST 12 FRAMES</text>
+        <text x="456" y="206" textAnchor="end" className="scene-label">OPEN ≥ {EYES_OPEN}</text>
+      </svg>
+      <dl className="demo-measurements">{metrics.map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value ?? "Unavailable"}</dd></div>)}</dl>
+      <FlagResult flags={flags} />
     </DemoFrame>
   );
 }
@@ -191,7 +249,7 @@ export function ClipDemo({ preview = false }) {
       <svg className="robot-scene" viewBox="0 0 480 220" role="img" aria-label={`Three-hour timeline. ${adaptive ? "Motion-adaptive" : "Uniform"} sampling puts ${actionShare(frames, motion)}% of frames on high-motion footage.`} shapeRendering="crispEdges">
         <rect width="480" height="220" fill="#111" />
         <text x="28" y="22" className="scene-label">MOTION</text>
-        <text x="28" y="134" className="scene-label">FRAMES SENT TO GEMINI</text>
+        <text x="28" y="134" className="scene-label">FRAMES ANALYZED</text>
         {motion.map((value, i) => {
           const x = 28 + i * width;
           const clip = found && clips.includes(i);
@@ -209,7 +267,7 @@ export function ClipDemo({ preview = false }) {
   );
   if (preview) return <figure className="robot-demo robot-demo--preview" data-demo="clips">{timeline}<figcaption className="preview-caption">Overlap · {found ? "Clips found" : adaptive ? "Frames follow the action" : "Frames spread evenly"}<span>Illustration</span></figcaption></figure>;
   return (
-    <DemoFrame title="Find the clips in a three-hour video" name="clips" note="Example motion scores and a fixed 72-frame budget. Nothing is uploaded, and no video or Gemini model runs on this page.">
+    <DemoFrame title="Find the moments worth clipping" name="clips" note="A simplified illustration with example motion scores and a fixed frame budget. Nothing is uploaded, and no video or model runs on this page.">
       <div className="scenario-picker" aria-label="Frame sampling">
         <button aria-pressed={!adaptive} onClick={() => { setAdaptive(false); setFound(false); }}>Uniform sampling</button>
         <button aria-pressed={adaptive} onClick={() => { setAdaptive(true); setFound(false); }}>Motion-adaptive</button>

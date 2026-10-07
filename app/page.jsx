@@ -47,7 +47,7 @@ export default function Home() {
         <section className="personal-link" id="personnel" aria-label="About me">
           <HomePreview />
           <Link href="/about">A little more about me <Arrow /></Link>
-          <p>Keyboards, films &amp; music.</p>
+          <p>5× hackathon winner · keyboards, films &amp; music.</p>
         </section>
       </main>
       <footer className="home-contact" id="contact">

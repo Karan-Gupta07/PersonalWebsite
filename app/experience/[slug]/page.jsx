@@ -22,7 +22,7 @@ export default function ExperiencePage({ params }) {
   const demo = {
     overlap: <ClipDemo />,
     amazon: <RobotDemo kind="warehouse" />,
-    manulife: <MonitoringDemo kind="pipeline" />,
+    manulife: <MonitoringDemo />,
     "wat-ai": <GuardrailDemo />,
   }[job.slug];
 

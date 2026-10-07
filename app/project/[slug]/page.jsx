@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { projects } from "../../content.mjs";
 import { Header, Footer, ProjectFlow, ProjectMetrics, ProjectLinks, Arrow } from "../../interface";
 import RobotDemo, { CleanDemo } from "../../robot-demo";
-import { StoryDemo, MonitoringDemo, AdmissionsDemo, VideoEmbed } from "../../project-demos";
+import { StoryDemo, WardDemo, AdmissionsDemo, VideoEmbed } from "../../project-demos";
 import SpotifyWidget from "../../../components/SpotifyWidget";
 
 export function generateStaticParams() {
@@ -29,7 +29,7 @@ export default function ProjectPage({ params }) {
     "mr-clean": <CleanDemo />,
     reparo: <StoryDemo kind="repair" />,
     silhouette: <StoryDemo kind="tailor" />,
-    deliriumwatch: <MonitoringDemo kind="ward" />,
+    deliriumwatch: <WardDemo />,
     "ai-admissions": <AdmissionsDemo />,
     "spotify-pi": <SpotifyWidget />,
   }[project.slug];

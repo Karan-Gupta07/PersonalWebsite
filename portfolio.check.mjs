@@ -6,7 +6,7 @@ import "./robot-scenes.check.mjs";
 import "./demos.check.mjs";
 
 const resumeDigest =
-  "56d1c69d0e122302f3db1231facd39637668cbcd3f8e7fe497cd892e19d303ac";
+  "c78ccf802e468c0ad8a6324ba1e5884526f88cd7bf831a73f3cf9962cf48fc0f";
 assert.equal(
   createHash("sha256")
     .update(
@@ -34,7 +34,7 @@ assert.equal(
 assert.ok(!experience.find((job) => job.company === "Amazon").current);
 assert.ok(projects.some((project) => project.slug === "dominiq"));
 assert.ok(projects.some((project) => project.slug === "mr-clean"));
-assert.equal(profile.resumeUpdated, "2026-10-01");
+assert.equal(profile.resumeUpdated, "2026-10-06");
 for (const project of projects) {
   assert.match(project.slug, /^[a-z0-9-]+$/);
   assert.ok(project.paragraphs.length && project.stack.length);

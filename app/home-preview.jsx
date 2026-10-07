@@ -41,7 +41,7 @@ export default function HomePreview() {
     warehouse: <RobotDemo kind="warehouse" key={kind} preview />,
     mission: <RobotDemo kind="mission" key={kind} preview />,
     repair: <StoryDemo kind="repair" key={kind} preview />,
-    pipeline: <MonitoringDemo kind="pipeline" key={kind} preview />,
+    pipeline: <MonitoringDemo key={kind} preview />,
     guardrail: <GuardrailDemo key={kind} preview />,
     clips: <ClipDemo key={kind} preview />,
     clean: <CleanPreview key={kind} />,
