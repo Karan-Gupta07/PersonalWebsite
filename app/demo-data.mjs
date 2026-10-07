@@ -84,3 +84,36 @@ export function nextTrackIndex(index, length, loop) {
   if (!Number.isInteger(index) || !Number.isInteger(length) || length <= 0 || index < 0 || index >= length) return null;
   return index + 1 < length ? index + 1 : loop ? 0 : null;
 }
+
+// Overlap: a three-hour stream split into 5-minute segments; values are example motion scores (0–100).
+export const longVideo = {
+  segmentMinutes: 5,
+  motion: [8, 10, 6, 12, 64, 82, 70, 14, 9, 7, 11, 18, 52, 90, 76, 22, 10, 8, 6, 9, 12, 40, 66, 58, 14, 8, 7, 10, 72, 95, 84, 30, 12, 9, 6, 8],
+};
+
+export function sampleFrames(motion, budget, adaptive) {
+  if (!motion.length || budget < motion.length) return motion.map(() => 0);
+  if (!adaptive) return motion.map(() => Math.floor(budget / motion.length));
+  const total = motion.reduce((sum, value) => sum + value, 0);
+  if (!total) return motion.map((_, i) => Math.floor(budget / motion.length) + Number(i < budget % motion.length));
+  const spare = budget - motion.length;
+  const share = motion.map((value) => spare * value / total);
+  const frames = share.map((value) => 1 + Math.floor(value));
+  // Largest remainder: hand leftover frames to the segments that lost the most to rounding.
+  const left = budget - frames.reduce((sum, value) => sum + value, 0);
+  share.map((value, i) => [value % 1, i]).sort((a, b) => b[0] - a[0]).slice(0, left).forEach(([, i]) => frames[i]++);
+  return frames;
+}
+
+export function actionShare(frames, motion, threshold = 50) {
+  const total = frames.reduce((sum, value) => sum + value, 0);
+  return total ? Math.round(100 * frames.reduce((sum, value, i) => sum + (motion[i] >= threshold ? value : 0), 0) / total) : 0;
+}
+
+export function topClips(motion, count = 3) {
+  return motion.map((value, i) => [value, i]).sort((a, b) => b[0] - a[0]).slice(0, count).map(([, i]) => i).sort((a, b) => a - b);
+}
+
+export function timestamp(minutes) {
+  return `${Math.floor(minutes / 60)}:${String(minutes % 60).padStart(2, "0")}:00`;
+}

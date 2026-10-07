@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { stories, fittingProfiles, roomSamples, roomFlags, pipelineSamples, pipelineFlags, matchApplicants, guardrailCases, checkAgentTrace, spotifyEmbedUrl, nextTrackIndex } from "./app/demo-data.mjs";
+import { stories, fittingProfiles, roomSamples, roomFlags, pipelineSamples, pipelineFlags, matchApplicants, guardrailCases, checkAgentTrace, spotifyEmbedUrl, nextTrackIndex, longVideo, sampleFrames, actionShare, topClips, timestamp } from "./app/demo-data.mjs";
 
 for (const story of Object.values(stories)) {
   assert.equal(story.steps.length, 4);
@@ -33,3 +33,16 @@ assert.equal(nextTrackIndex(2, 3, false), null);
 assert.equal(nextTrackIndex(0, 0, true), null);
 assert.equal(nextTrackIndex(-1, 3, true), null);
 assert.equal(nextTrackIndex(0, 1, true), 0);
+
+const budget = 72;
+const uniform = sampleFrames(longVideo.motion, budget, false);
+const adaptive = sampleFrames(longVideo.motion, budget, true);
+assert.equal(uniform.reduce((a, b) => a + b), budget);
+assert.ok(adaptive.reduce((a, b) => a + b) === budget && adaptive.every((n) => n >= 1), "Adaptive sampling stays in budget and covers every segment");
+assert.ok(actionShare(adaptive, longVideo.motion) > actionShare(uniform, longVideo.motion) + 15);
+assert.deepEqual(topClips(longVideo.motion), [13, 29, 30]);
+assert.deepEqual(sampleFrames([10, 20], 1, true), [0, 0]);
+assert.deepEqual(sampleFrames([0, 0], 5, true), [3, 2]);
+assert.equal(sampleFrames([1, 2, 3], 10, true).reduce((a, b) => a + b), 10);
+assert.equal(actionShare([0, 0], [90, 90]), 0);
+assert.equal(timestamp(65), "1:05:00");

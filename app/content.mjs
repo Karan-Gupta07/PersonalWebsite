@@ -18,6 +18,7 @@ export const profile = {
 export const projects = [
   {
     slug: "dominiq",
+    links: { github: "https://github.com/savirsingh/DominIQ" },
     code: "PRJ–06",
     title: "DominIQ",
     category: "ROBOTICS & AUTONOMY",
@@ -58,6 +59,8 @@ export const projects = [
   },
   {
     slug: "mr-clean",
+    links: { github: "https://github.com/Karan-Gupta07/Mr.-Clean-Bracketbot-Cleaning-Robot", devpost: "https://devpost.com/software/mr-clean" },
+    video: "WjJpOjjXQZs",
     code: "PRJ–07",
     title: "Mr. Clean",
     category: "ROBOT LEARNING",
@@ -92,6 +95,8 @@ export const projects = [
   },
   {
     slug: "reparo",
+    links: { github: "https://github.com/Karan-Gupta07/RepairBOT" },
+    video: "JoFuqZbOmnA",
     code: "PRJ–01",
     title: "Reparo",
     category: "AGENTIC SYSTEMS",
@@ -158,6 +163,7 @@ export const projects = [
   },
   {
     slug: "ai-admissions",
+    links: { live: "https://college-results-bot.vercel.app", github: "https://github.com/Karan-Gupta07/CollegeResultsBOT" },
     code: "PRJ–03",
     title: "AI Admissions",
     fullTitle: "AI Admissions Similarity Tool",
@@ -217,6 +223,7 @@ export const projects = [
   },
   {
     slug: "spotify-pi",
+    links: { github: "https://github.com/Karan-Gupta07/SpotifyPiThing" },
     code: "PRJ–05",
     title: "Spotify Pi Thing",
     category: "EMBEDDED SYSTEMS",
@@ -256,6 +263,7 @@ export const experience = [
     current: true,
     location: "San Francisco, CA",
     field: "YC S24 / AI VIDEO SYSTEMS",
+    intro: "At Overlap, I work on the pipeline that turns hours-long videos into short clips. This demo shows the core idea: spend the frame budget where the action is.",
     bullets: [
       "Built a file-size-capped 4 FPS video proxy with motion-adaptive Gemini frame sampling, speeding up scene detection 1.6–2.4× and enabling AI clip generation on long-form videos spanning two to seven hours.",
       "Implemented batched Gemini spellcheck on Google Cloud Functions, reducing API calls by up to 92% (90 to seven per run) and restoring transcript correction across automated video processing and editing workflows.",

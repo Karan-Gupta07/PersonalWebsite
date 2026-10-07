@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
-import { warehouse, routeLength, pointOnRoute, warehouseFrame, missionFrame } from "./robot-scenes.mjs";
+import { warehouse, routeLength, pointOnRoute, warehouseFrame, missionFrame, room, planPath, tightCells } from "./robot-scenes.mjs";
 
 const pixel = (value) => Math.round((24 + value * 18) / 2) * 2;
 const line = (route) => route.map(([x, y]) => `${pixel(x)},${pixel(y)}`).join(" ");
@@ -205,5 +205,81 @@ export default function RobotDemo({ kind, preview = false }) {
         )}
       </figcaption>
     </figure>
+  );
+}
+
+export function CleanDemo() {
+  const id = useId();
+  const [target, setTarget] = useState(0);
+  const [inflate, setInflate] = useState(true);
+  const [stage, setStage] = useState("plan");
+  const [progress, setProgress] = useState(0);
+  const [ready, setReady] = useState(false);
+  const goal = room.targets[target];
+  const path = planPath(room.dock, goal.stop, inflate ? 1 : 0);
+  const tight = tightCells(path);
+  const steps = path.length - 1;
+  const position = stage === "plan" ? room.dock : pointOnRoute(path, progress);
+  const table = room.obstacles.find((item) => item.name === goal.label.toUpperCase());
+  useEffect(() => setReady(true), []);
+  useEffect(() => {
+    if (stage !== "driving") return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) { setProgress(1); setStage("arrived"); return; }
+    let request, start;
+    const tick = (now) => {
+      start ??= now;
+      const value = Math.min(1, (now - start) / (steps * 90));
+      setProgress(value);
+      if (value < 1) request = requestAnimationFrame(tick);
+      else setStage("arrived");
+    };
+    request = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(request);
+  }, [stage, steps]);
+
+  function reset(next = {}) {
+    setStage("plan");
+    setProgress(0);
+    if ("target" in next) setTarget(next.target);
+    if ("inflate" in next) setInflate(next.inflate);
+  }
+
+  const speech = { plan: [`${goal.task}.`, `Path: ${steps} steps.`], driving: ["On my way."], arrived: ["At the table."], done: ["Picked up."] }[stage];
+  const action = { plan: ["Drive", () => setStage("driving")], driving: ["Driving…", null], arrived: ["Pick up", () => setStage("done")], done: ["Back to dock", () => reset()] }[stage];
+  const status = stage === "done" ? "Picked up. In MuJoCo, the trained RL policy reached 95% pickup success." : `A* path to the ${goal.label.toLowerCase()} · ${steps} steps · ${tight ? `${tight} cells scrape furniture` : "full clearance"}`;
+
+  return (
+    <section className="interactive-demo" data-demo="clean" aria-label="Plan a path, then pick up">
+      <div className="demo-heading"><h2>Plan a path, then pick up</h2><span>Illustrative demo</span></div>
+      <div className="scenario-picker" aria-label="Destination">
+        {room.targets.map((item, i) => <button key={item.label} disabled={!ready} aria-pressed={target === i} onClick={() => reset({ target: i })}>{item.label}</button>)}
+      </div>
+      <svg className="robot-scene" viewBox="0 0 480 240" role="img" aria-label={`Room map. ${status}`} shapeRendering="crispEdges">
+        <defs><pattern id={`${id}-grid`} width="18" height="18" x="6" y="6" patternUnits="userSpaceOnUse"><path d="M0 1h1" stroke="#292929" /></pattern></defs>
+        <rect width="480" height="240" fill="#111" />
+        <rect x="15" y="15" width="432" height="216" fill={`url(#${id}-grid)`} stroke="#333" />
+        {room.obstacles.map((item) => (
+          <g key={item.name}>
+            {inflate && <rect x={pixel(item.x - 1) - 9} y={pixel(item.y - 1) - 9} width={(item.w + 2) * 18} height={(item.h + 2) * 18} fill="none" stroke="#444" strokeDasharray="3 3" />}
+            <rect x={pixel(item.x) - 9} y={pixel(item.y) - 9} width={item.w * 18} height={item.h * 18} fill={item === table ? "#3a3a3a" : "#282828"} stroke={item === table ? "#bbb" : "#666"} />
+            <text x={pixel(item.x) - 9} y={pixel(item.y + item.h) + 2} className="scene-label">{item.name}</text>
+          </g>
+        ))}
+        {stage !== "done" && <rect x={pixel(table.x + table.w / 2) - 14} y={pixel(table.y + table.h - 1) - 4} width="10" height="10" fill="var(--signal)" />}
+        <polyline points={line(path)} fill="none" stroke={tight ? "#b1b1b1" : "var(--signal)"} strokeWidth="2" strokeDasharray={stage === "plan" ? "4 4" : undefined} />
+        {!inflate && path.filter(([x, y]) => tightCells([[x, y]])).map(([x, y]) => <rect key={`${x}-${y}`} x={pixel(x) - 4} y={pixel(y) - 4} width="8" height="8" fill="none" stroke="var(--signal)" />)}
+        <rect x={pixel(room.dock[0]) - 10} y={pixel(room.dock[1]) - 10} width="20" height="20" fill="none" stroke="#858585" strokeDasharray="3 3" />
+        <Robot point={position} label="MC" active={stage !== "plan"} />
+        {stage === "done" && <rect x={pixel(position[0]) - 5} y={pixel(position[1]) - 20} width="10" height="10" fill="var(--signal)" />}
+        <Bubble point={position} lines={speech} />
+      </svg>
+      <label className="loop-option"><input type="checkbox" checked={inflate} disabled={!ready} onChange={(event) => reset({ inflate: event.target.checked })} />Inflate obstacles to keep clearance</label>
+      <div className="demo-controls">
+        <button className="demo-primary" disabled={!ready || !action[1]} onClick={action[1] ?? undefined}>{action[0]}</button>
+        {stage !== "plan" && <button className="demo-secondary" disabled={!ready} onClick={() => reset()}>Reset</button>}
+      </div>
+      <p className="demo-status" role="status">{status}</p>
+      <p className="demo-note">Real A* on a toy grid, running in your browser. Not the MuJoCo simulation; the pickup is scripted.</p>
+    </section>
   );
 }

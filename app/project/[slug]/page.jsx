@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { projects, profile } from "../../content.mjs";
-import { Header, Footer, ProjectFlow, ProjectMetrics, Arrow } from "../../interface";
-import RobotDemo from "../../robot-demo";
-import { StoryDemo, MonitoringDemo, AdmissionsDemo } from "../../project-demos";
+import { projects } from "../../content.mjs";
+import { Header, Footer, ProjectFlow, ProjectMetrics, ProjectLinks, Arrow } from "../../interface";
+import RobotDemo, { CleanDemo } from "../../robot-demo";
+import { StoryDemo, MonitoringDemo, AdmissionsDemo, VideoEmbed } from "../../project-demos";
 import SpotifyWidget from "../../../components/SpotifyWidget";
 
 export function generateStaticParams() {
@@ -26,6 +26,7 @@ export default function ProjectPage({ params }) {
   const next = projects[(projects.indexOf(project) + 1) % projects.length];
   const demo = {
     dominiq: <RobotDemo kind="mission" />,
+    "mr-clean": <CleanDemo />,
     reparo: <StoryDemo kind="repair" />,
     silhouette: <StoryDemo kind="tailor" />,
     deliriumwatch: <MonitoringDemo kind="ward" />,
@@ -44,8 +45,12 @@ export default function ProjectPage({ params }) {
               <h1>{project.fullTitle || project.title}</h1>
               <p>{project.summary}</p>
               <p className="project-distinction">{project.distinction}</p>
+              <ProjectLinks project={project} />
             </header>
-            {demo}
+            <div className="demo-column">
+              {demo}
+              {project.video && <VideoEmbed id={project.video} title={project.title} />}
+            </div>
           </div>
           <ProjectMetrics project={project} />
           <section className="project-section" aria-labelledby="project-about">
@@ -62,11 +67,7 @@ export default function ProjectPage({ params }) {
               {project.stack.map((tech) => <li key={tech}>{tech}</li>)}
             </ul>
           </section>
-          <p className="project-contact">
-            <a href={`mailto:${profile.email}?subject=${encodeURIComponent(`Let's talk about ${project.title}`)}`}>
-              Ask me about this project <Arrow diagonal />
-            </a>
-          </p>
+          <ProjectLinks project={project} />
         </article>
         <nav className="project-navigation" aria-label="Project navigation">
           <Link href="/projects"><span>Back to</span><strong>All projects</strong></Link>

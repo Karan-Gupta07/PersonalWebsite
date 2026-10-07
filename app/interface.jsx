@@ -78,6 +78,18 @@ export function ProjectMetrics({ project }) {
   );
 }
 
+const linkLabels = { live: "Try it live", github: "GitHub", devpost: "Devpost" };
+
+export function ProjectLinks({ project }) {
+  const links = Object.entries(linkLabels).filter(([key]) => project.links?.[key]);
+  if (!links.length) return null;
+  return (
+    <nav className="project-links" aria-label={`${project.title} links`}>
+      {links.map(([key, label]) => <a key={key} href={project.links[key]} target="_blank" rel="noreferrer">{label} <Arrow diagonal /></a>)}
+    </nav>
+  );
+}
+
 export function Footer() {
   return (
     <footer className="site-footer">

@@ -58,6 +58,10 @@ assert.equal(
   projects.find((project) => project.slug === "reparo").flow.length,
   4,
 );
+for (const project of projects) {
+  for (const url of Object.values(project.links || {})) assert.equal(new URL(url).protocol, "https:");
+  if (project.video) assert.match(project.video, /^[\w-]{11}$/);
+}
 for (const url of Object.values(profile.links))
   assert.equal(new URL(url).protocol, "https:");
 assert.match(
@@ -97,6 +101,7 @@ if (process.argv[2]) {
   assert.equal(about.status, 200);
   const aboutHtml = await about.text();
   assert.ok(aboutHtml.includes('id="stack"'));
+  assert.ok(aboutHtml.indexOf('id="outside"') < aboutHtml.indexOf('id="overview"'), "Outside of work comes before the overview");
   for (const job of experience)
     assert.ok(aboutHtml.includes(`href="/experience/${job.slug}"`), job.company);
   const archive = await fetch(new URL("/projects", base));
@@ -115,7 +120,7 @@ if (process.argv[2]) {
     assert.ok(content.includes(job.date), job.company);
     assert.ok(content.includes('href="/#experience"'), job.company);
     assert.equal(content.includes('data-robot-demo="warehouse"'), job.slug === "amazon");
-    const demo = { manulife: "pipeline", "wat-ai": "guardrail" }[job.slug];
+    const demo = { overlap: "clips", manulife: "pipeline", "wat-ai": "guardrail" }[job.slug];
     if (demo) assert.ok(content.includes(`data-demo="${demo}"`), job.company);
     if (job.slug === "amazon") {
       assert.ok(content.includes("Not Amazon’s production system"));
@@ -131,7 +136,10 @@ if (process.argv[2]) {
     assert.ok(content.includes("About this project"), project.slug);
     assert.equal(content.includes('data-robot-demo="mission"'), project.slug === "dominiq");
     if (project.slug === "dominiq") assert.ok(content.includes("not a recording of DominIQ"));
-    const demo = { reparo: "repair", silhouette: "tailor", deliriumwatch: "ward", "ai-admissions": "admissions", "spotify-pi": "music" }[project.slug];
+    for (const url of Object.values(project.links || {})) assert.ok(content.includes(`href="${url}"`), `${project.slug} link ${url}`);
+    assert.doesNotMatch(content, /Ask me about this project/);
+    assert.equal(content.includes("Watch the demo video"), Boolean(project.video), project.slug);
+    const demo = { "mr-clean": "clean", reparo: "repair", silhouette: "tailor", deliriumwatch: "ward", "ai-admissions": "admissions", "spotify-pi": "music" }[project.slug];
     if (demo) assert.ok(content.includes(`data-demo="${demo}"`), project.slug);
     if (project.slug === "deliriumwatch") assert.ok(content.includes("not a diagnosis or a delirium probability"));
     if (project.slug === "ai-admissions") assert.ok(content.includes("not admissions outcomes or acceptance odds"));

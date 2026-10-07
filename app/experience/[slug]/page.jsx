@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { experience, profile } from "../../content.mjs";
 import { Header, Footer, Arrow } from "../../interface";
 import RobotDemo from "../../robot-demo";
-import { MonitoringDemo, GuardrailDemo } from "../../project-demos";
+import { MonitoringDemo, GuardrailDemo, ClipDemo } from "../../project-demos";
 
 export function generateStaticParams() {
   return experience.map((job) => ({ slug: job.slug }));
@@ -20,6 +20,7 @@ export default function ExperiencePage({ params }) {
   const job = experience.find((item) => item.slug === params.slug);
   if (!job) notFound();
   const demo = {
+    overlap: <ClipDemo />,
     amazon: <RobotDemo kind="warehouse" />,
     manulife: <MonitoringDemo kind="pipeline" />,
     "wat-ai": <GuardrailDemo />,

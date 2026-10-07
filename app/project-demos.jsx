@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useId, useState } from "react";
-import { stories, fittingProfiles, roomSamples, roomFlags, pipelineSamples, pipelineFlags, matchApplicants, guardrailCases, checkAgentTrace } from "./demo-data.mjs";
+import { stories, fittingProfiles, roomSamples, roomFlags, pipelineSamples, pipelineFlags, matchApplicants, guardrailCases, checkAgentTrace, longVideo, sampleFrames, actionShare, topClips, timestamp } from "./demo-data.mjs";
 
 function DemoFrame({ title, name, note, children }) {
   const [ready, setReady] = useState(false);
@@ -92,7 +92,7 @@ export function StoryDemo({ kind, preview = false }) {
         <h3>{story.steps[step].title}</h3><p>{story.steps[step].text}</p>
       </div>
       {kind === "repair" && step === 3 && <div className="example-part"><span className="demo-note">Example listing</span><strong>Replacement chair caster</strong><p>Check the manufacturer’s attachment dimensions before choosing a replacement.</p><span className="demo-note">Live Reparo sources parts through Shopify + SerpAPI.</span></div>}
-      {kind === "tailor" && step >= 2 && <dl className="demo-measurements">{["height", "chest", "shoulder", "sleeve"].map((key) => <div key={key}><dt>{key}</dt><dd>{profile[key]} cm</dd></div>)}</dl>}
+      {kind === "tailor" && step >= 2 && <dl className="demo-measurements">{["height", "chest", "shoulder", "sleeve"].map((key) => <div key={key}><dt>{key[0].toUpperCase() + key.slice(1)}</dt><dd>{profile[key]} cm</dd></div>)}</dl>}
       <div className="demo-controls"><button className="demo-primary" onClick={() => setStep((step + 1) % story.steps.length)}>{story.steps[step].action}</button><button className="demo-secondary" onClick={() => setStep(Math.max(0, step - 1))} disabled={step === 0}>Back</button></div>
     </DemoFrame>
   );
@@ -171,5 +171,61 @@ export function GuardrailDemo({ preview = false }) {
       <div className="demo-controls"><button className="demo-primary" onClick={() => setChecked(true)}>Validate against evidence</button></div>
       <div className={`monitor-result ${checked && !result.passed ? "flagged" : ""}`} role="status"><h3>{!checked ? "Ready to validate" : result.passed ? "Supported by the evidence" : "Blocked: unsupported or unapproved"}</h3><p>{checked ? result.reason : "Check the proposed answer or action against its source before accepting it."}</p></div>
     </DemoFrame>
+  );
+}
+
+export function ClipDemo() {
+  const [adaptive, setAdaptive] = useState(false);
+  const [found, setFound] = useState(false);
+  const { motion, segmentMinutes } = longVideo;
+  const frames = sampleFrames(motion, 72, adaptive);
+  const clips = topClips(motion);
+  const width = 424 / motion.length;
+  return (
+    <DemoFrame title="Find the clips in a three-hour video" name="clips" note="Example motion scores and a fixed 72-frame budget. Nothing is uploaded, and no video or Gemini model runs on this page.">
+      <div className="scenario-picker" aria-label="Frame sampling">
+        <button aria-pressed={!adaptive} onClick={() => { setAdaptive(false); setFound(false); }}>Uniform sampling</button>
+        <button aria-pressed={adaptive} onClick={() => { setAdaptive(true); setFound(false); }}>Motion-adaptive</button>
+      </div>
+      <svg className="robot-scene" viewBox="0 0 480 220" role="img" aria-label={`Three-hour timeline. ${adaptive ? "Motion-adaptive" : "Uniform"} sampling puts ${actionShare(frames, motion)}% of frames on high-motion footage.`} shapeRendering="crispEdges">
+        <rect width="480" height="220" fill="#111" />
+        <text x="28" y="22" className="scene-label">MOTION</text>
+        <text x="28" y="134" className="scene-label">FRAMES SENT TO GEMINI</text>
+        {motion.map((value, i) => {
+          const x = 28 + i * width;
+          const clip = found && clips.includes(i);
+          return (
+            <g key={i}>
+              <rect x={x + 1} y={110 - value * .8} width={width - 3} height={value * .8} fill={clip ? "var(--signal)" : value >= 50 ? "#bbb" : "#555"} />
+              {Array.from({ length: frames[i] }, (_, n) => <rect key={n} x={x + 1} y={176 - n * 9} width={width - 3} height="6" fill="#ededed" />)}
+              {clip && <rect x={x - 1} y="28" width={width + 1} height="160" fill="none" stroke="var(--signal)" strokeDasharray="3 3" />}
+            </g>
+          );
+        })}
+        <path d="M28 188h424" stroke="#555" />
+        {[0, 60, 120, 180].map((minute) => <text key={minute} x={28 + minute / segmentMinutes * width} y="204" textAnchor={minute ? minute === 180 ? "end" : "middle" : "start"} className="scene-label">{timestamp(minute)}</text>)}
+      </svg>
+      <dl className="demo-measurements">
+        <div><dt>Frames on high motion</dt><dd>{actionShare(frames, motion)}%</dd></div>
+        <div><dt>Frames on static footage</dt><dd>{100 - actionShare(frames, motion)}%</dd></div>
+      </dl>
+      <div className="demo-controls"><button className="demo-primary" onClick={() => setFound(!found)}>{found ? "Hide clips" : "Find clips"}</button></div>
+      <div className="monitor-result" role="status">
+        {found ? <><h3>Three candidate clips</h3><ul>{clips.map((i) => <li key={i}>{timestamp(i * segmentMinutes)}–{timestamp((i + 1) * segmentMinutes)}</li>)}</ul></> : <><h3>{adaptive ? "Frames follow the action" : "Frames spread evenly"}</h3><p>{adaptive ? "Same budget, but quiet stretches get one frame and busy scenes get more." : "Every five minutes gets the same frames, whether anything happens or not."}</p></>}
+      </div>
+    </DemoFrame>
+  );
+}
+
+export function VideoEmbed({ id, title }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="video-embed">
+      <div className="demo-controls">
+        <button className="demo-secondary" aria-expanded={open} onClick={() => setOpen(!open)}>{open ? "Hide video" : "Watch the demo video"}</button>
+        <a className="music-external" href={`https://www.youtube.com/watch?v=${id}`} target="_blank" rel="noreferrer">Open on YouTube</a>
+      </div>
+      {open && <iframe src={`https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0`} title={`${title} demo video`} allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowFullScreen referrerPolicy="strict-origin-when-cross-origin" loading="lazy" />}
+    </div>
   );
 }

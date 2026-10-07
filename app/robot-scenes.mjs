@@ -55,3 +55,66 @@ export function missionFrame(progress) {
     responder: pointOnRoute([[4, 9], [12, 8], [19, 6]], (p - .44) / .46),
   };
 }
+
+// Mr. Clean: a toy living room on a 24 × 12 grid. Obstacles are cell rectangles.
+export const room = {
+  width: 24,
+  height: 12,
+  dock: [1, 10],
+  obstacles: [
+    { name: "ACT TABLE", x: 2, y: 1, w: 2, h: 2 },
+    { name: "COUCH", x: 6, y: 0, w: 4, h: 3 },
+    { name: "CUBE TABLE", x: 14, y: 1, w: 3, h: 2 },
+    { name: "COFFEE TABLE", x: 9, y: 6, w: 4, h: 3 },
+    { name: "PLANT", x: 16, y: 6, w: 1, h: 2 },
+    { name: "BALL TABLE", x: 19, y: 8, w: 3, h: 3 },
+  ],
+  targets: [
+    { label: "Cube table", task: "Tidy the cubes", stop: [15, 4] },
+    { label: "Ball table", task: "Pick up the ball", stop: [20, 6] },
+    { label: "ACT table", task: "Run the ACT policy", stop: [2, 4] },
+  ],
+};
+
+export function isBlocked([x, y], inflate = 0) {
+  return x < 0 || y < 0 || x >= room.width || y >= room.height || room.obstacles.some((o) => x >= o.x - inflate && x < o.x + o.w + inflate && y >= o.y - inflate && y < o.y + o.h + inflate);
+}
+
+// Cells that touch a real obstacle (8-neighbourhood): where a robot body would scrape furniture.
+export function tightCells(path) {
+  const furniture = ([x, y]) => x >= 0 && y >= 0 && x < room.width && y < room.height && isBlocked([x, y]);
+  return path.filter(([x, y]) => [-1, 0, 1].some((dx) => [-1, 0, 1].some((dy) => furniture([x + dx, y + dy])))).length;
+}
+
+// 4-connected A* with a Manhattan heuristic. A tiny turn penalty keeps paths from zig-zagging.
+export function planPath(start, goal, inflate = 0) {
+  if (isBlocked(start, inflate) || isBlocked(goal, inflate)) return null;
+  const key = ([x, y]) => `${x},${y}`;
+  const h = ([x, y]) => Math.abs(x - goal[0]) + Math.abs(y - goal[1]);
+  const cost = new Map([[key(start), 0]]);
+  const from = new Map();
+  const open = [start];
+  while (open.length) {
+    // ponytail: sorted array as the open set — fine for 288 cells; swap in a binary heap for real maps.
+    open.sort((a, b) => cost.get(key(a)) + h(a) - cost.get(key(b)) - h(b));
+    const current = open.shift();
+    if (key(current) === key(goal)) {
+      const path = [current];
+      while (from.has(key(path[0]))) path.unshift(from.get(key(path[0])));
+      return path;
+    }
+    const previous = from.get(key(current));
+    for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+      const next = [current[0] + dx, current[1] + dy];
+      if (isBlocked(next, inflate)) continue;
+      const turn = previous && (current[0] - previous[0] !== dx || current[1] - previous[1] !== dy) ? .001 : 0;
+      const nextCost = cost.get(key(current)) + 1 + turn;
+      if (nextCost < (cost.get(key(next)) ?? Infinity)) {
+        cost.set(key(next), nextCost);
+        from.set(key(next), current);
+        if (!open.some((point) => key(point) === key(next))) open.push(next);
+      }
+    }
+  }
+  return null;
+}
