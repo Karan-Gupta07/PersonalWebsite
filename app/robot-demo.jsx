@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useId, useRef, useState } from "react";
-import { warehouse, routeLength, pointOnRoute, warehouseFrame, missionFrame, room, cleanApproaches, cleanRoutes, agentLog } from "./robot-scenes.mjs";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
+import { warehouse, routeLength, pointOnRoute, warehouseFrame, missionFrame, room, cleanApproaches, cleanRoutes, cleanLeg, canPlaceBox, agentLog } from "./robot-scenes.mjs";
 
 const pixel = (value) => Math.round((24 + value * 18) / 2) * 2;
 const line = (route) => route.map(([x, y]) => `${pixel(x)},${pixel(y)}`).join(" ");
@@ -254,53 +254,92 @@ export function CleanPreview() {
 
 export function CleanDemo() {
   const id = useId();
+  const scene = useRef(null);
   const [approach, setApproach] = useState("stack");
   const [stage, setStage] = useState("plan");
   const [progress, setProgress] = useState(0);
+  const [boxes, setBoxes] = useState([]);
+  const [legStart, setLegStart] = useState(null); // set when a box forces a re-plan mid-drive
+  const [walked, setWalked] = useState(0); // steps finished before the current stretch
+  const [replans, setReplans] = useState(0);
   const [ready, setReady] = useState(false);
   const info = cleanApproaches.find((item) => item.id === approach);
-  const routes = cleanRoutes(approach);
-  const leg = stage === "back" || stage === "done" ? routes.back : routes.out;
-  const steps = leg.length - 1;
-  const position = stage === "plan" ? room.dock : stage === "grasp" ? room.pickup.stop : stage === "done" ? room.dock : pointOnRoute(leg, progress);
-  const travelled = stage === "plan" ? 0 : stage === "out" ? Math.round(progress * steps) : stage === "back" ? routes.out.length - 1 + Math.round(progress * steps) : routes.out.length - 1 + (stage === "done" ? routes.back.length - 1 : 0);
+  const returning = stage === "grasp" || stage === "back" || stage === "done";
+  const driving = stage === "out" || stage === "back";
+  const start = legStart ?? (returning ? room.pickup.stop : room.dock);
+  const goal = returning ? room.dock : room.pickup.stop;
+  const leg = useMemo(() => cleanLeg(approach, start, goal, boxes), [approach, start, goal, boxes]);
+  const steps = leg ? leg.length - 1 : 0;
+  const position = stage === "plan" ? room.dock : stage === "grasp" ? room.pickup.stop : stage === "done" ? room.dock : leg ? pointOnRoute(leg, progress) : start;
+  const travelled = walked + (driving && leg ? Math.round(progress * steps) : 0);
   const trail = (path, amount) => path.slice(0, Math.max(1, Math.floor(amount * (path.length - 1)) + 1)).concat([pointOnRoute(path, amount)]);
-  const drawn = approach === "fly"
-    ? { out: stage === "plan" ? [] : trail(routes.out, stage === "out" ? progress : 1), back: stage === "back" ? trail(routes.back, progress) : stage === "done" ? routes.back : [] }
-    : { out: stage === "back" || stage === "done" ? [] : routes.out, back: stage === "back" || stage === "done" ? routes.back : [] };
+  const drawn = !leg ? [] : approach !== "fly" ? leg : driving ? trail(leg, progress) : stage === "done" ? leg : [];
   const table = room.obstacles.find((item) => item.name === room.pickup.table);
-  const carrying = stage === "back" || stage === "done";
+  const carrying = returning;
   const index = cleanStages.indexOf(stage);
   useEffect(() => setReady(true), []);
   useEffect(() => {
-    if (stage !== "out" && stage !== "back") return;
-    const finish = () => setStage(stage === "out" ? "grasp" : "done");
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) { setProgress(1); finish(); return; }
-    let request, start;
+    if (!driving || !leg) return;
+    const finish = () => { setWalked((value) => value + steps); setLegStart(null); setProgress(0); setStage(stage === "out" ? "grasp" : "done"); };
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) { finish(); return; }
+    let request, began;
     const tick = (now) => {
-      start ??= now;
-      const value = Math.min(1, (now - start) / (steps * 90));
+      began ??= now;
+      const value = steps ? Math.min(1, (now - began) / (steps * 90)) : 1;
       setProgress(value);
       if (value < 1) request = requestAnimationFrame(tick);
       else finish();
     };
     request = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(request);
-  }, [stage, steps]);
+  }, [stage, leg, steps, driving]);
 
-  function go(next) { setProgress(0); setStage(next); }
+  function go(next) {
+    setProgress(0);
+    setLegStart(null);
+    if (next === "plan") { setWalked(0); setReplans(0); }
+    setStage(next);
+  }
   function choose(next) { setApproach(next); go("plan"); }
 
-  const action = { plan: ["Start", () => go("out")], out: ["Driving…", null], grasp: [`Grasp with ${info.manipulation}`, () => go("back")], back: ["Returning…", null], done: ["Run again", () => go("plan")] }[stage];
-  const status = stage === "done" ? `Blue cube delivered · ${travelled} steps travelled` : stage === "grasp" ? `At the pick table · ${info.manipulation} takes over the arm` : `${info.label} · ${travelled} steps travelled`;
+  // Toggle a box. Mid-drive, the robot stops on its nearest cell and plans again from there.
+  function toggle(cell) {
+    const here = position.map(Math.round);
+    const exists = boxes.some(([x, y]) => x === cell[0] && y === cell[1]);
+    if (!exists && (boxes.length >= 24 || !canPlaceBox(cell, [here, room.dock, room.pickup.stop]))) return;
+    if (driving && leg) {
+      setWalked((value) => value + Math.round(progress * steps));
+      setLegStart(here);
+      setProgress(0);
+      setReplans((value) => value + 1);
+    }
+    setBoxes(exists ? boxes.filter(([x, y]) => x !== cell[0] || y !== cell[1]) : [...boxes, cell]);
+  }
+  function place(event) {
+    if (!ready) return;
+    const point = new DOMPoint(event.clientX, event.clientY).matrixTransform(scene.current.getScreenCTM().inverse());
+    toggle([Math.round((point.x - 24) / 18), Math.round((point.y - 24) / 18)]);
+  }
+  // Keyboard-friendly way in: drop a box on the route ahead, picking one that still leaves a way through.
+  function blockRoute() {
+    if (!leg) return;
+    const here = position.map(Math.round);
+    const from = driving ? here : start;
+    const ahead = leg.slice(driving ? Math.ceil(progress * steps) + 2 : 2).filter((cell) => canPlaceBox(cell, [here, room.dock, room.pickup.stop]) && cleanLeg(approach, from, goal, [...boxes, cell]));
+    if (ahead.length) toggle(ahead[Math.floor(ahead.length / 2)]);
+  }
+
+  const action = { plan: ["Start", leg ? () => go("out") : null], out: ["Driving…", null], grasp: [`Grasp with ${info.manipulation}`, leg ? () => go("back") : null], back: ["Returning…", null], done: ["Run again", () => go("plan")] }[stage];
+  const replanned = replans ? ` · re-planned ${replans}×` : "";
+  const status = !leg && stage !== "done" ? "Boxed in: no route left. Click a box to remove it." : stage === "done" ? `Blue cube delivered · ${travelled} steps travelled${replanned}` : stage === "grasp" ? `At the pick table · ${info.manipulation} takes over the arm` : `${info.label} · ${travelled} steps travelled${replanned}`;
 
   return (
     <section className="interactive-demo" data-demo="clean" aria-label="Three ways to control the robot">
-      <div className="demo-heading"><h2>Three ways to control the robot</h2><span>Illustrative demo</span></div>
+      <div className="demo-heading"><h2>Three ways to control the robot</h2><span>Click the floor to add boxes</span></div>
       <div className="scenario-picker" aria-label="Control approach">
         {cleanApproaches.map((item) => <button key={item.id} disabled={!ready} aria-pressed={approach === item.id} onClick={() => choose(item.id)}>{item.label}</button>)}
       </div>
-      <svg className="robot-scene" viewBox="0 0 480 240" role="img" aria-label={`Room map. Task: bring back the blue cube. ${status}`} shapeRendering="crispEdges">
+      <svg ref={scene} className="robot-scene robot-scene--sandbox" viewBox="0 0 480 240" role="img" aria-label={`Room map with ${boxes.length} boxes. Task: bring back the blue cube. ${status}`} shapeRendering="crispEdges" onClick={place}>
         <defs><pattern id={`${id}-grid`} width="18" height="18" x="6" y="6" patternUnits="userSpaceOnUse"><path d="M0 1h1" stroke="#292929" /></pattern></defs>
         <rect width="480" height="240" fill="#111" />
         <rect x="15" y="15" width="432" height="216" fill={`url(#${id}-grid)`} stroke="#333" />
@@ -311,14 +350,19 @@ export function CleanDemo() {
             <text x={pixel(item.x) - 9} y={pixel(item.y + item.h) + 2} className="scene-label">{item.name}</text>
           </g>
         ))}
-        {!carrying && stage !== "grasp" && <rect x={pixel(table.x + 1) - 5} y={pixel(table.y + 1) - 5} width="10" height="10" fill="#4f7bd9" />}
-        {drawn.out.length > 1 && <polyline points={line(drawn.out)} fill="none" stroke={approach === "fly" ? "#b1b1b1" : "var(--signal)"} strokeWidth="2" strokeDasharray={approach === "fly" ? undefined : "4 4"} />}
-        {drawn.back.length > 1 && <polyline points={line(drawn.back)} fill="none" stroke="var(--signal)" strokeWidth="2" strokeDasharray={approach === "fly" ? undefined : "4 4"} />}
+        {boxes.map(([x, y]) => (
+          <g key={`${x},${y}`}>
+            {approach !== "fly" && <rect x={pixel(x - 1) - 9} y={pixel(y - 1) - 9} width="54" height="54" fill="none" stroke="#444" strokeDasharray="3 3" />}
+            <rect x={pixel(x) - 8} y={pixel(y) - 8} width="16" height="16" fill="#2e2a24" stroke="#9a8f7c" />
+          </g>
+        ))}
+        {!carrying && <rect x={pixel(table.x + 1) - 5} y={pixel(table.y + 1) - 5} width="10" height="10" fill="#4f7bd9" />}
+        {drawn.length > 1 && <polyline points={line(drawn)} fill="none" stroke={approach === "fly" && !returning ? "#b1b1b1" : "var(--signal)"} strokeWidth="2" strokeDasharray={approach === "fly" ? undefined : "4 4"} />}
         <rect x={pixel(room.dock[0]) - 10} y={pixel(room.dock[1]) - 10} width="20" height="20" fill="none" stroke="#858585" strokeDasharray="3 3" />
         <text x={pixel(room.dock[0]) + 14} y={pixel(room.dock[1]) + 4} className="scene-label">DOCK</text>
         <Robot point={position} label="MC" active={stage !== "plan"} />
-        {(carrying || stage === "grasp") && <rect x={pixel(position[0]) - 5} y={pixel(position[1]) - 20} width="10" height="10" fill="#4f7bd9" />}
-        <Bubble point={position} lines={cleanSpeech[approach][stage]} />
+        {carrying && <rect x={pixel(position[0]) - 5} y={pixel(position[1]) - 20} width="10" height="10" fill="#4f7bd9" />}
+        <Bubble point={position} lines={!leg && stage !== "done" ? ["I'm boxed in."] : replans && driving && approach !== "fly" ? ["Re-planning", "around it."] : cleanSpeech[approach][stage]} />
       </svg>
       <div className="story-readout">
         <h3>{info.label}</h3>
@@ -332,10 +376,12 @@ export function CleanDemo() {
       )}
       <div className="demo-controls">
         <button className="demo-primary" disabled={!ready || !action[1]} onClick={action[1] ?? undefined}>{action[0]}</button>
+        <button className="demo-secondary" disabled={!ready || !leg || stage === "done"} onClick={blockRoute}>Block the route</button>
+        {boxes.length > 0 && <button className="demo-secondary" disabled={!ready} onClick={() => { setBoxes([]); if (driving) { setWalked((value) => value + Math.round(progress * steps)); setLegStart(position.map(Math.round)); setProgress(0); } }}>Clear boxes</button>}
         {stage !== "plan" && <button className="demo-secondary" disabled={!ready} onClick={() => go("plan")}>Reset</button>}
       </div>
       <p className="demo-status" role="status">{status}</p>
-      <p className="demo-note">Each mode runs the same robot, room, and task. The routes here are computed in your browser for illustration; the real controllers run in MuJoCo, and the fly-brain trail is a stand-in for its reactive behaviour.</p>
+      <p className="demo-note">Drop boxes on the floor, even while the robot is driving, and it plans a new route from where it stands. The routes are computed in your browser for illustration; the real controllers run in MuJoCo, and the fly-brain trail is a stand-in for its reactive behaviour.</p>
     </section>
   );
 }

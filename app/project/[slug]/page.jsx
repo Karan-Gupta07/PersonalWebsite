@@ -10,8 +10,9 @@ export function generateStaticParams() {
   return projects.map((project) => ({ slug: project.slug }));
 }
 
-export function generateMetadata({ params }) {
-  const project = projects.find((item) => item.slug === params.slug);
+export async function generateMetadata({ params }) {
+  const { slug } = await params;
+  const project = projects.find((item) => item.slug === slug);
   return project
     ? {
         title: project.fullTitle || project.title,
@@ -20,8 +21,9 @@ export function generateMetadata({ params }) {
     : { title: "Project not found" };
 }
 
-export default function ProjectPage({ params }) {
-  const project = projects.find((item) => item.slug === params.slug);
+export default async function ProjectPage({ params }) {
+  const { slug } = await params;
+  const project = projects.find((item) => item.slug === slug);
   if (!project) notFound();
   const next = projects[(projects.indexOf(project) + 1) % projects.length];
   const demo = {

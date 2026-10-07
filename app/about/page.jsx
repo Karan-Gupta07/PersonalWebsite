@@ -1,13 +1,15 @@
 import Link from "next/link";
 import { profile, experience, awards, stack } from "../content.mjs";
 import { Header, Footer, Arrow } from "../interface";
+import { lastFilm } from "../letterboxd.mjs";
 
 export const metadata = {
   title: "About",
   description: "Karan Gupta’s background, experience, and interests outside of work.",
 };
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const film = await lastFilm();
   return (
     <div className="site-shell" id="top">
       <Header />
@@ -31,6 +33,16 @@ export default function AboutPage() {
             {" "}and track what I’m watching on{" "}
             <a href={profile.links.letterboxd} target="_blank" rel="noreferrer">Letterboxd</a>.
           </p>
+          {film && (
+            <a className="last-film" href={film.link ?? profile.links.letterboxd} target="_blank" rel="noreferrer">
+              {film.poster && <img src={film.poster} alt="" width="40" height="60" loading="lazy" referrerPolicy="no-referrer" />}
+              <span>
+                <span className="last-film-label">Last watched{film.watched && ` · ${new Date(`${film.watched}T12:00:00`).toLocaleDateString("en-US", { month: "short", day: "numeric" })}`}</span>
+                <strong>{film.title}{film.year && ` (${film.year})`}</strong>
+                {film.rating && <span className="last-film-rating" aria-label={`Rated ${film.score} out of 5`}>{film.rating}</span>}
+              </span>
+            </a>
+          )}
           <p className="setup-note">Current setup: NZXT H6 Flow · 13600KF · 9070XT · Vengeance 7000MHz CL34</p>
           </div>
         </section>

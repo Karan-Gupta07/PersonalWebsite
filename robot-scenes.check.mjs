@@ -58,3 +58,19 @@ for (const { id } of cleanApproaches) {
   assert.ok([...out, ...back].every((point) => !isBlocked(point, 1)), `${id} hit furniture`);
 }
 assert.ok(steps(cleanRoutes("fly").out) + steps(cleanRoutes("fly").back) > steps(cleanRoutes("stack").out) + steps(cleanRoutes("stack").back), "Reactive control should travel further than A*");
+
+// Sandbox: visitor-placed boxes force A* around them, and a full wall makes the goal unreachable.
+const { canPlaceBox, cleanLeg } = await import("./app/robot-scenes.mjs");
+const open = planPath(room.dock, room.pickup.stop, 1);
+const box = open[Math.floor(open.length / 2)];
+assert.ok(canPlaceBox(box, [room.dock, room.pickup.stop]), "Mid-route cell accepts a box");
+assert.ok(!canPlaceBox([2, 1]), "Boxes cannot go on furniture");
+assert.ok(!canPlaceBox([2, 10], [room.dock]), "Boxes cannot crowd the robot or dock");
+const detour = cleanLeg("stack", room.dock, room.pickup.stop, [box]);
+assert.ok(adjacent(detour) && detour.every((point) => !isBlocked(point, 1, [box])), "Re-planned path avoids the inflated box");
+assert.ok(!detour.some(([x, y]) => x === box[0] && y === box[1]));
+assert.ok(steps(detour) >= steps(open));
+assert.ok(adjacent(cleanLeg("fly", room.dock, room.pickup.stop, [box])), "Reactive mode also routes around boxes");
+const wall = Array.from({ length: room.height }, (_, y) => [5, y]);
+assert.equal(cleanLeg("stack", room.dock, room.pickup.stop, wall), null, "A wall of boxes blocks every route");
+assert.equal(cleanLeg("fly", room.dock, room.pickup.stop, wall), null);

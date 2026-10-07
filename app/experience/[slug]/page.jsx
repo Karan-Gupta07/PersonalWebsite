@@ -9,15 +9,17 @@ export function generateStaticParams() {
   return experience.map((job) => ({ slug: job.slug }));
 }
 
-export function generateMetadata({ params }) {
-  const job = experience.find((item) => item.slug === params.slug);
+export async function generateMetadata({ params }) {
+  const { slug } = await params;
+  const job = experience.find((item) => item.slug === slug);
   return job
     ? { title: `${job.company} experience`, description: `${job.role} at ${job.company}. ${job.date}.` }
     : { title: "Experience not found" };
 }
 
-export default function ExperiencePage({ params }) {
-  const job = experience.find((item) => item.slug === params.slug);
+export default async function ExperiencePage({ params }) {
+  const { slug } = await params;
+  const job = experience.find((item) => item.slug === slug);
   if (!job) notFound();
   const demo = {
     overlap: <ClipDemo />,

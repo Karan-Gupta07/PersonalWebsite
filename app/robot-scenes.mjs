@@ -72,8 +72,15 @@ export const room = {
   pickup: { table: "PICK TABLE", stop: [15, 4] },
 };
 
-export function isBlocked([x, y], inflate = 0) {
-  return x < 0 || y < 0 || x >= room.width || y >= room.height || room.obstacles.some((o) => x >= o.x - inflate && x < o.x + o.w + inflate && y >= o.y - inflate && y < o.y + o.h + inflate);
+// `boxes` are visitor-placed 1×1 obstacles ([x, y] cells), inflated like furniture.
+export function isBlocked([x, y], inflate = 0, boxes = []) {
+  return x < 0 || y < 0 || x >= room.width || y >= room.height || room.obstacles.some((o) => x >= o.x - inflate && x < o.x + o.w + inflate && y >= o.y - inflate && y < o.y + o.h + inflate) || boxes.some(([bx, by]) => Math.abs(x - bx) <= inflate && Math.abs(y - by) <= inflate);
+}
+
+// A box may go on open floor, but not within a cell of the robot, dock or pickup stop, so the
+// robot never starts or ends inside an inflated obstacle.
+export function canPlaceBox(cell, keepClear = []) {
+  return !isBlocked(cell) && keepClear.every(([x, y]) => Math.max(Math.abs(cell[0] - x), Math.abs(cell[1] - y)) > 1);
 }
 
 // Cells that touch a real obstacle (8-neighbourhood): where a robot body would scrape furniture.
@@ -83,8 +90,8 @@ export function tightCells(path) {
 }
 
 // 4-connected A* with a Manhattan heuristic. A tiny turn penalty keeps paths from zig-zagging.
-export function planPath(start, goal, inflate = 0) {
-  if (isBlocked(start, inflate) || isBlocked(goal, inflate)) return null;
+export function planPath(start, goal, inflate = 0, boxes = []) {
+  if (isBlocked(start, inflate, boxes) || isBlocked(goal, inflate, boxes)) return null;
   const key = ([x, y]) => `${x},${y}`;
   const h = ([x, y]) => Math.abs(x - goal[0]) + Math.abs(y - goal[1]);
   const cost = new Map([[key(start), 0]]);
@@ -102,7 +109,7 @@ export function planPath(start, goal, inflate = 0) {
     const previous = from.get(key(current));
     for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
       const next = [current[0] + dx, current[1] + dy];
-      if (isBlocked(next, inflate)) continue;
+      if (isBlocked(next, inflate, boxes)) continue;
       const turn = previous && (current[0] - previous[0] !== dx || current[1] - previous[1] !== dy) ? .001 : 0;
       const nextCost = cost.get(key(current)) + 1 + turn;
       if (nextCost < (cost.get(key(next)) ?? Infinity)) {
@@ -121,7 +128,7 @@ const toward = (goal) => ([x, y]) => Math.hypot(x - goal[0], y - goal[1]);
 // feels closer to the goal, and backs up when boxed in. Every `wobble`-th step takes the second-best
 // neighbour, standing in for a noisy learned policy. The trail it leaves is what gets drawn.
 // ponytail: deterministic illustration, not a connectome simulation.
-export function reactivePath(start, goal, inflate = 1, wobble = 3) {
+export function reactivePath(start, goal, inflate = 1, wobble = 3, boxes = []) {
   const key = ([x, y]) => `${x},${y}`;
   const distance = toward(goal);
   const seen = new Set([key(start)]);
@@ -130,7 +137,7 @@ export function reactivePath(start, goal, inflate = 1, wobble = 3) {
   while (stack.length) {
     const current = stack.at(-1);
     if (key(current) === key(goal)) return trail;
-    const options = [[1, 0], [-1, 0], [0, 1], [0, -1]].map(([dx, dy]) => [current[0] + dx, current[1] + dy]).filter((point) => !isBlocked(point, inflate) && !seen.has(key(point))).sort((a, b) => distance(a) - distance(b));
+    const options = [[1, 0], [-1, 0], [0, 1], [0, -1]].map(([dx, dy]) => [current[0] + dx, current[1] + dy]).filter((point) => !isBlocked(point, inflate, boxes) && !seen.has(key(point))).sort((a, b) => distance(a) - distance(b));
     const next = options[trail.length % wobble === 0 && options.length > 1 ? 1 : 0];
     if (next) { seen.add(key(next)); stack.push(next); trail.push(next); }
     else { stack.pop(); if (stack.length) trail.push(stack.at(-1)); }
@@ -144,10 +151,14 @@ export const cleanApproaches = [
   { id: "agent", label: "AI agent", manipulation: "Agent skills", summary: "The agent gets the room, the objects, the robot’s state and its tools, plus a goal. It decides which tool to call next instead of following a fixed sequence." },
 ];
 
-export function cleanRoutes(approach) {
+// One leg of the trip for a control approach; null when the boxes wall the goal off.
+export function cleanLeg(approach, start, goal, boxes = []) {
+  return approach === "fly" ? reactivePath(start, goal, 1, 3, boxes) : planPath(start, goal, 1, boxes);
+}
+
+export function cleanRoutes(approach, boxes = []) {
   const { dock, pickup } = room;
-  if (approach === "fly") return { out: reactivePath(dock, pickup.stop), back: reactivePath(pickup.stop, dock) };
-  return { out: planPath(dock, pickup.stop, 1), back: planPath(pickup.stop, dock, 1) };
+  return { out: cleanLeg(approach, dock, pickup.stop, boxes), back: cleanLeg(approach, pickup.stop, dock, boxes) };
 }
 
 export const agentLog = [
