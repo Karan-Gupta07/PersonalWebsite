@@ -168,15 +168,18 @@ function PatientFace({ face }) {
   );
 }
 
-export function WardDemo() {
+export function WardDemo({ preview = false }) {
   const [selected, setSelected] = useState(0);
+  useEffect(() => {
+    if (!preview || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const timers = [1, 2].map((i) => setTimeout(() => setSelected(i), i * 1400));
+    return () => timers.forEach(clearTimeout);
+  }, [preview]);
   const sample = roomSamples[selected];
   const face = faceReadout(sample);
   const flags = roomFlags(sample);
   const metrics = [["Eyes", face?.eyes], ["Blinks in window", face?.blinks], ["Expression", face?.expression], ["Room light", sample.light === null ? null : `${sample.light} lx`], ["Room noise", sample.noise === null ? null : `${sample.noise} dB`]];
-  return (
-    <DemoFrame title="Read the face, and the room" name="ward" note="A synthetic face with example landmarks, sensor readings and thresholds. No camera is used. Flags prompt a staff check-in; they are not a diagnosis or a delirium probability.">
-      <div className="scenario-picker" aria-label="Example scenario">{roomSamples.map((item, i) => <button key={item.label} aria-pressed={selected === i} onClick={() => setSelected(i)}>{item.label}</button>)}</div>
+  const scene = (
       <svg className="robot-scene" viewBox="0 0 480 240" role="img" aria-label={face ? `Synthetic patient face with landmarks. Eyes: ${face.eyes}. Expression: ${face.expression}.` : "Camera offline"} shapeRendering="crispEdges">
         <rect width="480" height="240" fill="#111" />
         {face ? <PatientFace face={sample.face} /> : <text x="130" y="124" textAnchor="middle" className="scene-label">NO CAMERA SIGNAL</text>}
@@ -189,6 +192,12 @@ export function WardDemo() {
         <text x="258" y="206" className="scene-label">LAST 12 FRAMES</text>
         <text x="456" y="206" textAnchor="end" className="scene-label">OPEN ≥ {EYES_OPEN}</text>
       </svg>
+  );
+  if (preview) return <figure className="robot-demo robot-demo--preview" data-demo="ward">{scene}<figcaption className="preview-caption">DeliriumWatch · {sample.label}<span>Illustration</span></figcaption></figure>;
+  return (
+    <DemoFrame title="Read the face, and the room" name="ward" note="A synthetic face with example landmarks, sensor readings and thresholds. No camera is used. Flags prompt a staff check-in; they are not a diagnosis or a delirium probability.">
+      <div className="scenario-picker" aria-label="Example scenario">{roomSamples.map((item, i) => <button key={item.label} aria-pressed={selected === i} onClick={() => setSelected(i)}>{item.label}</button>)}</div>
+      {scene}
       <dl className="demo-measurements">{metrics.map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value ?? "Unavailable"}</dd></div>)}</dl>
       <FlagResult flags={flags} />
     </DemoFrame>
@@ -295,5 +304,59 @@ export function VideoEmbed({ id, title }) {
       </div>
       {open && <iframe src={`https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0`} title={`${title} demo video`} allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowFullScreen referrerPolicy="strict-origin-when-cross-origin" loading="lazy" />}
     </div>
+  );
+}
+
+export function AdmissionsPreview() {
+  const [gpa, setGpa] = useState(3.4);
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const timer = setInterval(() => setGpa((value) => value >= 3.9 ? 3.9 : Math.round((value + .05) * 100) / 100), 300);
+    return () => clearInterval(timer);
+  }, []);
+  const matches = matchApplicants(gpa, 1450, "Engineering").slice(0, 3);
+  return (
+    <figure className="robot-demo robot-demo--preview" data-demo="admissions">
+      <svg className="robot-scene" viewBox="0 0 480 240" role="img" aria-label="Profile similarity example" shapeRendering="crispEdges">
+        <rect width="480" height="240" fill="#111" />
+        <text x="32" y="36" className="scene-label">YOUR GPA {gpa.toFixed(2)} · SAT 1450 · ENGINEERING</text>
+        {matches.map((item, i) => (
+          <g key={item.name} transform={`translate(32 ${70 + i * 52})`}>
+            <text y="-6" className="scene-label">{item.name.toUpperCase()} · {item.gpa.toFixed(2)} GPA</text>
+            <rect width="360" height="18" fill="#222" />
+            <rect width={3.6 * item.similarity} height="18" fill={i ? "#aaa" : "var(--signal)"} />
+            <text x="416" y="13" textAnchor="end" className="scene-label">{item.similarity}%</text>
+          </g>
+        ))}
+      </svg>
+      <figcaption className="preview-caption">AI Admissions · Closest profiles<span>Illustration</span></figcaption>
+    </figure>
+  );
+}
+
+export function MusicPreview() {
+  const [tick, setTick] = useState(0);
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const timer = setInterval(() => setTick((value) => value + 1), 160);
+    return () => clearInterval(timer);
+  }, []);
+  return (
+    <figure className="robot-demo robot-demo--preview" data-demo="music">
+      <svg className="robot-scene" viewBox="0 0 480 240" role="img" aria-label="Raspberry Pi Spotify player" shapeRendering="crispEdges">
+        <rect width="480" height="240" fill="#111" />
+        <rect x="60" y="30" width="360" height="180" fill="#1b1b1b" stroke="#666" />
+        <rect x="84" y="58" width="96" height="96" fill="#252525" />
+        <path d="M134 78h22v12h-22v46h-24v-16h12V78Z" fill="#bdbdbd" />
+        <text x="204" y="76" className="scene-label">NOW PLAYING</text>
+        <rect x="204" y="88" width="150" height="8" fill="#ddd" />
+        <rect x="204" y="104" width="96" height="6" fill="#777" />
+        {Array.from({ length: 12 }, (_, i) => { const h = 6 + ((i * 7 + tick * (i % 3 + 2)) % 26); return <rect key={i} x={204 + i * 14} y={150 - h} width="8" height={h} fill={i % 4 ? "#aaa" : "var(--signal)"} />; })}
+        <rect x="84" y="176" width="312" height="4" fill="#333" />
+        <rect x="84" y="176" width={(tick * 3) % 312} height="4" fill="var(--signal)" />
+        <text x="240" y="226" textAnchor="middle" className="scene-label">PI / AUDIO</text>
+      </svg>
+      <figcaption className="preview-caption">Spotify Pi · Live listening status<span>Illustration</span></figcaption>
+    </figure>
   );
 }

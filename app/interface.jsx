@@ -33,12 +33,14 @@ export function Header() {
   );
 }
 
+const previewKinds = { dominiq: "mission", "mr-clean": "clean", reparo: "repair", deliriumwatch: "ward", "ai-admissions": "admissions", silhouette: "tailor", "spotify-pi": "music" };
+
 export function ProjectArchive({ items = projects, compact = false }) {
   return (
     <ul className={`project-list${compact ? " project-list--compact" : ""}`}>
       {items.map((project) => (
         <li key={project.slug}>
-          <Link className="project-link" href={`/project/${project.slug}`} data-robot-preview={compact ? { dominiq: "mission", "mr-clean": "clean", reparo: "repair" }[project.slug] : undefined}>
+          <Link className="project-link" href={`/project/${project.slug}`} data-robot-preview={previewKinds[project.slug]}>
             <span>
               <strong>{project.title}</strong>
               <span className="project-description">{compact ? project.category : project.short}</span>
@@ -93,7 +95,7 @@ export function ProjectLinks({ project }) {
 export function Footer() {
   return (
     <footer className="site-footer">
-      <span>© {new Date().getFullYear()} Karan Gupta</span>
+      <span>© {new Date().getFullYear()} Karan Gupta · <Link className="quiet-terminal" href="/terminal">terminal</Link></span>
       <a href="#top">Back to top <Arrow /></a>
     </footer>
   );

@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { stories, fitProfile, roomSamples, roomFlags, faceReadout, pipelineSamples, pipelineFlags, matchApplicants, guardrailCases, checkAgentTrace, spotifyEmbedUrl, nextTrackIndex, longVideo, sampleFrames, actionShare, topClips, timestamp } from "./app/demo-data.mjs";
+import { stories, fitProfile, roomSamples, roomFlags, faceReadout, pipelineSamples, pipelineFlags, matchApplicants, guardrailCases, checkAgentTrace, spotifyEmbedUrl, longVideo, sampleFrames, actionShare, topClips, timestamp } from "./app/demo-data.mjs";
 
 for (const story of Object.values(stories)) {
   assert.equal(story.steps.length, 4);
@@ -29,12 +29,6 @@ const track = "A".repeat(22);
 assert.equal(spotifyEmbedUrl(`https://open.spotify.com/track/${track}?si=example`), `https://open.spotify.com/embed/track/${track}?theme=0`);
 for (const url of [null, "", "javascript:alert(1)", `https://open.spotify.com.evil.test/track/${track}`, `http://open.spotify.com/track/${track}`, "https://open.spotify.com/track/short"])
   assert.equal(spotifyEmbedUrl(url), null);
-assert.equal(nextTrackIndex(0, 3, false), 1);
-assert.equal(nextTrackIndex(2, 3, true), 0);
-assert.equal(nextTrackIndex(2, 3, false), null);
-assert.equal(nextTrackIndex(0, 0, true), null);
-assert.equal(nextTrackIndex(-1, 3, true), null);
-assert.equal(nextTrackIndex(0, 1, true), 0);
 
 const budget = 72;
 const uniform = sampleFrames(longVideo.motion, budget, false);

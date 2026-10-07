@@ -27,7 +27,8 @@ async function getAccessToken() {
 export async function GET() {
   const headers = {
     'Access-Control-Allow-Origin': '*',
-    'Cache-Control': 's-maxage=30, stale-while-revalidate=59',
+    // Short edge cache: visitors poll every 10s, Spotify is hit at most every ~5s per region.
+    'Cache-Control': 's-maxage=5, stale-while-revalidate=10',
   };
 
   // If environment variables are missing (e.g. locally during initial setup),

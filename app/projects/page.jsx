@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Header, Footer, ProjectArchive, Arrow } from "../interface";
+import HomePreview from "../home-preview";
 
 export const metadata = {
   title: "Projects",
@@ -16,7 +17,10 @@ export default function ProjectsPage() {
           <h1>Things I’ve built.</h1>
           <p>A collection of work in software, AI, and robotics.</p>
         </header>
-        <ProjectArchive />
+        <div className="archive-layout">
+          <ProjectArchive />
+          <div className="archive-preview-slot"><HomePreview root=".archive-layout" className="archive-preview" /></div>
+        </div>
       </main>
       <Footer />
     </div>

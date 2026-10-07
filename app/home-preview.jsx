@@ -2,15 +2,15 @@
 
 import { useEffect, useState } from "react";
 import RobotDemo, { CleanPreview } from "./robot-demo";
-import { StoryDemo, MonitoringDemo, GuardrailDemo, ClipDemo } from "./project-demos";
+import { StoryDemo, MonitoringDemo, GuardrailDemo, ClipDemo, WardDemo, AdmissionsPreview, MusicPreview } from "./project-demos";
 
-export default function HomePreview() {
+export default function HomePreview({ root = ".site-shell--home", className = "home-preview" }) {
   const [hovered, setHovered] = useState(null);
   const [focused, setFocused] = useState(null);
   const [available, setAvailable] = useState(false);
 
   useEffect(() => {
-    const home = document.querySelector(".site-shell--home");
+    const home = document.querySelector(root);
     const viewport = window.matchMedia("(min-width: 901px)");
     const resize = () => setAvailable(viewport.matches);
     resize();
@@ -34,7 +34,7 @@ export default function HomePreview() {
       window.removeEventListener("blur", clear);
       viewport.removeEventListener("change", resize);
     };
-  }, []);
+  }, [root]);
 
   const kind = hovered || focused;
   const content = {
@@ -45,6 +45,10 @@ export default function HomePreview() {
     guardrail: <GuardrailDemo key={kind} preview />,
     clips: <ClipDemo key={kind} preview />,
     clean: <CleanPreview key={kind} />,
+    tailor: <StoryDemo kind="tailor" key={kind} preview />,
+    ward: <WardDemo key={kind} preview />,
+    admissions: <AdmissionsPreview key={kind} />,
+    music: <MusicPreview key={kind} />,
   }[kind];
-  return available && content ? <div className="home-preview" aria-hidden="true">{content}</div> : null;
+  return available && content ? <div className={className} aria-hidden="true">{content}</div> : null;
 }

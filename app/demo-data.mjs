@@ -98,10 +98,6 @@ export function spotifyEmbedUrl(value) {
   } catch { return null; }
 }
 
-export function nextTrackIndex(index, length, loop) {
-  if (!Number.isInteger(index) || !Number.isInteger(length) || length <= 0 || index < 0 || index >= length) return null;
-  return index + 1 < length ? index + 1 : loop ? 0 : null;
-}
 
 // Overlap: a three-hour stream split into 5-minute segments; values are example motion scores (0–100).
 export const longVideo = {
