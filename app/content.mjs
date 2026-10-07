@@ -97,7 +97,7 @@ export const projects = [
   },
   {
     slug: "reparo",
-    links: { github: "https://github.com/Karan-Gupta07/RepairBOT" },
+    links: { github: "https://github.com/Karan-Gupta07/RepairBOT", devpost: "https://devpost.com/software/reparo" },
     video: "JoFuqZbOmnA",
     code: "PRJ–01",
     title: "Reparo",
@@ -189,6 +189,8 @@ export const projects = [
   },
   {
     slug: "silhouette",
+    links: { github: "https://github.com/Rababb-P/Silhouette", devpost: "https://devpost.com/software/tbd-7j39dt" },
+    video: "Msyh6SsYRC4",
     code: "PRJ–04",
     title: "TailorAI",
     fullTitle: "TailorAI (Silhouette)",
