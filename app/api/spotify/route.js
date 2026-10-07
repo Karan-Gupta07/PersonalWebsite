@@ -89,7 +89,7 @@ export async function GET() {
         }
       }
     } catch (_) {
-      // scope not granted — just return not playing
+      // scope not granted, so just return not playing
     }
 
     return NextResponse.json({ isPlaying: false, title: null }, { status: 200, headers });

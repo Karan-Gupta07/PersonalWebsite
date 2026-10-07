@@ -137,7 +137,7 @@ export const projects = [
     summary:
       "A biometric game director that senses how a player feels from a webcam and pulse sensor, then adapts a horror game’s pacing in real time.",
     paragraphs: [
-      "Most games tune difficulty to how well you play, not how you feel. Dread Director reads the player instead: a Raspberry Pi with a camera and a contact pulse sensor estimates heart rate, breathing, blinking and expression, then turns the noisy signals into three easy values — noise, sustained stress, and composure.",
+      "Dread Director changes a horror game based on how scared the player is. A Raspberry Pi with a camera and a contact pulse sensor estimates heart rate, breathing, blinking and expression, then turns the noisy signals into three values: noise, sustained stress, and composure.",
       "A portable, deterministic C++17 director fuses the camera and pulse data, gates it by confidence, and decides what happens next: build tension, ease off when the player is overwhelmed, or give them room to recover. Games never touch raw biometrics; they receive high-level cues like escalate, panic, and recover over local UDP.",
       "The reference game, Night Watch, is built in Unity: a stalking creature hunts harder when you stay calm and backs off when you panic. Gemini and ElevenLabs narrate reactions to what the player says, and an ESP32 + MPU6050 controller lets you swing at the monster with your own hands. Built at Hack the 6ix 2026.",
     ],
@@ -284,11 +284,11 @@ export const experience = [
     slug: "overlap",
     company: "Overlap",
     role: "Software Engineering Intern",
-    date: "Sep 2026 — Present",
+    date: "Sep 2026 - Present",
     current: true,
     location: "San Francisco, CA",
     field: "YC S24 / AI VIDEO SYSTEMS",
-    intro: "At Overlap, I work on the systems that turn hours-long videos into short clips. This demo shows one idea behind that: spend the analysis budget where the action is.",
+    intro: "At Overlap, I work on the systems that turn hours-long videos into short clips. The demo below shows one part of that: giving busy scenes more frames than quiet ones.",
     bullets: [
       "Increased customer engagement by 15% by building a PyTorch trend-forecasting model using 20+ customer, content, engagement, and external signals to guide video topics, editing styles, and publishing timing.",
       "Built a file-size-capped 4 FPS video proxy with motion-adaptive Gemini frame sampling, speeding up scene detection 1.6–2.4× and enabling AI clip generation on long-form videos spanning two to seven hours.",
@@ -298,10 +298,10 @@ export const experience = [
     slug: "amazon",
     company: "Amazon",
     role: "Software Development Engineer Intern",
-    date: "May 2026 — Aug 2026",
+    date: "May 2026 - Aug 2026",
     location: "Toronto, ON",
     field: "AUTOMATION / DISTRIBUTED SYSTEMS",
-    intro: "At Amazon, I helped create a route-planning optimization algorithm now deployed in every Amazon fulfillment center worldwide. This demo illustrates the idea: collect the same items with less travel.",
+    intro: "At Amazon, I helped create a route-planning optimization algorithm now deployed in every Amazon fulfillment center worldwide. The demo below picks the same items along a shorter route.",
     bullets: [
       "Decomposed a 9,400-line warehouse decision engine into pluggable microservices, enabling dynamic selection of item-picking optimization algorithms deployed across every fulfillment center.",
       "Reduced legacy service migration time by 98% (two weeks to two hours) by building an agentic AI migration system with autonomous architecture discovery and 20 reusable deterministic transformation skills.",
@@ -313,7 +313,7 @@ export const experience = [
     slug: "wat-ai",
     company: "Wat.ai",
     role: "AI Software Engineer, Evaluation Lead",
-    date: "May 2026 — Present",
+    date: "May 2026 - Present",
     current: true,
     field: "TRACE SUBTEAM / AGENT RELIABILITY",
     intro: "At Wat.ai, I built deterministic checks for agent reliability: comparing claims with retrieved evidence and checking that actions stayed within policy.",
@@ -327,9 +327,9 @@ export const experience = [
     slug: "manulife",
     company: "Manulife",
     role: "Software Engineering Intern",
-    date: "Jan 2026 — Apr 2026",
+    date: "Jan 2026 - Apr 2026",
     field: "FINANCIAL CORPORATION / ENTERPRISE SYSTEMS",
-    intro: "At Manulife, I built data and telemetry pipelines that helped surface resource bottlenecks before service degradation. This example shows how an early-warning dashboard can make those signals visible.",
+    intro: "At Manulife, I built data and telemetry pipelines that helped surface resource bottlenecks before service degradation. The demo below is a simplified version of that early-warning dashboard.",
     bullets: [
       "Processed over 500,000 Salesforce records per export by building a scalable Python pipeline with Redis caching to extract, transform, and adapt application data into downstream-compatible formats.",
       "Reduced system downtime risk by building a New Relic telemetry exporter and SQL-based monitoring pipeline, enabling early detection of more than three resource bottlenecks before service degradation.",
@@ -339,7 +339,7 @@ export const experience = [
     slug: "waterloo-aerial-robotics",
     company: "Waterloo Aerial Robotics Group",
     role: "Autonomy Software Developer",
-    date: "Sep 2025 — Feb 2026",
+    date: "Sep 2025 - Feb 2026",
     field: "AUTONOMY / COMPUTER VISION",
     bullets: [
       "Improved real-time autonomous UAV signal detection accuracy by 13% with OpenCV algorithms, iterative parameter tuning, and extensive flight simulation validation.",
@@ -350,7 +350,7 @@ export const experience = [
     slug: "c2c-development",
     company: "C2C Development Holdings",
     role: "Computer Support Specialist",
-    date: "May 2022 — Sep 2025",
+    date: "May 2022 - Sep 2025",
     field: "AUTOMATION / TECHNICAL SUPPORT",
     bullets: [
       "Engineered a Python bot that automated over 700 Facebook Marketplace customer interactions and improved response time by over 70%.",
@@ -361,7 +361,7 @@ export const experience = [
     slug: "custom-keyboards",
     company: "Custom Gaming Keyboards",
     role: "Founder & Operator",
-    date: "Sep 2022 — Present",
+    date: "Sep 2022 - Present",
     current: true,
     field: "HARDWARE / INDEPENDENT BUSINESS",
     bullets: [

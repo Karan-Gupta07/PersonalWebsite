@@ -171,7 +171,7 @@ export default function RobotDemo({ kind, preview = false }) {
     reset(true);
   }
 
-  const title = isWarehouse ? "A shorter way through the warehouse" : "Two robots, one shared target";
+  const title = isWarehouse ? "A shorter way through the warehouse" : "Two robots converging on a target";
   const previewLabels = { searching: "Searching", detected: "Vessel spotted", assigned: "Scout B, investigate", investigating: "Converging on the vessel", confirmed: "Vessel confirmed" };
   const status = isWarehouse
     ? `${optimized ? "Optimized" : "Original"} route · ${frame.distance} grid steps · ${frame.collected.length}/3 items picked`
@@ -295,8 +295,8 @@ export function CleanDemo() {
   const status = stage === "done" ? `Blue cube delivered · ${travelled} steps travelled` : stage === "grasp" ? `At the pick table · ${info.manipulation} takes over the arm` : `${info.label} · ${travelled} steps travelled`;
 
   return (
-    <section className="interactive-demo" data-demo="clean" aria-label="One robot, three ways to decide">
-      <div className="demo-heading"><h2>One robot, three ways to decide</h2><span>Illustrative demo</span></div>
+    <section className="interactive-demo" data-demo="clean" aria-label="Three ways to control the robot">
+      <div className="demo-heading"><h2>Three ways to control the robot</h2><span>Illustrative demo</span></div>
       <div className="scenario-picker" aria-label="Control approach">
         {cleanApproaches.map((item) => <button key={item.id} disabled={!ready} aria-pressed={approach === item.id} onClick={() => choose(item.id)}>{item.label}</button>)}
       </div>
@@ -335,7 +335,7 @@ export function CleanDemo() {
         {stage !== "plan" && <button className="demo-secondary" disabled={!ready} onClick={() => go("plan")}>Reset</button>}
       </div>
       <p className="demo-status" role="status">{status}</p>
-      <p className="demo-note">Same robot, same room, same task. The routes here are computed in your browser for illustration; the real controllers run in MuJoCo, and the fly-brain trail is a stand-in for its reactive behaviour.</p>
+      <p className="demo-note">Each mode runs the same robot, room, and task. The routes here are computed in your browser for illustration; the real controllers run in MuJoCo, and the fly-brain trail is a stand-in for its reactive behaviour.</p>
     </section>
   );
 }

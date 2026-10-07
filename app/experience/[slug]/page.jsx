@@ -12,7 +12,7 @@ export function generateStaticParams() {
 export function generateMetadata({ params }) {
   const job = experience.find((item) => item.slug === params.slug);
   return job
-    ? { title: `${job.company} — Experience`, description: `${job.role} at ${job.company}. ${job.date}.` }
+    ? { title: `${job.company} experience`, description: `${job.role} at ${job.company}. ${job.date}.` }
     : { title: "Experience not found" };
 }
 
@@ -48,7 +48,7 @@ export default function ExperiencePage({ params }) {
         </article>
         <nav className="project-navigation" aria-label="Experience navigation">
           <Link href="/about#experience"><span>My background</span><strong>All experience <Arrow /></strong></Link>
-          <a href={profile.resume} target="_blank" rel="noreferrer"><span>The full picture</span><strong>Resume <Arrow diagonal /></strong></a>
+          <a href={profile.resume} target="_blank" rel="noreferrer"><span>PDF</span><strong>Resume <Arrow diagonal /></strong></a>
         </nav>
       </main>
       <Footer />

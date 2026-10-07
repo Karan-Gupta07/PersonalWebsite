@@ -119,7 +119,7 @@ export function MonitoringDemo({ preview = false }) {
   if (preview) return <figure className="robot-demo robot-demo--preview" data-demo="pipeline">{chart}<figcaption className="preview-caption">Manulife · Early-warning example</figcaption></figure>;
   const metrics = [["Queued jobs", sample.queue], ["Memory", sample.memory === null ? null : `${sample.memory}%`], ["Data age", `${sample.age}s`]];
   return (
-    <DemoFrame title="Catch the warning before the failure" name="pipeline" note="Synthetic telemetry and demonstration thresholds. No live company systems are connected.">
+    <DemoFrame title="Early warnings from telemetry" name="pipeline" note="Synthetic telemetry and demonstration thresholds. No live company systems are connected.">
       <div className="scenario-picker" aria-label="Example scenario">{pipelineSamples.map((item, i) => <button key={item.label} aria-pressed={selected === i} onClick={() => setSelected(i)}>{item.label}</button>)}</div>
       {chart}
       <dl className="demo-measurements">{metrics.map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value ?? "Unavailable"}</dd></div>)}</dl>
@@ -195,7 +195,7 @@ export function WardDemo({ preview = false }) {
   );
   if (preview) return <figure className="robot-demo robot-demo--preview" data-demo="ward">{scene}<figcaption className="preview-caption">DeliriumWatch · {sample.label}<span>Illustration</span></figcaption></figure>;
   return (
-    <DemoFrame title="Read the face, and the room" name="ward" note="A synthetic face with example landmarks, sensor readings and thresholds. No camera is used. Flags prompt a staff check-in; they are not a diagnosis or a delirium probability.">
+    <DemoFrame title="Face and room readings" name="ward" note="A synthetic face with example landmarks, sensor readings and thresholds. No camera is used. Flags prompt a staff check-in; they are not a diagnosis or a delirium probability.">
       <div className="scenario-picker" aria-label="Example scenario">{roomSamples.map((item, i) => <button key={item.label} aria-pressed={selected === i} onClick={() => setSelected(i)}>{item.label}</button>)}</div>
       {scene}
       <dl className="demo-measurements">{metrics.map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value ?? "Unavailable"}</dd></div>)}</dl>
@@ -276,7 +276,7 @@ export function ClipDemo({ preview = false }) {
   );
   if (preview) return <figure className="robot-demo robot-demo--preview" data-demo="clips">{timeline}<figcaption className="preview-caption">Overlap · {found ? "Clips found" : adaptive ? "Frames follow the action" : "Frames spread evenly"}<span>Illustration</span></figcaption></figure>;
   return (
-    <DemoFrame title="Find the moments worth clipping" name="clips" note="A simplified illustration with example motion scores and a fixed frame budget. Nothing is uploaded, and no video or model runs on this page.">
+    <DemoFrame title="Picking clips from a long stream" name="clips" note="A simplified illustration with example motion scores and a fixed frame budget. Nothing is uploaded, and no video or model runs on this page.">
       <div className="scenario-picker" aria-label="Frame sampling">
         <button aria-pressed={!adaptive} onClick={() => { setAdaptive(false); setFound(false); }}>Uniform sampling</button>
         <button aria-pressed={adaptive} onClick={() => { setAdaptive(true); setFound(false); }}>Motion-adaptive</button>

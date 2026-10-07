@@ -88,7 +88,7 @@ export default function Sidebar({ menuOpen, setMenuOpen }) {
         setHistory([]);
         return;
       } else if (cmd === 'whoami') {
-        out = 'karan — swe @ amazon / wat.ai / manulife';
+        out = 'karan, swe @ amazon / wat.ai / manulife';
       } else if (cmd === 'ls') {
         out = 'experience/  projects/  skills/  contact/';
       } else if (cmd.startsWith('cd ')) {

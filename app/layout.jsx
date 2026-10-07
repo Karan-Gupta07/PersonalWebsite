@@ -13,7 +13,7 @@ const body = Manrope({
 export const metadata = {
   title: {
     default: "Karan Gupta",
-    template: "%s — Karan Gupta",
+    template: "%s | Karan Gupta",
   },
   description:
     "Karan Gupta. Computer Engineering at the University of Waterloo. Building software, AI systems, and robots.",

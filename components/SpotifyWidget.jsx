@@ -45,7 +45,7 @@ export default function SpotifyWidget() {
     return () => { disposed = true; controller?.abort(); clearInterval(timer); document.removeEventListener("visibilitychange", refresh); };
   }, []);
 
-  const status = listening ? listening.isPlaying ? "Now playing on Spotify" : "Last played on Spotify" : sample ? "Sample display — not live" : connection === "loading" ? "Checking listening status" : "Spotify not connected / no track available";
+  const status = listening ? listening.isPlaying ? "Now playing on Spotify" : "Last played on Spotify" : sample ? "Sample display (not live)" : connection === "loading" ? "Checking listening status" : "Spotify not connected / no track available";
   return (
     <section className="interactive-demo music-demo" data-demo="music" aria-label="Spotify Pi player prototype">
       <div className="demo-heading"><h2>A little player for the desk</h2><span>Live status</span></div>

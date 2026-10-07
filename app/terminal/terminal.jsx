@@ -31,7 +31,7 @@ function run(input, router) {
       return ["whoami, ls, cd [page], projects, open [project], resume, contact, clear", "!game, !movie, !artist, !song, !manga, !pc, !keyboard, !anime, !socials, !github"];
     case "whoami": {
       const now = experience.filter((job) => job.current && job.slug !== "custom-keyboards").map((job) => job.company.toLowerCase());
-      return [`karan — software engineer @ ${now.join(" / ")}`];
+      return [`karan, software engineer @ ${now.join(" / ")}`];
     }
     case "ls": return [Object.keys(pages).map((page) => `${page}/`).join("  ") + "  resume.pdf"];
     case "cd":

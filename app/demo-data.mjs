@@ -5,7 +5,7 @@ export const stories = {
       { title: "Something’s broken", text: "An example customer has a chair that no longer rolls, but doesn’t know what to replace.", action: "Inspect the example photo", speech: ["This chair won’t roll.", "How do I fix it?"] },
       { title: "Identify the problem", text: "The example image highlights a damaged caster. Reparo’s vision workflow connects the visible problem to a repairable component.", action: "Show the repair plan", speech: ["The caster is damaged.", "Let’s find a replacement."] },
       { title: "Make the repair understandable", text: "Identify the attachment, verify a compatible replacement, then follow the manufacturer’s replacement instructions.", action: "Find replacement parts", speech: ["A plan, tools, and a part.", "Now I know where to start."] },
-      { title: "Source the missing part", text: "Reparo connects a repair plan to parts sourcing through Shopify and SerpAPI. The listing below is illustrative, not live inventory.", action: "Start over", speech: ["A matching part to look for.", "Repair instead of replace."] },
+      { title: "Source the missing part", text: "Reparo connects a repair plan to parts sourcing through Shopify and SerpAPI. The listing below is an example and is not pulled from live inventory.", action: "Start over", speech: ["A matching part to look for.", "Cheaper than a new chair."] },
     ],
   },
   tailor: {
@@ -13,8 +13,8 @@ export const stories = {
     steps: [
       { title: "Start with an example silhouette", text: "A synthetic profile shows the photo-to-measurement workflow. No photo is uploaded or analyzed here.", action: "Show landmarks", speech: ["My clothes never fit.", "Can a photo help?"] },
       { title: "Locate the landmarks", text: "Shoulder, torso, and arm landmarks establish the reference points used by the measurement workflow.", action: "Show measurements", speech: ["Shoulders, torso, sleeves.", "A consistent reference."] },
-      { title: "Translate landmarks into measurements", text: "These fixed example measurements show the shape of the result—not measurements inferred from your body.", action: "Preview the garment", speech: ["Measurements, not guesses.", "Ready for a custom fit."] },
-      { title: "Connect the measurements to apparel", text: "The tailoring flow brings the measurements into a custom-apparel catalog. This is a visual example, not a live order.", action: "Start over", speech: ["A garment built around", "the example measurements."] },
+      { title: "Translate landmarks into measurements", text: "These are fixed example measurements. Nothing is measured from your body.", action: "Preview the garment", speech: ["Measured from landmarks.", "Ready for a custom fit."] },
+      { title: "Connect the measurements to apparel", text: "The tailoring flow brings the measurements into a custom-apparel catalog. This is a visual example and no order is placed.", action: "Start over", speech: ["A garment built around", "the example measurements."] },
     ],
   },
 };

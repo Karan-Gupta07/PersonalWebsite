@@ -91,7 +91,7 @@ export function planPath(start, goal, inflate = 0) {
   const from = new Map();
   const open = [start];
   while (open.length) {
-    // ponytail: sorted array as the open set — fine for 288 cells; swap in a binary heap for real maps.
+    // ponytail: sorted array as the open set, fine for 288 cells; swap in a binary heap for real maps.
     open.sort((a, b) => cost.get(key(a)) + h(a) - cost.get(key(b)) - h(b));
     const current = open.shift();
     if (key(current) === key(goal)) {

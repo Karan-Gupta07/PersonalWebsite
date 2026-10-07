@@ -29,7 +29,7 @@ assert.equal(experience[0].company, "Overlap");
 assert.equal(experience[0].current, true);
 assert.equal(
   experience.find((job) => job.company === "Amazon").date,
-  "May 2026 — Aug 2026",
+  "May 2026 - Aug 2026",
 );
 assert.ok(!experience.find((job) => job.company === "Amazon").current);
 assert.ok(projects.some((project) => project.slug === "dominiq"));

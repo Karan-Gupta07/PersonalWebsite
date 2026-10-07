@@ -19,7 +19,7 @@ export default function AboutPage() {
         </nav>
         <section className="about-part" id="outside" aria-labelledby="outside-heading">
           <h1 id="outside-heading">Outside of work</h1>
-          <p className="about-lead">Plenty of interests beyond computer engineering.</p>
+          <p className="about-lead">What I do when I’m not working.</p>
           <div className="project-section">
           <p>
             I’ve built and sold 35+ custom keyboards, and I’m into PC building,

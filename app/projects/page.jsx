@@ -15,7 +15,7 @@ export default function ProjectsPage() {
         <Link className="back-link" href="/#projects"><Arrow /> Back home</Link>
         <header className="project-heading">
           <h1>Things I’ve built.</h1>
-          <p>A collection of work in software, AI, and robotics.</p>
+          <p>Software, AI, and robotics projects.</p>
         </header>
         <div className="archive-layout">
           <ProjectArchive />
