@@ -249,6 +249,7 @@ export const projects = [
 
 export const experience = [
   {
+    slug: "overlap",
     company: "Overlap",
     role: "Software Engineering Intern",
     date: "Sep 2026 — Present",
@@ -261,11 +262,13 @@ export const experience = [
     ],
   },
   {
+    slug: "amazon",
     company: "Amazon",
     role: "Software Development Engineer Intern",
     date: "May 2026 — Aug 2026",
     location: "Toronto, ON",
     field: "AUTOMATION / DISTRIBUTED SYSTEMS",
+    intro: "At Amazon, I helped create a route-planning optimization algorithm now deployed in every Amazon fulfillment center worldwide. This demo illustrates the idea: collect the same items with less travel.",
     bullets: [
       "Decomposed a 9,400-line warehouse decision engine into pluggable microservices, enabling dynamic selection of item-picking optimization algorithms deployed across every fulfillment center.",
       "Reduced legacy service migration time by 98% (two weeks to two hours) by building an agentic AI migration system with autonomous architecture discovery and 20 reusable deterministic transformation skills.",
@@ -274,11 +277,13 @@ export const experience = [
     ],
   },
   {
+    slug: "wat-ai",
     company: "Wat.ai",
     role: "AI Software Engineer, Evaluation Lead",
     date: "May 2026 — Present",
     current: true,
     field: "TRACE SUBTEAM / AGENT RELIABILITY",
+    intro: "At Wat.ai, I built deterministic checks for agent reliability: comparing claims with retrieved evidence and checking that actions stayed within policy.",
     bullets: [
       "Architected TRACE’s deterministic agent-evaluation layer by defining Pydantic verifier contracts for pass/fail, evidence, severity, and affected trace steps across attribution, regression testing, and release gates.",
       "Achieved 100% evaluation accuracy across a 25-task policy suite by validating agent execution traces against retrieved documents, expected actions, tool side effects, and final state to detect unsafe or ungrounded behavior.",
@@ -286,16 +291,19 @@ export const experience = [
     ],
   },
   {
+    slug: "manulife",
     company: "Manulife",
     role: "Software Engineering Intern",
     date: "Jan 2026 — Apr 2026",
     field: "FINANCIAL CORPORATION / ENTERPRISE SYSTEMS",
+    intro: "At Manulife, I built data and telemetry pipelines that helped surface resource bottlenecks before service degradation. This example shows how an early-warning dashboard can make those signals visible.",
     bullets: [
       "Processed over 500,000 Salesforce records per export by building a scalable Python pipeline with Redis caching to extract, transform, and adapt application data into downstream-compatible formats.",
       "Reduced system downtime risk by building a New Relic telemetry exporter and SQL-based monitoring pipeline, enabling early detection of more than three resource bottlenecks before service degradation.",
     ],
   },
   {
+    slug: "waterloo-aerial-robotics",
     company: "Waterloo Aerial Robotics Group",
     role: "Autonomy Software Developer",
     date: "Sep 2025 — Feb 2026",
@@ -306,6 +314,7 @@ export const experience = [
     ],
   },
   {
+    slug: "c2c-development",
     company: "C2C Development Holdings",
     role: "Computer Support Specialist",
     date: "May 2022 — Sep 2025",
@@ -316,6 +325,7 @@ export const experience = [
     ],
   },
   {
+    slug: "custom-keyboards",
     company: "Custom Gaming Keyboards",
     role: "Founder & Operator",
     date: "Sep 2022 — Present",
@@ -327,6 +337,7 @@ export const experience = [
     ],
   },
   {
+    slug: "frc-8089",
     company: "FRC Team 8089",
     role: "Build & Design Team Planner",
     date: "High School",
