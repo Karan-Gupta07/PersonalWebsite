@@ -131,3 +131,26 @@ export function topClips(motion, count = 3) {
 export function timestamp(minutes) {
   return `${Math.floor(minutes / 60)}:${String(minutes % 60).padStart(2, "0")}:00`;
 }
+
+// Dread Director: the creature hunts harder when you are calm and backs off when you panic.
+export const NIGHT_SECONDS = 30;
+
+export function directorCue(bpm, baseline = 72) {
+  const stress = Math.max(0, Math.min(1, (bpm - baseline) / 50));
+  if (stress < .3) return { stress, cue: "escalate", speed: 4, line: "Too calm. It’s getting closer." };
+  if (stress < .7) return { stress, cue: "build", speed: 1.5, line: "Something is moving in the dark." };
+  return { stress, cue: "ease off", speed: -3, line: "It backs away. Catch your breath." };
+}
+
+// Advances the night by `dt` seconds. `closeness` runs 0 (far) to 100 (caught).
+export function nightStep(state, bpm, dt) {
+  if (state.over) return state;
+  const { speed } = directorCue(bpm);
+  const closeness = Math.max(0, Math.min(100, state.closeness + speed * dt));
+  const time = Math.min(NIGHT_SECONDS, state.time + dt);
+  return { ...state, closeness, time, over: closeness >= 100 ? "caught" : time >= NIGHT_SECONDS ? "dawn" : null };
+}
+
+export function swing(state) {
+  return state.over || state.closeness < 60 ? { ...state, misses: state.misses + 1 } : { ...state, closeness: state.closeness - 45, hits: state.hits + 1 };
+}

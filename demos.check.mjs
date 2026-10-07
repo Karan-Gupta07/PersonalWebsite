@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { stories, fitProfile, roomSamples, roomFlags, faceReadout, pipelineSamples, pipelineFlags, matchApplicants, guardrailCases, checkAgentTrace, spotifyEmbedUrl, longVideo, sampleFrames, actionShare, topClips, timestamp } from "./app/demo-data.mjs";
+import { stories, fitProfile, roomSamples, roomFlags, faceReadout, pipelineSamples, pipelineFlags, matchApplicants, guardrailCases, checkAgentTrace, spotifyEmbedUrl, longVideo, sampleFrames, directorCue, nightStep, swing, NIGHT_SECONDS, actionShare, topClips, timestamp } from "./app/demo-data.mjs";
 
 for (const story of Object.values(stories)) {
   assert.equal(story.steps.length, 4);
@@ -42,3 +42,15 @@ assert.deepEqual(sampleFrames([0, 0], 5, true), [3, 2]);
 assert.equal(sampleFrames([1, 2, 3], 10, true).reduce((a, b) => a + b), 10);
 assert.equal(actionShare([0, 0], [90, 90]), 0);
 assert.equal(timestamp(65), "1:05:00");
+
+assert.deepEqual([60, 90, 130].map((bpm) => directorCue(bpm).cue), ["escalate", "build", "ease off"]);
+const night = { closeness: 0, time: 0, hits: 0, misses: 0, over: null };
+let calm = night;
+for (let t = 0; t < 40; t++) calm = nightStep(calm, 65, 1);
+assert.equal(calm.over, "caught", "Staying calm lets the creature reach you");
+let panicked = night;
+for (let t = 0; t < 40; t++) panicked = nightStep(panicked, 130, 1);
+assert.deepEqual([panicked.over, panicked.closeness, panicked.time], ["dawn", 0, NIGHT_SECONDS]);
+assert.equal(swing({ ...night, closeness: 80 }).closeness, 35);
+assert.equal(swing({ ...night, closeness: 30 }).misses, 1);
+assert.deepEqual(nightStep(calm, 130, 1), calm, "A finished night does not change");

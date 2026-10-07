@@ -126,6 +126,27 @@ export const projects = [
     ],
   },
   {
+    slug: "dread-director",
+    code: "PRJ–08",
+    title: "Dread Director",
+    category: "ADAPTIVE GAMES",
+    short: "A horror game that reads how scared you are and adapts.",
+    links: { github: "https://github.com/r9ia/ht6", devpost: "https://devpost.com/software/mdmd" },
+    video: "plFBTPSpTT0",
+    stack: ["C++17", "Unity", "OpenCV", "Raspberry Pi", "QNX", "ESP32", "Gemini API", "ElevenLabs"],
+    summary:
+      "A biometric game director that senses how a player feels from a webcam and pulse sensor, then adapts a horror game’s pacing in real time.",
+    paragraphs: [
+      "Most games tune difficulty to how well you play, not how you feel. Dread Director reads the player instead: a Raspberry Pi with a camera and a contact pulse sensor estimates heart rate, breathing, blinking and expression, then turns the noisy signals into three easy values — noise, sustained stress, and composure.",
+      "A portable, deterministic C++17 director fuses the camera and pulse data, gates it by confidence, and decides what happens next: build tension, ease off when the player is overwhelmed, or give them room to recover. Games never touch raw biometrics; they receive high-level cues like escalate, panic, and recover over local UDP.",
+      "The reference game, Night Watch, is built in Unity: a stalking creature hunts harder when you stay calm and backs off when you panic. Gemini and ElevenLabs narrate reactions to what the player says, and an ESP32 + MPU6050 controller lets you swing at the monster with your own hands. Built at Hack the 6ix 2026.",
+    ],
+    distinction: "HACK THE 6IX 2026 / BIOMETRIC GAME DIRECTOR",
+    metrics: [],
+    flow: ["PLAYER SENSING", "DIRECTOR", "GAME REACTS"],
+    flowLabels: ["Camera + pulse on a Raspberry Pi", "C++17 cues: escalate · panic · recover", "Unity monster, lights, narration"],
+  },
+  {
     slug: "deliriumwatch",
     code: "PRJ–02",
     title: "DeliriumWatch",

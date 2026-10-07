@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useId, useState } from "react";
-import { stories, fitProfile, roomSamples, roomFlags, faceReadout, EYES_OPEN, pipelineSamples, pipelineFlags, matchApplicants, guardrailCases, checkAgentTrace, longVideo, sampleFrames, actionShare, topClips, timestamp } from "./demo-data.mjs";
+import { stories, fitProfile, roomSamples, roomFlags, faceReadout, EYES_OPEN, pipelineSamples, pipelineFlags, matchApplicants, guardrailCases, checkAgentTrace, longVideo, sampleFrames, directorCue, nightStep, swing, NIGHT_SECONDS, actionShare, topClips, timestamp } from "./demo-data.mjs";
 
 function DemoFrame({ title, name, note, children }) {
   const [ready, setReady] = useState(false);
@@ -358,5 +358,65 @@ export function MusicPreview() {
       </svg>
       <figcaption className="preview-caption">Spotify Pi · Live listening status<span>Illustration</span></figcaption>
     </figure>
+  );
+}
+
+const freshNight = { closeness: 0, time: 0, hits: 0, misses: 0, over: null };
+
+function NightScene({ night, cue, bpm }) {
+  const x = 430 - night.closeness * 2.9;
+  const dark = cue.cue === "escalate" ? "#0b0b0b" : cue.cue === "build" ? "#121212" : "#1a1a1a";
+  return (
+    <svg className="robot-scene" viewBox="0 0 480 240" role="img" aria-label={`Night Watch. ${night.over === "caught" ? "Caught." : night.over === "dawn" ? "Survived until dawn." : `The creature is ${Math.round(night.closeness)}% of the way to you.`}`} shapeRendering="crispEdges">
+      <rect width="480" height="240" fill={dark} />
+      <path d="M0 206h480" stroke="#333" />
+      <rect x="196" y="36" width="44" height="58" fill={night.over === "dawn" ? "#c9b98a" : "#151a24"} stroke="#444" />
+      <path d="M218 36v58M196 65h44" stroke="#444" />
+      <Person x={70} y={142} scale={.8} />
+      <g transform={`translate(${x} 149) scale(1.5)`}>
+        <path d="M-14-30h28v8h6v20h6v40h-8V8h-4v30h-8V12h-8v26h-8V8h-4v30h-8V-2h6v-20h6Z" fill="#2a2a2a" stroke="#555" />
+        <rect x="-8" y="-20" width="5" height="4" fill="var(--signal)" />
+        <rect x="3" y="-20" width="5" height="4" fill="var(--signal)" />
+      </g>
+      <text x="16" y="24" className="scene-label">HEART {bpm} BPM · CUE: {cue.cue.toUpperCase()}</text>
+      <rect x="16" y="32" width="120" height="6" fill="#222" />
+      <rect x="16" y="32" width={120 * cue.stress} height="6" fill="var(--signal)" />
+      <text x="464" y="24" textAnchor="end" className="scene-label">{Math.ceil(NIGHT_SECONDS - night.time)}S TO DAWN</text>
+      <text x="142" y="39" className="scene-label">STRESS</text>
+    </svg>
+  );
+}
+
+export function DreadDemo({ preview = false }) {
+  const [bpm, setBpm] = useState(70);
+  const [night, setNight] = useState(freshNight);
+  const [running, setRunning] = useState(preview);
+  const cue = directorCue(bpm);
+  useEffect(() => {
+    if (!running) return;
+    if (preview && window.matchMedia("(prefers-reduced-motion: reduce)").matches) { setNight({ ...freshNight, closeness: 70, time: 6 }); setRunning(false); return; }
+    const timer = setInterval(() => setNight((current) => {
+      const next = nightStep(current, bpm, preview ? .6 : .1);
+      if (next.over || (preview && next.closeness >= 85)) setRunning(false);
+      return next;
+    }), 100);
+    return () => clearInterval(timer);
+  }, [running, bpm, preview]);
+  const scene = <NightScene night={night} cue={cue} bpm={bpm} />;
+  if (preview) return <figure className="robot-demo robot-demo--preview" data-demo="dread">{scene}<figcaption className="preview-caption">Dread Director · {cue.line}<span>Illustration</span></figcaption></figure>;
+  const result = night.over === "caught" ? "Caught. Staying calm gave it the opening." : night.over === "dawn" ? `Dawn. You survived${night.hits ? ` with ${night.hits} hit${night.hits === 1 ? "" : "s"}` : ""}.` : running ? cue.line : "Start the night, then set how your heart is racing.";
+  return (
+    <DemoFrame title="Survive the night watch" name="dread" note="A browser mini-game. Your heart rate is a slider here; the real build reads it from a camera and pulse sensor, and nothing is captured on this page.">
+      {scene}
+      <label className="dread-slider" htmlFor="dread-bpm">Simulated heart rate · {bpm} bpm<input id="dread-bpm" type="range" min="60" max="140" step="1" value={bpm} onChange={(event) => setBpm(Number(event.target.value))} /></label>
+      <div className="demo-controls">
+        {night.over || !running
+          ? <button className="demo-primary" onClick={() => { setNight(freshNight); setRunning(true); }}>{night.over ? "Play again" : "Start the night"}</button>
+          : <button className="demo-primary" onClick={() => setNight(swing)}>Swing</button>}
+        {running && <button className="demo-secondary" onClick={() => setRunning(false)}>Pause</button>}
+      </div>
+      <p className="demo-status" role="status">{result}</p>
+      <p className="demo-note">The director’s rule: calm players get hunted (escalate), tense ones get pressure (build), panicking ones get relief (ease off). Swing when it’s close.</p>
+    </DemoFrame>
   );
 }

@@ -33,7 +33,7 @@ export function Header() {
   );
 }
 
-const previewKinds = { dominiq: "mission", "mr-clean": "clean", reparo: "repair", deliriumwatch: "ward", "ai-admissions": "admissions", silhouette: "tailor", "spotify-pi": "music" };
+const previewKinds = { dominiq: "mission", "mr-clean": "clean", reparo: "repair", deliriumwatch: "ward", "ai-admissions": "admissions", silhouette: "tailor", "spotify-pi": "music", "dread-director": "dread" };
 
 export function ProjectArchive({ items = projects, compact = false }) {
   return (

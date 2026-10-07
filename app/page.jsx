@@ -59,6 +59,7 @@ export default function Home() {
           <a href={profile.links.github} target="_blank" rel="noreferrer">GitHub <Arrow diagonal /></a>
           <a href={profile.links.linkedin} target="_blank" rel="noreferrer">LinkedIn <Arrow diagonal /></a>
           <a href={profile.resume} target="_blank" rel="noreferrer">Resume <Arrow diagonal /></a>
+          <Link href="/terminal">Terminal <Arrow /></Link>
         </nav>
       </footer>
     </div>

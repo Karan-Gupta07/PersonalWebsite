@@ -20,7 +20,7 @@ assert.equal(
   new Set(projects.map((project) => project.slug)).size,
   projects.length,
 );
-assert.equal(projects.length, 7);
+assert.equal(projects.length, 8);
 assert.equal(experience.length, 8);
 assert.equal(new Set(experience.map((job) => job.slug)).size, experience.length);
 for (const job of experience) assert.match(job.slug, /^[a-z0-9-]+$/);
@@ -139,7 +139,7 @@ if (process.argv[2]) {
     for (const url of Object.values(project.links || {})) assert.ok(content.includes(`href="${url}"`), `${project.slug} link ${url}`);
     assert.doesNotMatch(content, /Ask me about this project/);
     assert.equal(content.includes("Watch the demo video"), Boolean(project.video), project.slug);
-    const demo = { "mr-clean": "clean", reparo: "repair", silhouette: "tailor", deliriumwatch: "ward", "ai-admissions": "admissions", "spotify-pi": "music" }[project.slug];
+    const demo = { "mr-clean": "clean", "dread-director": "dread", reparo: "repair", silhouette: "tailor", deliriumwatch: "ward", "ai-admissions": "admissions", "spotify-pi": "music" }[project.slug];
     if (demo) assert.ok(content.includes(`data-demo="${demo}"`), project.slug);
     if (project.slug === "deliriumwatch") assert.ok(content.includes("not a diagnosis or a delirium probability"));
     if (project.slug === "ai-admissions") assert.ok(content.includes("not admissions outcomes or acceptance odds"));

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import RobotDemo, { CleanPreview } from "./robot-demo";
-import { StoryDemo, MonitoringDemo, GuardrailDemo, ClipDemo, WardDemo, AdmissionsPreview, MusicPreview } from "./project-demos";
+import { StoryDemo, MonitoringDemo, GuardrailDemo, ClipDemo, WardDemo, AdmissionsPreview, MusicPreview, DreadDemo } from "./project-demos";
 
 export default function HomePreview({ root = ".site-shell--home", className = "home-preview" }) {
   const [hovered, setHovered] = useState(null);
@@ -49,6 +49,7 @@ export default function HomePreview({ root = ".site-shell--home", className = "h
     ward: <WardDemo key={kind} preview />,
     admissions: <AdmissionsPreview key={kind} />,
     music: <MusicPreview key={kind} />,
+    dread: <DreadDemo key={kind} preview />,
   }[kind];
   return available && content ? <div className={className} aria-hidden="true">{content}</div> : null;
 }

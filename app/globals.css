@@ -133,6 +133,8 @@ a:hover > .arrow { transform: translateX(3px); }
 .video-embed { margin: -20px 0 36px; }
 .video-embed .demo-controls { margin-top: 0; }
 .video-embed iframe { display: block; width: 100%; aspect-ratio: 16 / 9; height: auto; margin-top: 12px; border: 1px solid var(--line); }
+.dread-slider { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; font-size: 13px; }
+.dread-slider input { width: 100%; accent-color: var(--signal); min-height: 32px; }
 .agent-log { margin: 12px 0 0; padding: 12px 12px 12px 32px; border: 1px solid var(--line); font-size: 12px; }
 .agent-log li + li { margin-top: 6px; }
 .agent-log code { font: 12px ui-monospace, monospace; color: var(--text); }
