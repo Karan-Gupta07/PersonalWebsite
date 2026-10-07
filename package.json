@@ -9,7 +9,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "deploy": "vercel --prod"
+    "deploy": "vercel --prod",
+    "test": "node portfolio.check.mjs"
   },
   "devDependencies": {
     "gh-pages": "^6.3.0",
