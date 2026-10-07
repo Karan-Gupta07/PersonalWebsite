@@ -7,7 +7,7 @@ import { useLayoutEffect, useRef, useState } from "react";
 
 const S = {
   arrowLength: 28, wingSpread: 8, bobAmplitude: 3, bobPeriod: 2, arrowHitPadding: 10,
-  lineLength: 400, dotSpacing: 10,
+  lineLength: 520, dotSpacing: 10,
   maxExtension: 50, extensionFalloff: 0.6, colorFalloff: 0.3, smoothingTau: 0.05, hitPadding: 10,
   timing: [[0.15, [0.33, 1, 0.68, 1]], [0.35, [0.65, 0, 0.35, 1]], [0.2, [0.33, 1, 0.68, 1]], [0.2, [0.33, 1, 0.68, 1]]],
   dotColor: [102, 102, 102], hoverColor: [237, 237, 237], // match #666 / --text; stroke width + color live in globals.css
