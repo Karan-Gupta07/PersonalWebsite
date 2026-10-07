@@ -1,5 +1,6 @@
 import { Manrope } from "next/font/google";
 import PixelFeedback from "./pixel-feedback";
+import Scrollbar from "./scrollbar";
 import "./globals.css";
 
 const body = Manrope({
@@ -30,7 +31,7 @@ export const viewport = { themeColor: "#0b0b0b", colorScheme: "dark" };
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={body.variable}>
-      <body>{children}<PixelFeedback /></body>
+      <body>{children}<PixelFeedback /><Scrollbar /></body>
     </html>
   );
 }

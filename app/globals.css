@@ -16,7 +16,14 @@
 
 * { box-sizing: border-box; }
 html { scroll-padding-top: 24px; scrollbar-color: #666 var(--background); }
-html:has(.site-shell--home), html:has(.site-shell--home) body { overscroll-behavior-y: none; }
+html:has(.site-shell--home), html:has(.site-shell--home) body, html:has(.terminal), html:has(.terminal) body { overscroll-behavior-y: none; }
+/* Custom scrollbar (app/scrollbar.jsx) replaces the native one when the page scrolls */
+html:has(.scrollbar) { scrollbar-width: none; }
+html:has(.scrollbar)::-webkit-scrollbar { display: none; }
+.scrollbar { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 10; pointer-events: none; color: #666; }
+.scrollbar line { stroke: currentColor; stroke-width: 4; stroke-linecap: round; transition: stroke 250ms ease; }
+.scrollbar rect { fill: none; pointer-events: none; }
+.scrollbar[data-state="idle"] .arrow-hit, .scrollbar[data-state="tracking"] .hit-area { pointer-events: all; cursor: pointer; }
 body { margin: 0; background: var(--background); color: var(--text); font: 16px/1.7 var(--body); -webkit-font-smoothing: antialiased; }
 a { color: inherit; text-underline-offset: .25em; text-decoration-thickness: 1px; text-decoration-color: #666; transition: color 180ms var(--ease), text-decoration-color 180ms var(--ease); }
 a:hover { color: var(--warm); text-decoration-color: currentColor; }
