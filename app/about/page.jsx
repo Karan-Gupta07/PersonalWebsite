@@ -31,18 +31,20 @@ export default async function AboutPage() {
             There’s usually some rage, EDM, or hyperpop playing. I keep a{" "}
             <a href={profile.links.music} target="_blank" rel="noreferrer">music log</a>
             {" "}and track what I’m watching on{" "}
-            <a href={profile.links.letterboxd} target="_blank" rel="noreferrer">Letterboxd</a>.
+            <span className="hover-card">
+              <a href={profile.links.letterboxd} target="_blank" rel="noreferrer">Letterboxd</a>
+              {film && (
+                <a className="last-film" href={film.link ?? profile.links.letterboxd} target="_blank" rel="noreferrer">
+                  {film.poster && <img src={film.poster} alt="" width="40" height="60" loading="lazy" referrerPolicy="no-referrer" />}
+                  <span>
+                    <span className="last-film-label">Last watched{film.watched && ` · ${new Date(`${film.watched}T12:00:00`).toLocaleDateString("en-US", { month: "short", day: "numeric" })}`}</span>
+                    <strong>{film.title}{film.year && ` (${film.year})`}</strong>
+                    {film.rating && <span className="last-film-rating" aria-label={`Rated ${film.score} out of 5`}>{film.rating}</span>}
+                  </span>
+                </a>
+              )}
+            </span>.
           </p>
-          {film && (
-            <a className="last-film" href={film.link ?? profile.links.letterboxd} target="_blank" rel="noreferrer">
-              {film.poster && <img src={film.poster} alt="" width="40" height="60" loading="lazy" referrerPolicy="no-referrer" />}
-              <span>
-                <span className="last-film-label">Last watched{film.watched && ` · ${new Date(`${film.watched}T12:00:00`).toLocaleDateString("en-US", { month: "short", day: "numeric" })}`}</span>
-                <strong>{film.title}{film.year && ` (${film.year})`}</strong>
-                {film.rating && <span className="last-film-rating" aria-label={`Rated ${film.score} out of 5`}>{film.rating}</span>}
-              </span>
-            </a>
-          )}
           <p className="setup-note">Current setup: NZXT H6 Flow · 13600KF · 9070XT · Vengeance 7000MHz CL34</p>
           </div>
         </section>

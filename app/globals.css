@@ -183,8 +183,8 @@ a:hover > .arrow { transform: translateX(3px); }
 .project-heading code { font: 0.9em ui-monospace, monospace; color: var(--text); }
 .not-found { min-height: 60vh; padding-block: 80px; display: grid; align-content: center; }
 .not-found p { color: var(--muted); margin: 20px 0; }
-/* Elden Ring death screen: a dark band across the page, red serif title, slow fade and drift. */
-.you-died { margin-inline: calc(50% - 50vw); padding-block: clamp(28px, 6vw, 56px); text-align: center; background: linear-gradient(90deg, transparent, rgba(0,0,0,.85) 20%, rgba(0,0,0,.85) 80%, transparent); animation: died-band 1.2s ease-out both; }
+/* Elden Ring death screen: red serif title on the page background, slow fade and drift. */
+.you-died { padding-block: clamp(28px, 6vw, 56px); text-align: center; animation: died-band 1.2s ease-out both; }
 .you-died h1 { font: 400 clamp(48px, 10vw, 112px)/1 "Times New Roman", Georgia, serif; letter-spacing: .08em; color: #a8271f; text-shadow: 0 0 24px rgba(168,39,31,.35); animation: died-text 4s cubic-bezier(.2,.6,.2,1) both; }
 .you-died-after { text-align: center; animation: died-band 1s ease-out 3s both; }
 .you-died-after .back-link { justify-content: center; }
@@ -336,11 +336,15 @@ a:hover > .arrow { transform: translateX(3px); }
 .terminal-sound:hover, .terminal-sound[aria-pressed="true"] { color: var(--text); border-color: #555; }
 .terminal-sound:focus-visible { outline: 2px solid var(--warm); outline-offset: 2px; }
 .terminal-art { display: block; white-space: pre; overflow: hidden; line-height: 1.25; }
-.last-film { display: inline-flex; align-items: center; gap: 12px; margin: 4px 0 20px; padding: 8px 14px 8px 8px; border: 1px solid var(--line); border-radius: 2px; text-decoration: none; }
+/* Last-film card: a popover above the Letterboxd link, shown on hover or keyboard focus. */
+.hover-card { position: relative; display: inline-block; }
+.last-film { position: absolute; bottom: 100%; left: 50%; z-index: 20; width: max-content; max-width: min(320px, 80vw); display: flex; align-items: center; gap: 12px; padding: 8px 14px 8px 8px; background: var(--surface); border: 1px solid var(--line); border-radius: 2px; box-shadow: 0 8px 24px rgba(0,0,0,.5); text-decoration: none; opacity: 0; visibility: hidden; transform: translate(-50%, 4px); transition: opacity 160ms var(--ease), transform 160ms var(--ease), visibility 0s 160ms; }
+/* Invisible bridge so the pointer can move from the link onto the card without it closing. */
+.last-film::after { content: ""; position: absolute; inset: 100% 0 -10px; }
+.hover-card:hover .last-film, .hover-card:focus-within .last-film { opacity: 1; visibility: visible; transform: translate(-50%, -8px); transition-delay: 0s; }
 .last-film:hover { border-color: #555; }
 .last-film img { display: block; width: 40px; height: 60px; object-fit: cover; background: var(--surface); }
 .last-film > span { display: grid; line-height: 1.4; }
 .last-film-label { color: var(--muted); font-size: 12px; }
 .last-film strong { font-weight: 500; }
 .last-film-rating { color: var(--signal); font-size: 13px; letter-spacing: .05em; }
-body:has(.you-died) { overflow-x: clip; }
