@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useId, useState } from "react";
-import { stories, fitProfile, roomSamples, roomFlags, faceReadout, EYES_OPEN, pipelineSamples, pipelineFlags, matchApplicants, guardrailCases, checkAgentTrace, longVideo, sampleFrames, directorCue, nightStep, swing, NIGHT_SECONDS, actionShare, topClips, timestamp } from "./demo-data.mjs";
+import { stories, fitProfile, roomSamples, roomFlags, faceReadout, EYES_OPEN, pipelineSamples, pipelineFlags, matchApplicants, guardrailCases, checkAgentTrace, directorCue, nightStep, swing, NIGHT_SECONDS } from "./demo-data.mjs";
 
 function DemoFrame({ title, name, note, children }) {
   const [ready, setReady] = useState(false);
@@ -237,59 +237,6 @@ export function GuardrailDemo({ preview = false }) {
       <div className="evidence-record"><h3>Retrieved evidence</h3><p>{sample.evidence}</p><h3>Agent response / action</h3><p className={checked && !result.passed ? "unsupported" : ""}>{sample.response}</p></div>
       <div className="demo-controls"><button className="demo-primary" onClick={() => setChecked(true)}>Validate against evidence</button></div>
       <div className={`monitor-result ${checked && !result.passed ? "flagged" : ""}`} role="status"><h3>{!checked ? "Ready to validate" : result.passed ? "Supported by the evidence" : "Blocked: unsupported or unapproved"}</h3><p>{checked ? result.reason : "Check the proposed answer or action against its source before accepting it."}</p></div>
-    </DemoFrame>
-  );
-}
-
-export function ClipDemo({ preview = false }) {
-  const [adaptive, setAdaptive] = useState(false);
-  const [found, setFound] = useState(false);
-  useEffect(() => {
-    if (!preview) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) { setAdaptive(true); setFound(true); return; }
-    const timers = [setTimeout(() => setAdaptive(true), 1200), setTimeout(() => setFound(true), 2600)];
-    return () => timers.forEach(clearTimeout);
-  }, [preview]);
-  const { motion, segmentMinutes } = longVideo;
-  const frames = sampleFrames(motion, 72, adaptive);
-  const clips = topClips(motion);
-  const width = 424 / motion.length;
-  const timeline = (
-      <svg className="robot-scene" viewBox="0 0 480 220" role="img" aria-label={`Three-hour timeline. ${adaptive ? "Motion-adaptive" : "Uniform"} sampling puts ${actionShare(frames, motion)}% of frames on high-motion footage.`} shapeRendering="crispEdges">
-        <rect width="480" height="220" fill="#111" />
-        <text x="28" y="22" className="scene-label">MOTION</text>
-        <text x="28" y="134" className="scene-label">FRAMES ANALYZED</text>
-        {motion.map((value, i) => {
-          const x = 28 + i * width;
-          const clip = found && clips.includes(i);
-          return (
-            <g key={i}>
-              <rect x={x + 1} y={110 - value * .8} width={width - 3} height={value * .8} fill={clip ? "var(--signal)" : value >= 50 ? "#bbb" : "#555"} />
-              {Array.from({ length: frames[i] }, (_, n) => <rect key={n} x={x + 1} y={176 - n * 9} width={width - 3} height="6" fill="#ededed" />)}
-              {clip && <rect x={x - 1} y="28" width={width + 1} height="160" fill="none" stroke="var(--signal)" strokeDasharray="3 3" />}
-            </g>
-          );
-        })}
-        <path d="M28 188h424" stroke="#555" />
-        {[0, 60, 120, 180].map((minute) => <text key={minute} x={28 + minute / segmentMinutes * width} y="204" textAnchor={minute ? minute === 180 ? "end" : "middle" : "start"} className="scene-label">{timestamp(minute)}</text>)}
-      </svg>
-  );
-  if (preview) return <figure className="robot-demo robot-demo--preview" data-demo="clips">{timeline}<figcaption className="preview-caption">Overlap · {found ? "Clips found" : adaptive ? "Frames follow the action" : "Frames spread evenly"}<span>Illustration</span></figcaption></figure>;
-  return (
-    <DemoFrame title="Picking clips from a long stream" name="clips" note="A simplified illustration with example motion scores and a fixed frame budget. Nothing is uploaded, and no video or model runs on this page.">
-      <div className="scenario-picker" aria-label="Frame sampling">
-        <button aria-pressed={!adaptive} onClick={() => { setAdaptive(false); setFound(false); }}>Uniform sampling</button>
-        <button aria-pressed={adaptive} onClick={() => { setAdaptive(true); setFound(false); }}>Motion-adaptive</button>
-      </div>
-      {timeline}
-      <dl className="demo-measurements">
-        <div><dt>Frames on high motion</dt><dd>{actionShare(frames, motion)}%</dd></div>
-        <div><dt>Frames on static footage</dt><dd>{100 - actionShare(frames, motion)}%</dd></div>
-      </dl>
-      <div className="demo-controls"><button className="demo-primary" onClick={() => setFound(!found)}>{found ? "Hide clips" : "Find clips"}</button></div>
-      <div className="monitor-result" role="status">
-        {found ? <><h3>Three candidate clips</h3><ul>{clips.map((i) => <li key={i}>{timestamp(i * segmentMinutes)}–{timestamp((i + 1) * segmentMinutes)}</li>)}</ul></> : <><h3>{adaptive ? "Frames follow the action" : "Frames spread evenly"}</h3><p>{adaptive ? "Same budget, but quiet stretches get one frame and busy scenes get more." : "Every five minutes gets the same frames, whether anything happens or not."}</p></>}
-      </div>
     </DemoFrame>
   );
 }

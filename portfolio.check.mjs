@@ -6,12 +6,18 @@ import "./robot-scenes.check.mjs";
 import "./demos.check.mjs";
 
 const resumeDigest =
-  "c78ccf802e468c0ad8a6324ba1e5884526f88cd7bf831a73f3cf9962cf48fc0f";
+  "3d7a84267a98a98bc58936ba1737f9563f1ad8800932297ecfdec297ff96b230";
 assert.equal(
   createHash("sha256")
     .update(
       await readFile(new URL("./public/KaranGuptaResume.pdf", import.meta.url)),
     )
+    .digest("hex"),
+  resumeDigest,
+);
+assert.equal(
+  createHash("sha256")
+    .update(await readFile(new URL("./KaranGuptaResume.pdf", import.meta.url)))
     .digest("hex"),
   resumeDigest,
 );
@@ -34,7 +40,10 @@ assert.equal(
 assert.ok(!experience.find((job) => job.company === "Amazon").current);
 assert.ok(projects.some((project) => project.slug === "dominiq"));
 assert.ok(projects.some((project) => project.slug === "mr-clean"));
-assert.equal(profile.resumeUpdated, "2026-10-06");
+assert.equal(profile.resumeUpdated, "2026-10-12");
+assert.match(experience[0].bullets[0], /embedding-based semantic search pipeline across 20\+/);
+assert.doesNotMatch(experience[0].bullets.join(" "), /trend-forecasting|15%|1\.6/);
+assert.match(experience[0].bullets[1], /scene detection 2\.4×/);
 for (const project of projects) {
   assert.match(project.slug, /^[a-z0-9-]+$/);
   assert.ok(project.paragraphs.length && project.stack.length);
@@ -122,6 +131,17 @@ if (process.argv[2]) {
     assert.equal(content.includes('data-robot-demo="warehouse"'), job.slug === "amazon");
     const demo = { overlap: "clips", manulife: "pipeline", "wat-ai": "guardrail" }[job.slug];
     if (demo) assert.ok(content.includes(`data-demo="${demo}"`), job.company);
+    if (job.slug === "overlap") {
+      assert.ok(content.includes("Editing agent"));
+      assert.ok(content.includes("Long recording → short clip"));
+      assert.ok(content.includes("broader video-editing workflow"));
+      assert.ok(content.includes("No uploads or publishing"));
+      assert.ok(content.includes("Play demo"));
+      assert.ok(content.includes("Mute chatter"));
+      assert.ok(content.includes("Let’s find the good bit"));
+      assert.ok(content.includes("Synthesized chatter, no speech"));
+      assert.doesNotMatch(content, /Frames on high motion|Uniform sampling|trend-forecasting|type="range"|Horizontal crop position|Caption style|clip-auto-readout|clip-source-info|clip-crop-reference|clip-signals/);
+    }
     if (job.slug === "amazon") {
       assert.ok(content.includes("Not Amazon’s production system"));
       assert.ok(content.includes("every Amazon fulfillment center worldwide"));

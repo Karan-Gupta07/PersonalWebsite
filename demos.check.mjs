@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
-import { stories, fitProfile, roomSamples, roomFlags, faceReadout, pipelineSamples, pipelineFlags, matchApplicants, guardrailCases, checkAgentTrace, spotifyEmbedUrl, longVideo, sampleFrames, directorCue, nightStep, swing, NIGHT_SECONDS, actionShare, topClips, timestamp } from "./app/demo-data.mjs";
+import { stories, fitProfile, roomSamples, roomFlags, faceReadout, pipelineSamples, pipelineFlags, matchApplicants, guardrailCases, checkAgentTrace, spotifyEmbedUrl, directorCue, nightStep, swing, NIGHT_SECONDS } from "./app/demo-data.mjs";
+import "./clip-workflow.check.mjs";
 
 for (const story of Object.values(stories)) {
   assert.equal(story.steps.length, 4);
@@ -29,19 +30,6 @@ const track = "A".repeat(22);
 assert.equal(spotifyEmbedUrl(`https://open.spotify.com/track/${track}?si=example`), `https://open.spotify.com/embed/track/${track}?theme=0`);
 for (const url of [null, "", "javascript:alert(1)", `https://open.spotify.com.evil.test/track/${track}`, `http://open.spotify.com/track/${track}`, "https://open.spotify.com/track/short"])
   assert.equal(spotifyEmbedUrl(url), null);
-
-const budget = 72;
-const uniform = sampleFrames(longVideo.motion, budget, false);
-const adaptive = sampleFrames(longVideo.motion, budget, true);
-assert.equal(uniform.reduce((a, b) => a + b), budget);
-assert.ok(adaptive.reduce((a, b) => a + b) === budget && adaptive.every((n) => n >= 1), "Adaptive sampling stays in budget and covers every segment");
-assert.ok(actionShare(adaptive, longVideo.motion) > actionShare(uniform, longVideo.motion) + 15);
-assert.deepEqual(topClips(longVideo.motion), [13, 29, 30]);
-assert.deepEqual(sampleFrames([10, 20], 1, true), [0, 0]);
-assert.deepEqual(sampleFrames([0, 0], 5, true), [3, 2]);
-assert.equal(sampleFrames([1, 2, 3], 10, true).reduce((a, b) => a + b), 10);
-assert.equal(actionShare([0, 0], [90, 90]), 0);
-assert.equal(timestamp(65), "1:05:00");
 
 assert.deepEqual([60, 90, 130].map((bpm) => directorCue(bpm).cue), ["escalate", "build", "ease off"]);
 const night = { closeness: 0, time: 0, hits: 0, misses: 0, over: null };

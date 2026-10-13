@@ -7,7 +7,7 @@ export const profile = {
   minor: "Economics minor",
   gpa: "3.95",
   resume: "/KaranGuptaResume.pdf",
-  resumeUpdated: "2026-10-06",
+  resumeUpdated: "2026-10-12",
   links: {
     github: "https://github.com/Karan-Gupta07",
     linkedin: "https://www.linkedin.com/in/karan-gupta-2b72a735a/",
@@ -288,10 +288,10 @@ export const experience = [
     current: true,
     location: "San Francisco, CA",
     field: "YC S24 / AI VIDEO SYSTEMS",
-    intro: "At Overlap, I work on the systems that turn hours-long videos into short clips. The demo below shows one part of that: giving busy scenes more frames than quiet ones.",
+    intro: "At Overlap, I help turn long-form videos into short clips and surface signals for content optimization. This example shows the team’s broader video-editing workflow.",
     bullets: [
-      "Increased customer engagement by 15% by building a PyTorch trend-forecasting model using 20+ customer, content, engagement, and external signals to guide video topics, editing styles, and publishing timing.",
-      "Built a file-size-capped 4 FPS video proxy with motion-adaptive Gemini frame sampling, speeding up scene detection 1.6–2.4× and enabling AI clip generation on long-form videos spanning two to seven hours.",
+      "Enabled data-driven A/B testing by building an embedding-based semantic search pipeline across 20+ internal and external performance metrics, allowing AI agents to retrieve relevant signals for content optimization.",
+      "Built a file-size-capped 4 FPS video proxy with motion-adaptive Gemini frame sampling, speeding up scene detection 2.4× and enabling AI clip generation on long-form videos spanning two to seven hours.",
     ],
   },
   {

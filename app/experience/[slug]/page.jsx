@@ -3,7 +3,8 @@ import { notFound } from "next/navigation";
 import { experience, profile } from "../../content.mjs";
 import { Header, Footer, Arrow } from "../../interface";
 import RobotDemo from "../../robot-demo";
-import { MonitoringDemo, GuardrailDemo, ClipDemo } from "../../project-demos";
+import { MonitoringDemo, GuardrailDemo } from "../../project-demos";
+import ClipDemo from "../../clip-demo";
 
 export function generateStaticParams() {
   return experience.map((job) => ({ slug: job.slug }));
@@ -34,7 +35,7 @@ export default async function ExperiencePage({ params }) {
       <main id="main" className="reading-page" tabIndex={-1}>
         <Link className="back-link" href="/#experience"><Arrow /> Back home</Link>
         <article>
-          <div className={`case-opening${demo ? " with-demo" : ""}`}>
+          <div className={`case-opening${demo ? " with-demo" : ""}${job.slug === "overlap" ? " case-opening--overlap" : ""}`}>
             <header className="project-heading">
               <h1>{job.company}</h1>
               <p>{job.role}</p>

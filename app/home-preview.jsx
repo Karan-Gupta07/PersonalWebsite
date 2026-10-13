@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import RobotDemo, { CleanPreview } from "./robot-demo";
-import { StoryDemo, MonitoringDemo, GuardrailDemo, ClipDemo, WardDemo, AdmissionsPreview, MusicPreview, DreadDemo } from "./project-demos";
+import { StoryDemo, MonitoringDemo, GuardrailDemo, WardDemo, AdmissionsPreview, MusicPreview, DreadDemo } from "./project-demos";
+import ClipDemo from "./clip-demo";
 
 export default function HomePreview({ root = ".site-shell--home", className = "home-preview" }) {
   const [hovered, setHovered] = useState(null);
