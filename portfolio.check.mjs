@@ -140,7 +140,9 @@ if (process.argv[2]) {
       assert.ok(content.includes("Mute chatter"));
       assert.ok(content.includes("Let’s find the good bit"));
       assert.ok(content.includes("Synthesized chatter, no speech"));
-      assert.doesNotMatch(content, /Frames on high motion|Uniform sampling|trend-forecasting|type="range"|Horizontal crop position|Caption style|clip-auto-readout|clip-source-info|clip-crop-reference|clip-signals/);
+      assert.match(content, /<input[^>]*type="range"[^>]*min="0"[^>]*max="43"[^>]*aria-label="Seek demo"/);
+      assert.ok(content.includes('aria-valuetext="0 of 43 seconds"'));
+      assert.doesNotMatch(content, /Frames on high motion|Uniform sampling|trend-forecasting|Horizontal crop position|Caption style|clip-auto-readout|clip-source-info|clip-crop-reference|clip-signals/);
     }
     if (job.slug === "amazon") {
       assert.ok(content.includes("Not Amazon’s production system"));
